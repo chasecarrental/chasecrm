@@ -3,7 +3,7 @@
     @component('laravel-crm::components.card-header')
 
         @slot('title')
-            {{ ucfirst(__('laravel-crm::lang.orders')) }} TEST
+            {{ ucfirst(__('laravel-crm::lang.orders')) }}
         @endslot
 
         @slot('actions')
