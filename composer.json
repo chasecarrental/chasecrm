@@ -31,8 +31,9 @@
     "type": "library",
     "authors": [
         {
-            "name": "Alezcano",
-            "email": "alezcanossj@example.com",
+            "name": "Andrew Drake",
+            "email": "andrew@venturedrake.com",
+            "homepage": "https://venturedrake.com",
             "role": "Developer"
         }
     ],
@@ -66,9 +67,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Alezcanossj\\ChaseCrm\\": "src/",
-            "Alezcanossj\\ChaseCrm\\Database\\Factories\\": "database/factories",
-            "Alezcanossj\\ChaseCrm\\Database\\Seeders\\": "database/seeders"
+            "VentureDrake\\LaravelCrm\\": "src/",
+            "VentureDrake\\LaravelCrm\\Database\\Factories\\": "database/factories",
+            "VentureDrake\\LaravelCrm\\Database\\Seeders\\": "database/seeders"
         },
         "files": [
             "src/Http/Helpers/SelectOptions.php",
@@ -81,7 +82,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Alezcanossj\\ChaseCrm\\Tests\\": "tests"
+            "VentureDrake\\LaravelCrm\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -97,10 +98,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Alezcanossj\\ChaseCrm\\ChaseCrmServiceProvider"
+                "VentureDrake\\LaravelCrm\\LaravelCrmServiceProvider"
             ],
             "aliases": {
-                "ChaseCrm": "Alezcanossj\\ChaseCrm\\Facades\\ChaseCrmFacade"
+                "LaravelCrm": "VentureDrake\\LaravelCrm\\Facades\\LaravelCrmFacade"
             }
         }
     }
