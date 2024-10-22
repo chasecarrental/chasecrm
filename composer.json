@@ -24,7 +24,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/alezcanossj/chaseCrm"
+            "url": "https://github.com/alezcanossj/chaseCrm.git"
         }
     ],
     "license": "MIT",
@@ -67,9 +67,9 @@
     },
     "autoload": {
         "psr-4": {
-            "VentureDrake\\LaravelCrm\\" : "src/",
-            "VentureDrake\\LaravelCrm\\Database\\Factories\\" : "database/factories",
-            "VentureDrake\\LaravelCrm\\Database\\Seeders\\" : "database/seeders"
+            "VentureDrake\\LaravelCrm\\": "src/",
+            "VentureDrake\\LaravelCrm\\Database\\Factories\\": "database/factories",
+            "VentureDrake\\LaravelCrm\\Database\\Seeders\\": "database/seeders"
         },
         "files": [
             "src/Http/Helpers/SelectOptions.php",
@@ -82,7 +82,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "VentureDrake\\LaravelCRM\\Tests\\" : "tests"
+            "VentureDrake\\LaravelCrm\\Tests\\": "tests"
         }
     },
     "scripts": {
