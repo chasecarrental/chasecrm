@@ -1,5 +1,5 @@
 {
-    "name": "alezcanossj/chase-crm",
+    "name": "chasecrm/chasecrm",
     "description": "A free open source CRM built as a package for laravel projects",
     "keywords": [
         "venturedrake",
@@ -20,11 +20,11 @@
         "crm online",
         "crm platform"
     ],
-    "homepage": "https://github.com/alezcanossj/chaseCrm",
+    "homepage": "https://github.com/chasecarrental/chasecrm",
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/alezcanossj/chaseCrm.git"
+            "url": "https://github.com/chasecarrental/chasecrm.git"
         }
     ],
     "license": "MIT",
