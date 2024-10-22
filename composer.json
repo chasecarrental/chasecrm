@@ -24,7 +24,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/alezcanossj/chaseCrm.git"
+            "url": "https://github.com/alezcanossj/chaseCrm"
         }
     ],
     "license": "MIT",
