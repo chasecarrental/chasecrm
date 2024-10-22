@@ -1,5 +1,5 @@
 {
-    "name": "venturedrake/laravel-crm",
+    "name": "alezcanossj/chase-crm",
     "description": "A free open source CRM built as a package for laravel projects",
     "keywords": [
         "venturedrake",
@@ -20,7 +20,7 @@
         "crm online",
         "crm platform"
     ],
-    "homepage": "https://github.com/venturedrake/laravel-crm",
+    "homepage": "https://github.com/alezcanossj/chaseCrm.git",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -45,7 +45,7 @@
         "lab404/laravel-auth-checker": "^1.6|^1.7|^2.0",
         "laracasts/flash": "^3.2",
         "laravel/legacy-factories": "^1.3",
-        "livewire/livewire": "^1.0|^2.0",
+        "livewire/livewire": "^1.0|^2.0|^3.0",
         "mpdf/mpdf": "^7.0|^8.0",
         "owen-it/laravel-auditing": "^12.0|^13.0",
         "protonemedia/laravel-form-components": "^3.6",
