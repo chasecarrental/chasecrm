@@ -20,7 +20,7 @@
         "crm online",
         "crm platform"
     ],
-    "homepage": "https://github.com/alezcanossj/chaseCrm.git",
+    "homepage": "https://github.com/alezcanossj/chaseCrm",
     "repositories": [
         {
             "type": "vcs",
