@@ -56,8 +56,11 @@ class TeamController extends Controller
      */
     public function store(StoreTeamRequest $request)
     {
+
         $team = Team::create([
             'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
             'user_id' => auth()->user()->id,
         ]);
 
@@ -118,6 +121,8 @@ class TeamController extends Controller
     {
         $team->update([
             'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address
         ]);
 
         if ($request->team_users) {

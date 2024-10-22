@@ -12,13 +12,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use VentureDrake\LaravelCrm\Console\LaravelCrmAddressTypes;
-use VentureDrake\LaravelCrm\Console\LaravelCrmArchive;
-use VentureDrake\LaravelCrm\Console\LaravelCrmContactTypes;
-use VentureDrake\LaravelCrm\Console\LaravelCrmFields;
 use VentureDrake\LaravelCrm\Console\LaravelCrmInstall;
 use VentureDrake\LaravelCrm\Console\LaravelCrmLabels;
 use VentureDrake\LaravelCrm\Console\LaravelCrmOrganisationTypes;
@@ -32,20 +29,16 @@ use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveLunch;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveMeeting;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveNote;
 use VentureDrake\LaravelCrm\Http\Livewire\Components\LiveTask;
-use VentureDrake\LaravelCrm\Http\Livewire\Fields\CreateOrEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\Integrations\Xero\XeroConnect;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivities;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveActivityMenu;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveAddressEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveCalls;
-use VentureDrake\LaravelCrm\Http\Livewire\LiveDealBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDealForm;
-use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryDetails;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveDeliveryItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveEmailEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveFiles;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveInvoiceLines;
-use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLeadForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveLunches;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveMeetings;
@@ -54,8 +47,6 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveOrderItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LivePhoneEdit;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveProductForm;
-use VentureDrake\LaravelCrm\Http\Livewire\LivePurchaseOrderLines;
-use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteBoard;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteForm;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveQuoteItems;
 use VentureDrake\LaravelCrm\Http\Livewire\LiveRelatedContactOrganisation;
@@ -65,7 +56,6 @@ use VentureDrake\LaravelCrm\Http\Livewire\LiveTasks;
 use VentureDrake\LaravelCrm\Http\Livewire\NotifyToast;
 use VentureDrake\LaravelCrm\Http\Livewire\PayInvoice;
 use VentureDrake\LaravelCrm\Http\Livewire\SendInvoice;
-use VentureDrake\LaravelCrm\Http\Livewire\SendPurchaseOrder;
 use VentureDrake\LaravelCrm\Http\Livewire\SendQuote;
 use VentureDrake\LaravelCrm\Http\Middleware\Authenticate;
 use VentureDrake\LaravelCrm\Http\Middleware\FormComponentsConfig;
@@ -88,7 +78,6 @@ use VentureDrake\LaravelCrm\Models\Email;
 use VentureDrake\LaravelCrm\Models\Field;
 use VentureDrake\LaravelCrm\Models\FieldGroup;
 use VentureDrake\LaravelCrm\Models\FieldModel;
-use VentureDrake\LaravelCrm\Models\FieldOption;
 use VentureDrake\LaravelCrm\Models\FieldValue;
 use VentureDrake\LaravelCrm\Models\File;
 use VentureDrake\LaravelCrm\Models\Invoice;
@@ -103,13 +92,8 @@ use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Models\Phone;
-use VentureDrake\LaravelCrm\Models\Pipeline;
-use VentureDrake\LaravelCrm\Models\PipelineStage;
-use VentureDrake\LaravelCrm\Models\PipelineStageProbability;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\ProductPrice;
-use VentureDrake\LaravelCrm\Models\PurchaseOrder;
-use VentureDrake\LaravelCrm\Models\PurchaseOrderLine;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
@@ -118,7 +102,6 @@ use VentureDrake\LaravelCrm\Models\XeroContact;
 use VentureDrake\LaravelCrm\Models\XeroInvoice;
 use VentureDrake\LaravelCrm\Models\XeroItem;
 use VentureDrake\LaravelCrm\Models\XeroPerson;
-use VentureDrake\LaravelCrm\Models\XeroPurchaseOrder;
 use VentureDrake\LaravelCrm\Observers\ActivityObserver;
 use VentureDrake\LaravelCrm\Observers\CallObserver;
 use VentureDrake\LaravelCrm\Observers\ClientObserver;
@@ -130,7 +113,6 @@ use VentureDrake\LaravelCrm\Observers\EmailObserver;
 use VentureDrake\LaravelCrm\Observers\FieldGroupObserver;
 use VentureDrake\LaravelCrm\Observers\FieldModelObserver;
 use VentureDrake\LaravelCrm\Observers\FieldObserver;
-use VentureDrake\LaravelCrm\Observers\FieldOptionObserver;
 use VentureDrake\LaravelCrm\Observers\FieldValueObserver;
 use VentureDrake\LaravelCrm\Observers\FileObserver;
 use VentureDrake\LaravelCrm\Observers\InvoiceLineObserver;
@@ -145,13 +127,8 @@ use VentureDrake\LaravelCrm\Observers\OrderProductObserver;
 use VentureDrake\LaravelCrm\Observers\OrganisationObserver;
 use VentureDrake\LaravelCrm\Observers\PersonObserver;
 use VentureDrake\LaravelCrm\Observers\PhoneObserver;
-use VentureDrake\LaravelCrm\Observers\PipelineObserver;
-use VentureDrake\LaravelCrm\Observers\PipelineStageObserver;
-use VentureDrake\LaravelCrm\Observers\PipelineStageProbabilityObserver;
 use VentureDrake\LaravelCrm\Observers\ProductObserver;
 use VentureDrake\LaravelCrm\Observers\ProductPriceObserver;
-use VentureDrake\LaravelCrm\Observers\PurchaseOrderLineObserver;
-use VentureDrake\LaravelCrm\Observers\PurchaseOrderObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteObserver;
 use VentureDrake\LaravelCrm\Observers\QuoteProductObserver;
 use VentureDrake\LaravelCrm\Observers\SettingObserver;
@@ -163,8 +140,6 @@ use VentureDrake\LaravelCrm\Observers\XeroInvoiceObserver;
 use VentureDrake\LaravelCrm\Observers\XeroItemObserver;
 use VentureDrake\LaravelCrm\Observers\XeroPersonObserver;
 use VentureDrake\LaravelCrm\Observers\XeroTokenObserver;
-use VentureDrake\LaravelCrm\View\Composers\SettingsComposer;
-use VentureDrake\LaravelCrm\Observers\XeroPurchaseOrderObserver;
 
 class LaravelCrmServiceProvider extends ServiceProvider
 {
@@ -201,11 +176,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
         'VentureDrake\LaravelCrm\Models\File' => \VentureDrake\LaravelCrm\Policies\FilePolicy::class,
         'VentureDrake\LaravelCrm\Models\Field' => \VentureDrake\LaravelCrm\Policies\FieldPolicy::class,
         'VentureDrake\LaravelCrm\Models\FieldGroup' => \VentureDrake\LaravelCrm\Policies\FieldGroupPolicy::class,
-        'VentureDrake\LaravelCrm\Models\FieldOption' => \VentureDrake\LaravelCrm\Policies\FieldOptionPolicy::class,
         'VentureDrake\LaravelCrm\Models\Delivery' => \VentureDrake\LaravelCrm\Policies\DeliveryPolicy::class,
-        'VentureDrake\LaravelCrm\Models\PurchaseOrder' => \VentureDrake\LaravelCrm\Policies\PurchaseOrderPolicy::class,
-        'VentureDrake\LaravelCrm\Models\Pipeline' => \VentureDrake\LaravelCrm\Policies\PipelinePolicy::class,
-        'VentureDrake\LaravelCrm\Models\PipelineStage' => \VentureDrake\LaravelCrm\Policies\PipelineStagePolicy::class,
     ];
 
     /**
@@ -228,7 +199,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
          * Optional methods to load your package assets
          */
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravel-crm');
-        // TBC: BS or TW mode, setting on config
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel-crm');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
@@ -292,17 +262,10 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Lunch::observe(LunchObserver::class);
         Field::observe(FieldObserver::class);
         FieldGroup::observe(FieldGroupObserver::class);
-        FieldOption::observe(FieldOptionObserver::class);
         FieldModel::observe(FieldModelObserver::class);
         FieldValue::observe(FieldValueObserver::class);
         Delivery::observe(DeliveryObserver::class);
         DeliveryProduct::observe(DeliveryProductObserver::class);
-        PurchaseOrder::observe(PurchaseOrderObserver::class);
-        PurchaseOrderLine::observe(PurchaseOrderLineObserver::class);
-        XeroPurchaseOrder::observe(XeroPurchaseOrderObserver::class);
-        Pipeline::observe(PipelineObserver::class);
-        PipelineStage::observe(PipelineStageObserver::class);
-        PipelineStageProbability::observe(PipelineStageProbabilityObserver::class);
 
         if (class_exists('App\Models\User')) {
             \App\Models\User::observe(UserObserver::class);
@@ -449,27 +412,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 __DIR__ . '/../database/migrations/add_order_product_id_to_laravel_crm_invoice_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_order_product_id_to_laravel_crm_invoice_lines_table.php', 81),
                 __DIR__ . '/../database/migrations/add_prefix_to_laravel_crm_deliveries_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_deliveries_table.php', 82),
                 __DIR__ . '/../database/migrations/alter_value_on_laravel_crm_field_values_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_value_on_laravel_crm_field_values_table.php', 83),
-                __DIR__ . '/../database/migrations/add_comments_to_laravel_crm_invoice_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_comments_to_laravel_crm_invoice_lines_table.php', 84),
-                __DIR__ . '/../database/migrations/add_default_to_laravel_crm_tax_rates_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_default_to_laravel_crm_tax_rates_table.php', 85),
-                __DIR__ . '/../database/migrations/create_laravel_crm_industries_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_industries_table.php', 86),
-                __DIR__ . '/../database/migrations/add_extra_fields_to_laravel_crm_organisations_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_extra_fields_to_laravel_crm_organisations_table.php', 87),
-                __DIR__ . '/../database/migrations/create_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_orders_table.php', 88),
-                __DIR__ . '/../database/migrations/create_laravel_crm_purchase_order_lines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_purchase_order_lines_table.php', 89),
-                __DIR__ . '/../database/migrations/create_laravel_crm_xero_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_xero_purchase_orders_table.php', 90),
-                __DIR__ . '/../database/migrations/add_tax_type_to_laravel_crm_tax_rates_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_tax_type_to_laravel_crm_tax_rates_table.php', 91),
-                __DIR__ . '/../database/migrations/add_barcode_to_laravel_crm_products_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_barcode_to_laravel_crm_products_table.php', 92),
-                __DIR__ . '/../database/migrations/create_laravel_crm_field_options_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_field_options_table.php', 93),
-                __DIR__ . '/../database/migrations/alter_type_on_laravel_crm_fields_table.php.stub' => $this->getMigrationFileName($filesystem, 'alter_type_on_laravel_crm_fields_table.php', 94),
-                __DIR__ . '/../database/migrations/add_soft_delete_to_laravel_crm_field_values_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_soft_delete_to_laravel_crm_field_values_table.php', 95),
-                __DIR__ . '/../database/migrations/add_terms_to_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_terms_to_laravel_crm_purchase_orders_table.php', 96),
-                __DIR__ . '/../database/migrations/add_delivery_type_to_laravel_crm_purchase_orders_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_delivery_type_to_laravel_crm_purchase_orders_table.php', 97),
-                __DIR__ . '/../database/migrations/create_laravel_crm_pipelines_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipelines_table.php', 98),
-                __DIR__ . '/../database/migrations/create_laravel_crm_pipeline_stage_probabilities_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipeline_stage_probabilities_table.php', 99),
-                __DIR__ . '/../database/migrations/create_laravel_crm_pipeline_stages_table.php.stub' => $this->getMigrationFileName($filesystem, 'create_laravel_crm_pipeline_stages_table.php', 100),
-                __DIR__ . '/../database/migrations/add_pipeline_to_laravel_crm_models_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_pipeline_to_laravel_crm_models_table.php', 101),
-                __DIR__ . '/../database/migrations/add_user_to_laravel_crm_settings_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_user_to_laravel_crm_settings_table.php', 102),
-                __DIR__ . '/../database/migrations/add_prefix_to_laravel_crm_leads_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_leads_table.php', 103),
-                __DIR__ . '/../database/migrations/add_prefix_to_laravel_crm_deals_table.php.stub' => $this->getMigrationFileName($filesystem, 'add_prefix_to_laravel_crm_deals_table.php', 104),
             ], 'migrations');
 
             // Publishing the seeders
@@ -498,10 +440,7 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 LaravelCrmAddressTypes::class,
                 LaravelCrmOrganisationTypes::class,
                 LaravelCrmXero::class,
-                LaravelCrmReminders::class,
-                LaravelCrmContactTypes::class,
-                LaravelCrmFields::class,
-                LaravelCrmArchive::class,
+                LaravelCrmReminders::class
             ]);
 
             // Register the model factories
@@ -531,11 +470,8 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('related-contact-people', LiveRelatedContactPerson::class);
         Livewire::component('related-people', LiveRelatedPerson::class);
         Livewire::component('live-lead-form', LiveLeadForm::class);
-        Livewire::component('live-lead-board', LiveLeadBoard::class);
         Livewire::component('deal-form', LiveDealForm::class);
-        Livewire::component('live-deal-board', LiveDealBoard::class);
         Livewire::component('quote-form', LiveQuoteForm::class);
-        Livewire::component('live-quote-board', LiveQuoteBoard::class);
         Livewire::component('notify-toast', NotifyToast::class);
         Livewire::component('quote-items', LiveQuoteItems::class);
         Livewire::component('order-form', LiveOrderForm::class);
@@ -549,10 +485,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
         Livewire::component('send-invoice', SendInvoice::class);
         Livewire::component('pay-invoice', PayInvoice::class);
         Livewire::component('product-form', LiveProductForm::class);
-        Livewire::component('purchase-order-lines', LivePurchaseOrderLines::class);
-        Livewire::component('fields.create-or-edit', CreateOrEdit::class);
-        Livewire::component('send-purchase-order', SendPurchaseOrder::class);
-        Livewire::component('delivery-details', LiveDeliveryDetails::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->booted(function () {
@@ -561,11 +493,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
                 $schedule->command('laravelcrm:reminders')
                     ->name('laravelCrmReminders')
                     ->everyMinute()
-                    ->withoutOverlapping();
-
-                $schedule->command('laravelcrm:archive')
-                    ->name('laravelCrmArchiving')
-                    ->daily()
                     ->withoutOverlapping();
 
                 if (config('xero.clientId') && config('xero.clientSecret')) {
@@ -584,7 +511,30 @@ class LaravelCrmServiceProvider extends ServiceProvider
             });
         }
 
-        View::composer('*', SettingsComposer::class);
+        // This was causing composer install post dump autoload to fail when no DB connected
+        if (! $this->app->runningInConsole()) {
+            if (Schema::hasTable(config('laravel-crm.db_table_prefix').'settings')) {
+                view()->share('dateFormat', Setting::where('name', 'date_format')->first()->value ?? 'Y/m/d');
+                view()->share('timeFormat', Setting::where('name', 'time_format')->first()->value ?? 'H:i');
+                view()->share('timezone', Setting::where('name', 'timezone')->first()->value ?? 'UTC');
+                view()->share('taxName', Setting::where('name', 'tax_name')->first()->value ?? 'Tax');
+
+                if($setting = Setting::where('name', 'dynamic_products')->first()) {
+                    if($setting->value == 1) {
+                        view()->share('dynamicProducts', 'true');
+                    } else {
+                        view()->share('dynamicProducts', 'false');
+                    }
+                } else {
+                    view()->share('dynamicProducts', 'true');
+                }
+            } else {
+                view()->share('dateFormat', 'Y/m/d');
+                view()->share('timeFormat', 'H:i');
+                view()->share('timezone', 'UTC');
+                view()->share('taxName', 'Tax');
+            }
+        }
 
         Blade::if('hasleadsenabled', function () {
             if(is_array(config('laravel-crm.modules')) && in_array('leads', config('laravel-crm.modules'))) {
@@ -628,14 +578,6 @@ class LaravelCrmServiceProvider extends ServiceProvider
 
         Blade::if('hasdeliveriesenabled', function () {
             if(is_array(config('laravel-crm.modules')) && in_array('deliveries', config('laravel-crm.modules'))) {
-                return true;
-            } elseif(! config('laravel-crm.modules')) {
-                return true;
-            }
-        });
-
-        Blade::if('haspurchaseordersenabled', function () {
-            if(is_array(config('laravel-crm.modules')) && in_array('purchase-orders', config('laravel-crm.modules'))) {
                 return true;
             } elseif(! config('laravel-crm.modules')) {
                 return true;

@@ -44,20 +44,6 @@ function organisations()
     return json_encode($data);
 }
 
-function organisationsSelect2()
-{
-    $data = [];
-
-    foreach (Organisation::all() as $organisation) {
-        $data[] = [
-            'id' => $organisation->id,
-            'text' => $organisation->name,
-        ];
-    }
-
-    return json_encode($data);
-}
-
 function products()
 {
     $data = [];

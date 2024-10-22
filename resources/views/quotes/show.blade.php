@@ -1,7 +1,14 @@
-@extends('laravel-crm::layouts.app')
 
-@section('content')
+
+
+    @include('laravel-crm::styles') 
+
+
+
     
     @include('laravel-crm::quotes.partials.card-show')
 
-@endsection
+
+
+
+    @include('laravel-crm::codification') 

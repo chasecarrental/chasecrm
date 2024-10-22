@@ -1,4 +1,5 @@
-<form method="POST" action="{{ url(route('laravel-crm.quotes.store')) }}">
+<form id="quoteCreateForm" method="POST" action="{{ url(route('laravel-crm.quotes.store')) }}" 
+      onsubmit="submitFormCrm(event, 'quoteCreateForm', '{{ route('laravel-crm.quotes.store') }}', 'Quote created successfully!', '{{ route('laravel-crm.quotes.index') }}')">
     @csrf
     @component('laravel-crm::components.card')
 
@@ -24,8 +25,8 @@
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-                <a href="{{ url(route('laravel-crm.quotes.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
-                <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
+            <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.quotes.index') }}')" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+            <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
         @endcomponent
 
     @endcomponent

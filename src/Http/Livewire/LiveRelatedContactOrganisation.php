@@ -12,14 +12,10 @@ class LiveRelatedContactOrganisation extends Component
     public $contacts;
     public $organisation_id;
     public $organisation_name;
-    public $actions;
-    public $contactTypeFilter;
 
-    public function mount($model, $actions = true, $contactTypeFilter = null)
+    public function mount($model)
     {
         $this->model = $model;
-        $this->actions = $actions;
-        $this->contactTypeFilter = $contactTypeFilter;
         $this->getContacts();
     }
 
@@ -53,7 +49,7 @@ class LiveRelatedContactOrganisation extends Component
 
         $this->getContacts();
 
-        $this->dispatchBrowserEvent('linkedOrganisation');
+        $this->dispatch('linkedOrganisation');
     }
 
     public function remove($id)
@@ -76,23 +72,18 @@ class LiveRelatedContactOrganisation extends Component
 
         $this->getContacts();
 
-        $this->dispatchBrowserEvent('linkedOrganisation');
+        $this->dispatch('linkedOrganisation');
     }
 
     public function updatedOrganisationName($value)
     {
-        $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
+        $this->dispatch('updatedNameFieldAutocomplete');
     }
 
     private function getContacts()
     {
         $this->contacts = $this->model
             ->contacts()
-            ->when($this->contactTypeFilter, function ($query) {
-                return $query->leftJoin('contact_contact_type', 'contact_contact_type.contact_id', '=', 'contacts.id')
-                    ->leftJoin('contact_types', 'contact_contact_type.contact_type_id', '=', 'contact_types.id')
-                    ->where('contact_types.name', $this->contactTypeFilter);
-            })
             ->where('entityable_type', 'LIKE', '%Organisation%')
             ->get();
     }

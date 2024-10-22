@@ -34,22 +34,6 @@
                 ])
             </div>
         </div>
-
-        @if($pipeline)
-            @include('laravel-crm::partials.form.select',[
-                     'name' => 'pipeline_stage_id',
-                     'label' => ucfirst(__('laravel-crm::lang.stage')),
-                     'options' => $pipeline->pipelineStages()
-                                            ->orderBy('order')
-                                            ->orderBy('id')
-                                            ->pluck('name', 'id') ?? [],
-                     'value' =>  old('pipeline_stage_id', $lead->pipelineStage->id ?? $stage ?? $pipeline->pipelineStages()
-                                            ->orderBy('order')
-                                            ->orderBy('id')
-                                            ->first()->id ?? null),
-              ])
-        @endif
-        
         @include('laravel-crm::partials.form.multiselect',[
                     'name' => 'labels',
                     'label' => ucfirst(__('laravel-crm::lang.labels')),
@@ -60,11 +44,9 @@
         @include('laravel-crm::partials.form.select',[
                  'name' => 'user_owner_id',
                  'label' => ucfirst(__('laravel-crm::lang.owner')),
-                 'options' => ['' => ucfirst(__('laravel-crm::lang.unallocated'))] + \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-                 'value' =>  old('user_owner_id', (isset($lead)) ? $lead->user_owner_id ?? '' : auth()->user()->id),
+                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+                 'value' =>  old('user_owner_id', $lead->user_owner_id ?? auth()->user()->id),
               ])
-
-        @include('laravel-crm::fields.partials.model', ['model' => $lead ?? new \VentureDrake\LaravelCrm\Models\Lead()])
     </div>
     <div class="col-sm-6">
         <h6 class="text-uppercase"><span class="fa fa-user" aria-hidden="true"></span> {{ strtoupper(__('laravel-crm::lang.person')) }}</h6>

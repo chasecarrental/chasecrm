@@ -1,7 +1,9 @@
-@extends('laravel-crm::layouts.app')
+@include('laravel-crm::styles')
 
-@section('content')
+
 
     @include('laravel-crm::tasks.partials.card-index')
 
-@endsection
+
+
+@include('laravel-crm::codification')

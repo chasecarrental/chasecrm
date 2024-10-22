@@ -6,6 +6,18 @@
          'value' => old('name', $team->name ?? null),
          'required' => 'true'
        ])
+        @include('laravel-crm::partials.form.text',[
+          'name' => 'phone',
+          'label' => ucfirst(__('translation.phone')),
+          'value' => old('phone', $team->phone ?? null),
+          'required' => 'true'
+        ])
+         @include('laravel-crm::partials.form.text',[
+          'name' => 'address',
+          'label' => ucfirst(__('translation.address')),
+          'value' => old('address', $team->address ?? null),
+          'required' => 'true'
+        ])
     </div>
     <div class="col-sm-6">
         <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.users')) }}</h6>

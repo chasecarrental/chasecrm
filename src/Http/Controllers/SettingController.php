@@ -34,27 +34,21 @@ class SettingController extends Controller
         $language = $this->settingService->get('language');
         $country = $this->settingService->get('country');
         $currency = $this->settingService->get('currency');
-        $timezoneSetting = $this->settingService->get('timezone');
+        $timezone = $this->settingService->get('timezone');
         $logoFile = $this->settingService->get('logo_file');
-        $leadPrefix = $this->settingService->get('lead_prefix');
-        $dealPrefix = $this->settingService->get('deal_prefix');
         $quotePrefix = $this->settingService->get('quote_prefix');
         $orderPrefix = $this->settingService->get('order_prefix');
         $invoicePrefix = $this->settingService->get('invoice_prefix');
         $deliveryPrefix = $this->settingService->get('delivery_prefix');
-        $purchaseOrderPrefix = $this->settingService->get('purchase_order_prefix');
         $quoteTerms = $this->settingService->get('quote_terms');
         $invoiceContactDetails = $this->settingService->get('invoice_contact_details');
         $invoiceTerms = $this->settingService->get('invoice_terms');
-        $invoicePaymentInstructions = $this->settingService->get('invoice_payment_instructions');
-        $purchaseOrderTerms = $this->settingService->get('purchase_order_terms');
-        $purchaseOrderDeliveryInstructions = $this->settingService->get('purchase_order_delivery_instructions');
-        $dateFormatSetting = $this->settingService->get('date_format');
-        $timeFormatSetting = $this->settingService->get('time_format');
+        $dateFormat = $this->settingService->get('date_format');
+        $timeFormat = $this->settingService->get('time_format');
         $showRelatedActivity = $this->settingService->get('show_related_activity');
-        $dynamicProductsSetting = $this->settingService->get('dynamic_products');
-        $taxNameSetting = $this->settingService->get('tax_name');
-        $taxRateSetting = $this->settingService->get('tax_rate');
+        $dynamicProducts = $this->settingService->get('dynamic_products');
+        $taxName = $this->settingService->get('tax_name');
+        $taxRate = $this->settingService->get('tax_rate');
         $related = $this->settingService->get('team');
 
         return view('laravel-crm::settings.edit', [
@@ -63,27 +57,21 @@ class SettingController extends Controller
             'language' => $language,
             'country' => $country,
             'currency' => $currency,
-            'timezoneSetting' => $timezoneSetting,
+            'timezone' => $timezone,
             'logoFile' => $logoFile,
-            'leadPrefix' => $leadPrefix,
-            'dealPrefix' => $dealPrefix,
             'quotePrefix' => $quotePrefix,
             'orderPrefix' => $orderPrefix,
             'invoicePrefix' => $invoicePrefix,
             'deliveryPrefix' => $deliveryPrefix,
-            'purchaseOrderPrefix' => $purchaseOrderPrefix,
             'quoteTerms' => $quoteTerms,
             'invoiceContactDetails' => $invoiceContactDetails,
             'invoiceTerms' => $invoiceTerms,
-            'invoicePaymentInstructions' => $invoicePaymentInstructions,
-            'purchaseOrderTerms' => $purchaseOrderTerms,
-            'purchaseOrderDeliveryInstructions' => $purchaseOrderDeliveryInstructions,
-            'dateFormatSetting' => $dateFormatSetting,
-            'timeFormatSetting' => $timeFormatSetting,
+            'dateFormat' => $dateFormat,
+            'timeFormat' => $timeFormat,
             'showRelatedActivity' => $showRelatedActivity,
-            'dynamicProductsSetting' => $dynamicProductsSetting,
-            'taxNameSetting' => $taxNameSetting,
-            'taxRateSetting' => $taxRateSetting,
+            'dynamicProducts' => $dynamicProducts,
+            'taxName' => $taxName,
+            'taxRate' => $taxRate,
             'emails' => $related->emails,
             'phones' => $related->phones,
             'addresses' => $related->addresses,
@@ -109,22 +97,8 @@ class SettingController extends Controller
         $this->settingService->set('country', $request->country);
         $this->settingService->set('currency', $request->currency);
         $this->settingService->set('timezone', $request->timezone);
-
-        if($request->tax_name) {
-            $this->settingService->set('tax_name', $request->tax_name);
-        }
-
-        if($request->tax_rate) {
-            $this->settingService->set('tax_rate', $request->tax_rate);
-        }
-
-        if($request->lead_prefix) {
-            $this->settingService->set('lead_prefix', $request->lead_prefix);
-        }
-
-        if($request->deal_prefix) {
-            $this->settingService->set('deal_prefix', $request->deal_prefix);
-        }
+        $this->settingService->set('tax_name', $request->tax_name);
+        $this->settingService->set('tax_rate', $request->tax_rate);
 
         if($request->quote_prefix) {
             $this->settingService->set('quote_prefix', $request->quote_prefix);
@@ -142,10 +116,6 @@ class SettingController extends Controller
             $this->settingService->set('delivery_prefix', $request->delivery_prefix);
         }
 
-        if($request->purchase_order_prefix) {
-            $this->settingService->set('purchase_order_prefix', $request->purchase_order_prefix);
-        }
-
         if ($request->quote_terms) {
             $this->settingService->set('quote_terms', $request->quote_terms);
         }
@@ -158,18 +128,6 @@ class SettingController extends Controller
             $this->settingService->set('invoice_terms', $request->invoice_terms);
         }
 
-        if ($request->invoice_payment_instructions) {
-            $this->settingService->set('invoice_payment_instructions', $request->invoice_payment_instructions);
-        }
-
-        if ($request->purchase_order_terms) {
-            $this->settingService->set('purchase_order_terms', $request->purchase_order_terms);
-        }
-
-        if ($request->purchase_order_delivery_instructions) {
-            $this->settingService->set('purchase_order_delivery_instructions', $request->purchase_order_delivery_instructions);
-        }
-
         $this->settingService->set('date_format', $request->date_format);
         $this->settingService->set('time_format', $request->time_format);
 
@@ -179,8 +137,9 @@ class SettingController extends Controller
             } else {
                 $filePath = 'laravel-crm';
             }
+           
+            $file->move(public_path($filePath), $file->getClientOriginalName());
 
-            $file->move(storage_path('app/public/'.$filePath), $file->getClientOriginalName());
             $this->settingService->set('logo_file', $filePath.'/'.$file->getClientOriginalName());
             $this->settingService->set('logo_file_name', $file->getClientOriginalName());
         }

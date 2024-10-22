@@ -14,10 +14,10 @@
                     'route' => 'products'
                 ]) | 
                 @can('edit crm products')
-                <a href="{{ url(route('laravel-crm.products.edit', $product)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                <a href="#" onclick="loadContent('{{ url(route('laravel-crm.products.edit', $product)) }}')" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
                 @can('delete crm products')
-                <form action="{{ route('laravel-crm.products.destroy',$product) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                <form id="deleteProductForm_{{ $product->id }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deleteProductForm_{{ $product->id }}', '{{ route('laravel-crm.products.destroy', $product) }}', '{{ __('product deleted successfully!') }}', '{{ route('laravel-crm.products.index') }}')">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
@@ -36,10 +36,8 @@
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
-                    <dt class="col-sm-3 text-right">{{ strtoupper(__('laravel-crm::lang.sku')) }}</dt>
-                    <dd class="col-sm-9">{{ $product->code }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.barcode')) }}</dt>
-                    <dd class="col-sm-9">{{ $product->barcode }}</dd>
+                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.product_code')) }}</dt>
+                    <dd class="col-sm-9">{{ $product->code }}</dd> 
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.purchase_account')) }}</dt>
                     <dd class="col-sm-9">{{ $product->purchase_account }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.sales_account')) }}</dt>
@@ -61,9 +59,7 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">
-                        @if($product->ownerUser)<a href="{{ route('laravel-crm.users.show', $product->ownerUser) }}">{{ $product->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
-                    </dd>
+                    <dd class="col-sm-9">{{ $product->ownerUser->name }}</dd>
                 </dl>
             </div>
             <div class="col-sm-6">

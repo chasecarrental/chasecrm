@@ -8,15 +8,21 @@
 
         @slot('actions')
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.users.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_users')) }}</a> | 
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="javascript:void(0)" onclick="loadContent('{{ url(route('laravel-crm.users.index')) }}')">
+                    <span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_users')) }}
+                </a> | 
                 @can('edit crm users')
-                <a href="{{ url(route('laravel-crm.users.edit', $user)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                <a href="javascript:void(0)" onclick="loadContent('{{ url(route('laravel-crm.users.edit', $user)) }}')" type="button" class="btn btn-outline-secondary btn-sm">
+                    <span class="fa fa-edit" aria-hidden="true"></span>
+                </a>
                 @endcan
                 @can('delete crm users')
-                <form action="{{ route('laravel-crm.users.destroy',$user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                <form action="{{ route('laravel-crm.users.destroy', $user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                      {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.user') }}" {{ (auth()->user()->id == $user->id) ? 'disabled' : null }}><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.user') }}" {{ (auth()->user()->id == $user->id) ? 'disabled' : null }}>
+                        <span class="fa fa-trash-o" aria-hidden="true"></span>
+                    </button>
                 </form>
                 @endcan    
             </span>
@@ -62,4 +68,4 @@
         
     @endcomponent
 
-@endcomponent    
+@endcomponent

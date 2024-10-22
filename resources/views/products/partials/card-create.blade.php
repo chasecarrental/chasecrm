@@ -1,4 +1,4 @@
-<form method="POST" action="{{ url(route('laravel-crm.products.store')) }}">
+<form id="productForm" method="POST" action="{{ url(route('laravel-crm.products.store')) }}" onsubmit="submitFormCrm(event, 'productForm', '{{ url(route('laravel-crm.products.store')) }}', '¡Se ha guardado correctamente el producto!', '{{ route('laravel-crm.products.show', $product ?? 1) }}')">
     @csrf
     @component('laravel-crm::components.card')
 
@@ -24,7 +24,7 @@
         @endcomponent
         
         @component('laravel-crm::components.card-footer')
-                <a href="{{ url(route('laravel-crm.products.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+                <a href="#" onclick="loadContent('{{ url(route('laravel-crm.products.index')) }}')" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
                 <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
         @endcomponent
         

@@ -1,4 +1,6 @@
-<form method="POST" action="{{ url(route('laravel-crm.people.update', $person)) }}">
+<form method="POST" id="personForm" action="{{ url(route('laravel-crm.people.update', $person)) }}" 
+onsubmit="submitFormCrm(event, 'personForm', '{{ url(route('laravel-crm.people.update', $person)) }}', 
+'¡Se ha editado correctamente la persona!', '{{ route('laravel-crm.people.show', $person ?? 1) }}')">
     @csrf
     @method('PUT')
     @component('laravel-crm::components.card')
@@ -25,7 +27,7 @@
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-                <a href="{{ url(route('laravel-crm.people.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+                <a href="#" onclick="loadContent('{{ url(route('laravel-crm.people.index')) }}')" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
                 <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
         @endcomponent
 

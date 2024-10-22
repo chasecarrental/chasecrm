@@ -8,12 +8,18 @@
 
         @slot('actions')
             <span class="float-right">
-                <a type="button" class="btn btn-outline-secondary btn-sm" href="{{ url(route('laravel-crm.teams.index')) }}"><span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_teams')) }}</a> | 
-                <a href="{{ url(route('laravel-crm.teams.edit', $team)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
-                <form action="{{ route('laravel-crm.teams.destroy',$team) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                <a type="button" class="btn btn-outline-secondary btn-sm" href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.teams.index') }}')">
+                    <span class="fa fa-angle-double-left"></span> {{ ucfirst(__('laravel-crm::lang.back_to_teams')) }}
+                </a> | 
+                <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.teams.edit', $team) }}')" type="button" class="btn btn-outline-secondary btn-sm">
+                    <span class="fa fa-edit" aria-hidden="true"></span>
+                </a>
+                <form id="deleteTeamForm_{{ $team->id }}" action="{{ route('laravel-crm.teams.destroy', $team) }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deleteTeamForm_{{ $team->id }}', '{{ route('laravel-crm.teams.destroy', $team) }}', '{{ __('Team eliminado exitosamente') }}', '{{ route('laravel-crm.teams.index') }}')">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
-                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.team') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                    <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.team') }}">
+                        <span class="fa fa-trash-o" aria-hidden="true"></span>
+                    </button>
                 </form>
             </span>
         @endslot
@@ -32,9 +38,9 @@
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.created_by')) }}</dt>
                     <dd class="col-sm-9">{{ $team->userCreated->name }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.created')) }}</dt>
-                    <dd class="col-sm-9">{{ $team->created_at->format($dateFormat)}}</dd>
+                    <dd class="col-sm-9">{{ $team->created_at->format($dateFormat) }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.updated')) }}</dt>
-                    <dd class="col-sm-9">{{ $team->updated_at->format($dateFormat)}}</dd>
+                    <dd class="col-sm-9">{{ $team->updated_at->format($dateFormat) }}</dd>
                 </dl>
                 <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.users')) }} ({{ $team->users->count() }})</span></h6>
                 <hr />
@@ -45,10 +51,10 @@
             <div class="col-sm-6">
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.activities')) }}</h6>
                 <hr />
-                ...
+                <!-- Contenido de las actividades -->
             </div>
         </div>
-        
+
     @endcomponent
 
-@endcomponent    
+@endcomponent

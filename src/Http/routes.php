@@ -92,14 +92,6 @@ Route::group(['prefix' => 'leads','middleware' => 'auth.laravel-crm'], function 
         ->name('laravel-crm.leads.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
 
-    Route::get('list', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@list')
-        ->name('laravel-crm.leads.list')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
-
-    Route::get('board', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@board')
-        ->name('laravel-crm.leads.board')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Lead']);
-
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\LeadController@create')
         ->name('laravel-crm.leads.create')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Lead']);
@@ -149,14 +141,6 @@ Route::group(['prefix' => 'deals', 'middleware' => 'auth.laravel-crm'], function
 
     Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@index')
         ->name('laravel-crm.deals.index')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
-
-    Route::get('list', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@list')
-        ->name('laravel-crm.deals.list')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
-
-    Route::get('board', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@board')
-        ->name('laravel-crm.deals.board')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Deal']);
 
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\DealController@create')
@@ -236,14 +220,6 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
         ->name('laravel-crm.quotes.index')
         ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
 
-    Route::get('list', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@list')
-        ->name('laravel-crm.quotes.list')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
-
-    Route::get('board', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@board')
-        ->name('laravel-crm.quotes.board')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Quote']);
-
     Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@create')
         ->name('laravel-crm.quotes.create')
         ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Quote']);
@@ -278,10 +254,6 @@ Route::group(['prefix' => 'quotes', 'middleware' => 'auth.laravel-crm'], functio
 
     Route::get('{quote}/unaccept', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@unaccept')
         ->name('laravel-crm.quotes.unaccept')
-        ->middleware(['can:update,quote']);
-
-    Route::get('{quote}/unreject', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@unreject')
-        ->name('laravel-crm.quotes.unreject')
         ->middleware(['can:update,quote']);
 
     Route::post('{quote}/send', 'VentureDrake\LaravelCrm\Http\Controllers\QuoteController@send')
@@ -438,8 +410,12 @@ Route::group(['prefix' => 'invoices', 'middleware' => 'auth.laravel-crm'], funct
         ->name('laravel-crm.invoices.pay')
         ->middleware(['can:update,invoice']);
 
-    Route::get('{invoice}/download', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@download')
+    Route::get('{invoice}/download', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@download_show')
         ->name('laravel-crm.invoices.download')
+        ->middleware(['can:view,invoice']);
+
+    Route::post('{invoice}/duplicate', 'VentureDrake\LaravelCrm\Http\Controllers\InvoiceController@duplicate')
+        ->name('laravel-crm.invoices.duplicate')
         ->middleware(['can:view,invoice']);
 });
 
@@ -485,58 +461,6 @@ Route::group(['prefix' => 'deliveries', 'middleware' => 'auth.laravel-crm'], fun
     Route::get('{delivery}/download', 'VentureDrake\LaravelCrm\Http\Controllers\DeliveryController@download')
         ->name('laravel-crm.deliveries.download')
         ->middleware(['can:view,delivery']);
-});
-
-/* Purchase Orders */
-
-Route::group(['prefix' => 'purchase-orders', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::any('filter', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@index')
-        ->name('laravel-crm.purchase-orders.filter')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
-
-    Route::any('search', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@search')
-        ->name('laravel-crm.purchase-orders.search')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
-
-    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@index')
-        ->name('laravel-crm.purchase-orders.index')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
-
-    Route::get('create/{model?}/{id?}', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@create')
-        ->name('laravel-crm.purchase-orders.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
-
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@store')
-        ->name('laravel-crm.purchase-orders.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
-
-    Route::get('{purchaseOrder}', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@show')
-        ->name('laravel-crm.purchase-orders.show')
-        ->middleware(['can:view,purchaseOrder']);
-
-    Route::get('{purchaseOrder}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@edit')
-        ->name('laravel-crm.purchase-orders.edit')
-        ->middleware(['can:update,purchaseOrder']);
-
-    Route::put('{purchaseOrder}', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@update')
-        ->name('laravel-crm.purchase-orders.update')
-        ->middleware(['can:update,purchaseOrder']);
-
-    Route::delete('{purchaseOrder}', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@destroy')
-        ->name('laravel-crm.purchase-orders.destroy')
-        ->middleware(['can:delete,purchaseOrder']);
-
-    Route::post('{purchaseOrder}/send', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@send')
-        ->name('laravel-crm.purchase-orders.send')
-        ->middleware(['can:update,purchaseOrder']);
-
-    Route::get('{purchaseOrder}/download', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@download')
-        ->name('laravel-crm.purchase-orders.download')
-        ->middleware(['can:view,purchaseOrder']);
-
-    Route::post('multiple', 'VentureDrake\LaravelCrm\Http\Controllers\PurchaseOrderController@storeMultiple')
-        ->name('laravel-crm.purchase-orders.store-multiple')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PurchaseOrder']);
 });
 
 /* Activities */
@@ -1183,68 +1107,6 @@ Route::group(['prefix' => 'roles', 'middleware' => 'auth.laravel-crm'], function
     Route::delete('{role}', 'VentureDrake\LaravelCrm\Http\Controllers\RoleController@destroy')
         ->name('laravel-crm.roles.destroy')
         ->middleware(['can:delete,role']);
-});
-
-/* Pipelines */
-Route::group(['prefix' => 'pipelines', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@index')
-        ->name('laravel-crm.pipelines.index')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\Pipeline']);
-
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@create')
-        ->name('laravel-crm.pipelines.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Pipeline']);
-
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@store')
-        ->name('laravel-crm.pipelines.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\Pipeline']);
-
-    Route::get('{pipeline}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@show')
-        ->name('laravel-crm.pipelines.show')
-        ->middleware(['can:view,pipeline']);
-
-    Route::get('{pipeline}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@edit')
-        ->name('laravel-crm.pipelines.edit')
-        ->middleware(['can:update,pipeline']);
-
-    Route::put('{pipeline}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@update')
-        ->name('laravel-crm.pipelines.update')
-        ->middleware(['can:update,pipeline']);
-
-    Route::delete('{pipeline}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineController@destroy')
-        ->name('laravel-crm.pipelines.destroy')
-        ->middleware(['can:delete,pipeline']);
-});
-
-/* Pipeline Stages */
-Route::group(['prefix' => 'pipeline-stages', 'middleware' => 'auth.laravel-crm'], function () {
-    Route::get('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@index')
-        ->name('laravel-crm.pipeline-stages.index')
-        ->middleware(['can:viewAny,VentureDrake\LaravelCrm\Models\PipelineStage']);
-
-    Route::get('create', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@create')
-        ->name('laravel-crm.pipeline-stages.create')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PipelineStage']);
-
-    Route::post('', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@store')
-        ->name('laravel-crm.pipeline-stages.store')
-        ->middleware(['can:create,VentureDrake\LaravelCrm\Models\PipelineStage']);
-
-    Route::get('{pipelineStage}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@show')
-        ->name('laravel-crm.pipeline-stages.show')
-        ->middleware(['can:view,pipelineStage']);
-
-    Route::get('{pipelineStage}/edit', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@edit')
-        ->name('laravel-crm.pipeline-stages.edit')
-        ->middleware(['can:update,pipelineStage']);
-
-    Route::put('{pipelineStage}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@update')
-        ->name('laravel-crm.pipeline-stages.update')
-        ->middleware(['can:update,pipelineStage']);
-
-    Route::delete('{pipelineStage}', 'VentureDrake\LaravelCrm\Http\Controllers\PipelineStageController@destroy')
-        ->name('laravel-crm.pipeline-stages.destroy')
-        ->middleware(['can:delete,pipelineStage']);
 });
 
 /* Labels */

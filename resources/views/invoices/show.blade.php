@@ -1,7 +1,15 @@
-@extends('laravel-crm::layouts.app')
 
-@section('content')
+@include('laravel-crm::layouts.partials.meta')
+
+    @include('laravel-crm::styles') 
+
+
+
 
     @include('laravel-crm::invoices.partials.card-show')
 
-@endsection
+
+
+
+    @include('laravel-crm::codification') 
+

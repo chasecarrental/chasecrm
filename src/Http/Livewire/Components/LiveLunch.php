@@ -96,7 +96,7 @@ class LiveLunch extends Component
         }
 
         $this->toggleEditMode();
-        $this->emit('refreshComponent');
+        $this->dispatch('refreshComponent');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.lunch_updated'))
         );
@@ -106,7 +106,7 @@ class LiveLunch extends Component
     {
         $this->lunch->delete();
 
-        $this->emit('lunchDeleted');
+        $this->dispatch('lunchDeleted');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.lunch_deleted'))
         );
@@ -116,7 +116,7 @@ class LiveLunch extends Component
     {
         $this->editMode = ! $this->editMode;
 
-        $this->dispatchBrowserEvent('lunchEditModeToggled');
+        $this->dispatch('lunchEditModeToggled');
     }
 
     public function render()

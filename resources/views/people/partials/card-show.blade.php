@@ -16,30 +16,30 @@
                 ]) | 
                 @hasleadsenabled
                 @can('create crm leads')
-                    <a href="{{ route('laravel-crm.leads.create', ['model' => 'person', 'id' => $person->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.leads.create', ['model' => 'person', 'id' => $person->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
                 @endcan
                 @endhasleadsenabled
                 @hasdealsenabled
                 @can('create crm deals')
-                    <a href="{{ route('laravel-crm.deals.create', ['model' => 'person', 'id' => $person->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.deals.create', ['model' => 'person', 'id' => $person->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
                 @endcan
                 @endhasdealsenabled
                 @hasquotesenabled
                 @can('create crm quotes')
-                    <a href="{{ route('laravel-crm.quotes.create', ['model' => 'person', 'id' => $person->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.quotes.create', ['model' => 'person', 'id' => $person->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
                 @endcan
                 @endhasquotesenabled
                 @hasordersenabled
                 @can('create crm orders')
-                    <a href="{{ route('laravel-crm.orders.create', ['model' => 'person', 'id' => $person->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.orders.create', ['model' => 'person', 'id' => $person->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
                 @endcan
                 @endhasordersenabled
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm people')
-                <a href="{{ url(route('laravel-crm.people.edit', $person)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                <a href="#" onclick="loadContent('{{ url(route('laravel-crm.people.edit', $person)) }}')" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
                 @can('delete crm people')
-                <form action="{{ route('laravel-crm.people.destroy',$person) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                <form id="deletePersonForm_{{ $person->id }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deletePersonForm_{{ $person->id }}', '{{ route('laravel-crm.people.destroy', $person) }}', '{{ __('Person deleted successfully!') }}', '{{ route('laravel-crm.people.index') }}')">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.person') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
@@ -92,9 +92,7 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">
-                        @if($person->ownerUser)<a href="{{ route('laravel-crm.users.show', $person->ownerUser) }}">{{ $person->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
-                    </dd>
+                    <dd class="col-sm-9"><a href="#" onclick="loadContent('{{ route('laravel-crm.users.show', $person->ownerUser) }}')">{{ $person->ownerUser->name }}</a></dd>
                 </dl>
                 @livewire('related-contact-people',[
                     'model' => $person
@@ -103,7 +101,7 @@
                     'model' => $person
                 ])
                 @can('view crm deals')
-                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $person->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="{{ url(route('laravel-crm.deals.create',['model' => 'person', 'id' => $person->id])) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
+                    <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.deals')) }} ({{ $person->deals->count() }})</span>@can('create crm deals')<span class="float-right"><a href="#" onclick="loadContent('{{ url(route('laravel-crm.deals.create',['model' => 'person', 'id' => $person->id])) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
                     <hr />
                     @foreach($person->deals as $deal)
                         <p>{{ $deal->title }}<br />

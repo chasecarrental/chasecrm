@@ -1,9 +1,9 @@
 <div>
     @can('view crm contacts')
-        <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.people')) }} ({{ $contacts->count() }})</span>@can('create crm contacts') @if($actions) <span class="float-right"><a href="#" data-toggle="modal" data-target="#linkPersonModal" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span> @endif @endcan</h6>
+        <h6 class="text-uppercase mt-4 section-h6-title"><span>{{ ucfirst(__('laravel-crm::lang.people')) }} ({{ $contacts->count() }})</span>@can('create crm contacts')<span class="float-right"><a href="#" data-toggle="modal" data-target="#linkPersonModal" class="btn btn-outline-secondary btn-sm"><span class="fa fa-plus" aria-hidden="true"></span></a></span>@endcan</h6>
         <hr />
         @foreach($contacts as $contact)
-            <p><span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show',$contact->entityable) }}">{{ $contact->entityable->name }}</a> @if($actions) <span class="float-right"><button wire:click.prevent="remove({{ $contact->entityable->id }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button></span> @endif</p>
+            <p><span class="fa fa-user mr-1" aria-hidden="true"></span> <a href="{{ route('laravel-crm.people.show',$contact->entityable) }}">{{ $contact->entityable->name }}</a> <span class="float-right"><button wire:click.prevent="remove({{ $contact->entityable->id }})" type="button" class="btn btn-outline-danger btn-sm"><span class="fa fa-remove"></span></button></span></p>
         @endforeach
 
         <!-- Modal -->
@@ -16,14 +16,14 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form wire:submit.prevent="link">
+                    <form wire:submit="link">
                         <div class="modal-body autocomplete">
                             @include('laravel-crm::partials.form.hidden',[
                               'name' => 'person_id',
                               'value' => null,
                            ])
                             <script type="text/javascript">
-                                let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
+                                 people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
                             </script>
                             <div class="form-group @error('person_name') text-danger @enderror">
                                 <label>{{ ucfirst(__('laravel-crm::lang.person_name')) }}</label>

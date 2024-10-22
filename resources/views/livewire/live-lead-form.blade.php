@@ -1,4 +1,10 @@
 <div>
+    <script type="text/javascript">
+         clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clients() !!}
+    </script>
+    <script type="text/javascript">
+         organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
+    </script>
     <span class="autocomplete">
         @include('laravel-crm::partials.form.hidden',[
             'name' => 'client_id',
@@ -6,9 +12,7 @@
                 'wire:model' => 'client_id'        
             ]   
         ])
-        <script type="text/javascript">
-            let clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clients() !!}
-        </script>
+       
         <span wire:ignore>
             @include('laravel-crm::partials.form.text',[
                 'name' => 'client_name',
@@ -44,9 +48,7 @@
                     'wire:model' => 'organisation_id'        
                 ]   
             ])
-            <script type="text/javascript">
-                let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
-            </script>
+          
             <span wire:ignore>
                 @include('laravel-crm::partials.form.text',[
                     'name' => 'organisation_name',
@@ -59,6 +61,59 @@
                    'required' => 'true'
                 ])      
             </span>
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    // Asumiendo que el ID de tu input es 'input_organisation_name'
+                    $("#input_organisation_name").on('blur', function() {
+                        // Obtiene el valor ingresado por el usuario
+                        var nombreOrganizacionIngresado = $(this).val().trim();
+            
+                        // Verifica si el nombre ingresado existe en los nombres de las organizaciones
+                        // Asume que 'organisations' es un objeto donde las claves son nombres de organización
+                        var existe = Object.keys(organisations).includes(nombreOrganizacionIngresado);
+            
+                        if (existe) {
+                            console.log("La organización existe.");
+                            var orgId = organisations[nombreOrganizacionIngresado];
+                        
+                            // Simula la selección de la organización
+                            // Asumiendo que tienes una función onSelectOrganisation que maneja la selección
+                            simulateOrganisationSelection(orgId);
+
+                            // Adicionalmente, si necesitas realizar acciones como si el usuario hubiera elegido la organización...
+                            
+                          
+                        } else {
+                            console.log("La organización no existe o no ha sido seleccionada correctamente.");
+                          
+                        }
+                    });
+                    function simulateOrganisationSelection(orgId) {
+                     
+                        // Establece el valor de 'organisation_id' basado en el ID de la organización encontrada
+                        $('input[name="organisation_id"]').val(orgId).trigger('change');
+
+                        // Aquí podrías agregar más lógica, como deshabilitar campos si es necesario
+                        $('.autocomplete-organisation').find('input, select').attr('disabled', 'disabled');
+                        $('.autocomplete-organisation').find('.autocomplete-new').hide();
+
+                        // Simular la obtención y muestra de información adicional de la organización mediante AJAX
+                        $.ajax({
+                            url: '/crm/organisations/' + orgId + '/autocomplete', // Asegúrate de ajustar esta URL a tu API real
+                            cache: false
+                        }).done(function(data) {
+                            // Actualiza los campos con la información de la organización obtenida
+                            // Asegúrate de que los nombres de los campos aquí coincidan con los tuyos
+                            $('.autocomplete-organisation').find('input[name="line1"]').val(data.address_line1);
+                            $('.autocomplete-organisation').find('input[name="line2"]').val(data.address_line2);
+                            // Continúa actualizando otros campos según sea necesario...
+                        }).fail(function() {
+                            console.log("Error al recuperar información de la organización");
+                        });
+                    }
+                    
+                });
+            </script>   
         </span>
         
     @endif
@@ -86,7 +141,7 @@
                 ]   
             ])
            <script type="text/javascript">
-            let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
+             people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
            </script>
             <span wire:ignore>
              @include('laravel-crm::partials.form.text',[
@@ -116,6 +171,7 @@
     @push('livewire-js')
         <script>
             $(document).ready(function () {
+              
                 bindClientAutocomplete();
                 bindPersonAutocomplete();
                 bindOrganisationAutocomplete();
@@ -168,12 +224,20 @@
                     $('input[name="client_name"]').autocomplete({
                         source: clients,
                         onSelectItem: function (item, element) {
-                            @this.set('client_id',item.value);
-                            @this.set('client_name',item.label);
-                            @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
-                            @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
-                            @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
-                            $(element).closest('.autocomplete').find('input[name="client_id"]').val(item.value).trigger('change');
+                            if(item){
+                                @this.set('client_id',item.value);
+                                @this.set('client_name',item.label);
+                            }
+                            if(element){
+                                @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
+                                @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
+                                @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
+                                $(element).closest('.autocomplete').find('input[name="client_id"]').val(item.value).trigger('change');
+                                // Cierra las sugerencias de autocompletado
+                                $(element).autocomplete('close');
+                            }
+                           
+                            
                         },
                         highlightClass: 'text-danger',
                         treshold: 2,
@@ -216,7 +280,8 @@
                             @this.set('organisation_id', $(element).closest('form').find("input[name='organisation_id']").val());
 
                             $(element).closest('.autocomplete').find('input[name="person_id"]').val(item.value).trigger('change');
-
+                            // Cierra las sugerencias de autocompletado
+                            $(element).autocomplete('close');
                             $.ajax({
                                 url: "/crm/people/" +  item.value + "/autocomplete",
                                 cache: false
@@ -261,15 +326,20 @@
                 }
 
                 function bindOrganisationAutocomplete(){
+                    
                     $('input[name="organisation_name"]').autocomplete({
                         source: organisations,
                         onSelectItem: function (item, element) {
+                            console.log(window.livewire);
+                            
                             @this.set('person_id', $(element).closest('form').find("input[name='person_id']").val());
                             @this.set('person_name', $(element).closest('form').find("input[name='person_name']").val());
                             @this.set('organisation_id', item.value);
-
+                            
+                            $(element).autocomplete('close');
                             $(element).closest('.autocomplete').find('input[name="organisation_id"]').val(item.value).trigger('change');
-
+                             // Cierra las sugerencias de autocompletado
+                            
                             $.ajax({
                                 url: "/crm/organisations/" +  item.value + "/autocomplete",
                                 cache: false
@@ -296,14 +366,22 @@
                     });
 
                     $('input[name="organisation_id"]').on('change', function() {
-                        if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="organisation_name"]').val()) != ''){
-                            $(this).closest('.autocomplete').find(".autocomplete-new").show()
-                            $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
-                        }else{
-                            $(this).closest('.autocomplete').find(".autocomplete-new").hide()
-                            $('.autocomplete-organisation').find('input,select').attr('disabled','disabled');
+                       
+                        if($(this).val()){
+                            if($(this).val() == '' && $.trim($(this).closest('.autocomplete').find('input[name="organisation_name"]').val()) != ''){
+                               
+                                $(this).closest('.autocomplete').find(".autocomplete-new").show()
+                                $('.autocomplete-organisation').find('input,select').removeAttr('disabled');
+                            }else{
+                            
+                                $(this).closest('.autocomplete').find(".autocomplete-new").hide()
+                                $('.autocomplete-organisation').find('input,select').attr('disabled','disabled');
+                            }
+                           
+                            @this.set('organisation_id',$(this).val(),true);
                         }
-                        @this.set('organisation_id',$(this).val());
+                       
+                       
                     });
 
                     if($('input[name="organisation_id"]').val() == '' && $.trim($('input[name="organisation_id"]').closest('.autocomplete').find('input[name="organisation_name"]').val()) != ''){

@@ -10,7 +10,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <x-form wire:submit.prevent="send">
+                    <x-form wire:submit="send">
                         <div class="modal-body text-left">
                             <x-form-input wire:model="to" name="to" label="To" />
                             <x-form-input wire:model="subject" name="subject" label="Subject" />

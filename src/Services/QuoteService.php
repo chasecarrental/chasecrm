@@ -2,12 +2,10 @@
 
 namespace VentureDrake\LaravelCrm\Services;
 
-use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Models\QuoteProduct;
 use VentureDrake\LaravelCrm\Models\Setting;
-use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Repositories\QuoteRepository;
 
 class QuoteService
@@ -46,8 +44,6 @@ class QuoteService
             'adjustments' => $request->adjustment,
             'total' => $request->total,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
-            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
         $quote->labels()->sync($request->labels ?? []);
@@ -67,8 +63,6 @@ class QuoteService
                             $taxRate = $productForTax->taxRate->rate;
                         } elseif($productForTax->tax_rate) {
                             $taxRate = $productForTax->tax_rate;
-                        } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                            $taxRate = $taxRate->rate;
                         } else {
                             $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                         }
@@ -110,8 +104,6 @@ class QuoteService
             'adjustments' => $request->adjustment,
             'total' => $request->total,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
-            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
         $quote->labels()->sync($request->labels ?? []);
@@ -135,8 +127,6 @@ class QuoteService
                                     $taxRate = $productForTax->taxRate->rate;
                                 } elseif($productForTax->tax_rate) {
                                     $taxRate = $productForTax->tax_rate;
-                                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                                    $taxRate = $taxRate->rate;
                                 } else {
                                     $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                                 }
@@ -168,8 +158,6 @@ class QuoteService
                                 $taxRate = $productForTax->taxRate->rate;
                             } elseif($productForTax->tax_rate) {
                                 $taxRate = $productForTax->tax_rate;
-                            } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                                $taxRate = $taxRate->rate;
                             } else {
                                 $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                             }
@@ -205,6 +193,7 @@ class QuoteService
     {
         $newProduct = Product::create([
             'name' => $product['product_id'],
+            'tax_rate' => Setting::where('name', 'tax_rate')->first()->value ?? null,
             'user_owner_id' => $request->user_owner_id,
         ]);
 

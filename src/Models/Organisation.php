@@ -9,12 +9,12 @@ use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasCrmUserRelations;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
-use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
+//use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Organisation extends Model
 {
     use SoftDeletes;
-    use LaravelEncryptableTrait;
+    //use LaravelEncryptableTrait;
     use BelongsToTeams;
     use HasCrmFields;
     use SearchFilters;
@@ -54,24 +54,6 @@ class Organisation extends Model
         return config('laravel-crm.db_table_prefix').'organisations';
     }
 
-    public function setAnnualRevenueAttribute($value)
-    {
-        if (isset($value)) {
-            $this->attributes['annual_revenue'] = $value * 100;
-        } else {
-            $this->attributes['annual_revenue'] = null;
-        }
-    }
-
-    public function setTotalMoneyRaisedAttribute($value)
-    {
-        if (isset($value)) {
-            $this->attributes['total_money_raised'] = $value * 100;
-        } else {
-            $this->attributes['total_money_raised'] = null;
-        }
-    }
-
     public function people()
     {
         return $this->hasMany(\VentureDrake\LaravelCrm\Models\Person::class);
@@ -88,6 +70,11 @@ class Organisation extends Model
     public function getPrimaryEmail()
     {
         return $this->emails()->where('primary', 1)->first();
+    }
+
+    public function getEmail()
+    {
+        return $this->emails()->first();
     }
 
     /**
@@ -157,10 +144,5 @@ class Organisation extends Model
     public function client()
     {
         return $this->morphOne(\VentureDrake\LaravelCrm\Models\Client::class, 'clientable');
-    }
-
-    public function timezone()
-    {
-        return $this->belongsTo(\VentureDrake\LaravelCrm\Models\Timezone::class);
     }
 }

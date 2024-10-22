@@ -10,25 +10,19 @@
             <div class="col-sm-6">
                 @include('laravel-crm::partials.form.text',[
                    'name' => 'code',
-                   'label' => strtoupper(__('laravel-crm::lang.sku')) . ' (Stock Keeping Unit)',
+                   'label' => ucfirst(__('laravel-crm::lang.product_code')),
                    'value' => old('code', $product->code ?? null)
                ])
             </div>
-            <div class="col-sm-6"> 
-                @include('laravel-crm::partials.form.text',[
-                   'name' => 'barcode',
-                   'label' => ucwords(__('laravel-crm::lang.barcode')) . ' (ISBN, UPC, GTIN, etc)',
-                   'value' => old('code', $product->code ?? null)
-               ])
-            </div>
-        </div>
-
-        @include('laravel-crm::partials.form.select',[
+            <div class="col-sm-6">
+                @include('laravel-crm::partials.form.select',[
                    'name' => 'product_category',
                    'label' => ucfirst(__('laravel-crm::lang.category')),
                    'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\ProductCategory::all(), true),
                    'value' => old('product_category', $product->productCategory->id ?? null)
                 ])
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-sm-6">
@@ -88,14 +82,11 @@
                 @include('laravel-crm::partials.form.select',[
                 'name' => 'user_owner_id',
                 'label' => ucfirst(__('laravel-crm::lang.owner')),
-                'options' => ['' => ucfirst(__('laravel-crm::lang.unallocated'))] + \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-                'value' =>  old('user_owner_id', (isset($product)) ? $product->user_owner_id ?? '' : auth()->user()->id),
+                'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+                'value' =>  old('user_owner_id', $product->user_owner_id ?? auth()->user()->id),
              ])
             </div>
         </div>
-
-        @include('laravel-crm::fields.partials.model', ['model' => $product ?? new \VentureDrake\LaravelCrm\Models\Product()])
-
-
+       
     </div>
 </div>

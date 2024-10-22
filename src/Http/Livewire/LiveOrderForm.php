@@ -46,7 +46,7 @@ class LiveOrderForm extends Component
 
             $this->clientHasPeople = false;
 
-            $this->dispatchBrowserEvent('clientNameUpdated');
+            $this->dispatch('clientNameUpdated');
         }
     }
 
@@ -54,7 +54,7 @@ class LiveOrderForm extends Component
     {
         if ($organisation = Organisation::find($value)) {
             $this->organisation_name = $organisation->name;
-            $this->emit('orderOrganisationSelected', [
+            $this->dispatch('orderOrganisationSelected', [
                 'id' => $this->organisation_id,
             ]);
         }

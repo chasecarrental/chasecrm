@@ -15,19 +15,6 @@ function subTotal($model)
     }
 }
 
-function tax($model)
-{
-    $total = 0;
-
-    foreach (\VentureDrake\LaravelCrm\Http\Helpers\CheckAmount\getItems($model) as $item) {
-        $total += $item->tax_amount;
-    }
-
-    if ($model->tax == $total) {
-        return true;
-    }
-}
-
 function total($model)
 {
     $total = 0;

@@ -164,7 +164,6 @@
                                     <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
                                     <th scope="col">{{ $taxName }}</th>
                                     <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
-                                    <th scope="col">{{ ucfirst(__('laravel-crm::lang.comments')) }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -175,7 +174,6 @@
                                         <td>{{ $invoiceLine->quantity }}</td>
                                         <td>{{ money($invoiceLine->tax_amount ?? null, $invoiceLine->currency) }}</td>
                                         <td>{{ money($invoiceLine->amount ?? null, $invoiceLine->currency) }}</td>
-                                        <td>{{ $invoiceLine->comments }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -186,7 +184,6 @@
                                     <td></td>
                                     <td><strong>{{ ucfirst(__('laravel-crm::lang.sub_total')) }}</strong></td>
                                     <td>{{ money($invoice->subtotal, $invoice->currency) }}</td>
-                                    <td></td>
                                 </tr>
                                 @if($invoice->discount > 0)
                                 <tr>
@@ -195,7 +192,6 @@
                                     <td></td>
                                     <td><strong>{{ ucfirst(__('laravel-crm::lang.discount')) }}</strong></td>
                                     <td>{{ money($invoice->discount, $invoice->currency) }}</td>
-                                    <td></td>
                                 </tr>
                                 @endif
                                 <tr>
@@ -204,7 +200,6 @@
                                     <td></td>
                                     <td><strong>{{ $taxName }}</strong></td>
                                     <td>{{ money($invoice->tax, $invoice->currency) }}</td>
-                                    <td></td>
                                 </tr>
                                 {{--<tr>
                                     <td></td>
@@ -212,7 +207,6 @@
                                     <td></td>
                                     <td><strong>{{ ucfirst(__('laravel-crm::lang.adjustment')) }}</strong></td>
                                     <td>{{ money($invoice->adjustments, $invoice->currency) }}</td>
-                                     <td></td>
                                 </tr>--}}
                                 <tr>
                                     <td></td>
@@ -220,29 +214,18 @@
                                     <td></td>
                                     <td><strong>{{ ucfirst(__('laravel-crm::lang.total')) }}</strong></td>
                                     <td>{{ money($invoice->total, $invoice->currency) }}</td>
-                                    <td></td>
                                 </tr>
                                 </tfoot>
                             </table>
                         </div>
                     </div>
                     <hr class="m-0" />
-                    @if($paymentInstructions)
-                        <div class="row py-1">
-                            <div class="col px-5 py-4">
-                                <h5>{{ ucfirst(__('laravel-crm::lang.payment')) }}</h5>
-                                {!! nl2br($paymentInstructions) !!}
-                            </div>
+                    <div class="row py-1">
+                        <div class="col px-5 py-4">
+                            <h5>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h5>
+                            {!! nl2br($invoice->terms) !!}
                         </div>
-                    @endif
-                    @if($invoice->terms)
-                        <div class="row py-1">
-                            <div class="col px-5 py-4">
-                                <h5>{{ ucfirst(__('laravel-crm::lang.terms')) }}</h5>
-                                {!! nl2br($invoice->terms) !!}
-                            </div>
-                        </div>
-                    @endif
+                    </div>
                 </div>  
             </div>
         </div>

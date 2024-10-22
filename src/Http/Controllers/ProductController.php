@@ -64,7 +64,8 @@ class ProductController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.product_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.products.index'));
+        //return redirect(route('laravel-crm.products.index'));
+        return response()->json(["response"=>true, 'product' => $product]);
     }
 
     /**
@@ -106,7 +107,8 @@ class ProductController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.product_updated')))->success()->important();
 
-        return redirect(route('laravel-crm.products.show', $product));
+        //return redirect(route('laravel-crm.products.show', $product));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -121,7 +123,8 @@ class ProductController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.product_deleted')))->success()->important();
 
-        return redirect(route('laravel-crm.products.index'));
+        //return redirect(route('laravel-crm.products.index'));
+        return response()->json(["response"=>true]);
     }
 
     public function search(Request $request)
@@ -129,7 +132,8 @@ class ProductController extends Controller
         $searchValue = Product::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            return redirect(route('laravel-crm.products.index'));
+            //return redirect(route('laravel-crm.products.index'));
+            return response()->json(["response"=>true]);
         }
 
         $products = Product::all()->filter(function ($record) use ($searchValue) {

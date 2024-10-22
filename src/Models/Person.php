@@ -10,12 +10,12 @@ use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasGlobalSettings;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
-use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
+//use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Person extends Model
 {
     use SoftDeletes;
-    use LaravelEncryptableTrait;
+    //use LaravelEncryptableTrait;
     use BelongsToTeams;
     use HasCrmFields;
     use SearchFilters;
@@ -31,6 +31,12 @@ class Person extends Model
         'middle_name',
         'last_name',
         'maiden_name',
+        'document_national',
+        'document_passport' ,
+        'document_driving_license', 
+        'document_national_country',  
+        'document_passport_country',  
+        'document_driving_license_country',  
     ];
 
     protected $searchable = [
@@ -38,6 +44,18 @@ class Person extends Model
         'middle_name',
         'last_name',
         'maiden_name',
+        'document_national',
+        'document_passport' ,
+        'document_driving_license', 
+        'document_national_country',  
+        'document_passport_country',  
+        'document_driving_license_country',  
+        'document_national_issued' ,
+        'document_passport_issued', 
+        'document_driving_license_issued' ,
+        'document_national_expiration' ,
+        'document_passport_expiration' ,
+        'document_driving_license_expiration'
     ];
 
     protected $filterable = [
@@ -49,6 +67,18 @@ class Person extends Model
         'id',
         'first_name',
         'last_name',
+        'document_national',
+        'document_passport' ,
+        'document_driving_license', 
+        'document_national_country',  
+        'document_passport_country',  
+        'document_driving_license_country',  
+        'document_national_issued' ,
+        'document_passport_issued', 
+        'document_driving_license_issued' ,
+        'document_national_expiration' ,
+        'document_passport_expiration' ,
+        'document_driving_license_expiration',
         'created_at',
         'updated_at',
     ];
@@ -70,17 +100,100 @@ class Person extends Model
 
     public function setBirthdayAttribute($value)
     {
+       
         if ($value) {
-            $this->attributes['birthday'] = Carbon::createFromFormat($this->dateFormat(), $this->decryptField($value));
+            $this->attributes['birthday'] = Carbon::createFromFormat($this->dateFormat(), $value);
         }
     }
 
     public function getBirthdayAttribute($value)
     {
         if ($value) {
-            return Carbon::parse($this->decryptField($value))->format($this->dateFormat());
+            return Carbon::parse($value)->format($this->dateFormat());
         }
     }
+    //NEW FIELDS
+    public function setDocumentNationalIssuedAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['document_national_issued'] = Carbon::createFromFormat($this->dateFormat(), $value);
+        }
+    }
+    
+    public function getDocumentNationalIssuedAttribute($value)
+    {
+        if ($value) {
+            return Carbon::parse($value)->format($this->dateFormat());
+        }
+    }
+    public function setDocumentPassportIssuedAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['document_passport_issued'] = Carbon::createFromFormat($this->dateFormat(), $value);
+        }
+    }
+
+    public function getDocumentPassportIssuedAttribute($value)
+    {
+        if ($value) {
+            return Carbon::parse($value)->format($this->dateFormat());
+        }
+    }
+    public function setDocumentDrivingLicenseIssuedAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['document_driving_license_issued'] = Carbon::createFromFormat($this->dateFormat(), $value);
+        }
+    }
+    public function setDocumentNationalExpirationAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['document_national_expiration'] = Carbon::createFromFormat($this->dateFormat(), $value);
+        }
+    }
+    public function setDocumentPassportExpirationAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['document_passport_expiration'] = Carbon::createFromFormat($this->dateFormat(), $value);
+        }
+    }
+
+    public function getDocumentPassportExpirationAttribute($value)
+    {
+        if ($value) {
+            return Carbon::parse($value)->format($this->dateFormat());
+        }
+    }
+
+
+    public function getDocumentNationalExpirationAttribute($value)
+    {
+        if ($value) {
+            return Carbon::parse($value)->format($this->dateFormat());
+        }
+    }
+
+    
+    public function getDocumentDrivingLicenseIssuedAttribute($value)
+    {
+        if ($value) {
+            return Carbon::parse($value)->format($this->dateFormat());
+        }
+    }
+    public function setDocumentDrivingLicenseExpirationAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['document_driving_license_expiration'] = Carbon::createFromFormat($this->dateFormat(), $value);
+        }
+    }
+
+    public function getDocumentDrivingLicenseExpirationAttribute($value)
+    {
+        if ($value) {
+            return Carbon::parse($value)->format($this->dateFormat());
+        }
+    }
+
 
     public function getFirstNameDecryptedAttribute()
     {
@@ -98,6 +211,11 @@ class Person extends Model
     public function getPrimaryEmail()
     {
         return $this->emails()->where('primary', 1)->first();
+    }
+
+    public function getEmail()
+    {
+        return $this->emails()->first();
     }
 
     /**
@@ -180,10 +298,5 @@ class Person extends Model
     public function xeroPerson()
     {
         return $this->hasOne(\VentureDrake\LaravelCrm\Models\XeroPerson::class);
-    }
-
-    public function client()
-    {
-        return $this->morphOne(\VentureDrake\LaravelCrm\Models\Client::class, 'clientable');
     }
 }

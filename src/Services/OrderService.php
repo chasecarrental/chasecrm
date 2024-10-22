@@ -8,7 +8,6 @@ use VentureDrake\LaravelCrm\Models\Order;
 use VentureDrake\LaravelCrm\Models\OrderProduct;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Setting;
-use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Repositories\OrderRepository;
 
 class OrderService
@@ -64,8 +63,6 @@ class OrderService
                             $taxRate = $productForTax->taxRate->rate;
                         } elseif($productForTax->tax_rate) {
                             $taxRate = $productForTax->tax_rate;
-                        } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                            $taxRate = $taxRate->rate;
                         } else {
                             $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                         }
@@ -148,8 +145,6 @@ class OrderService
                                     $taxRate = $productForTax->taxRate->rate;
                                 } elseif($productForTax->tax_rate) {
                                     $taxRate = $productForTax->tax_rate;
-                                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                                    $taxRate = $taxRate->rate;
                                 } else {
                                     $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                                 }
@@ -181,8 +176,6 @@ class OrderService
                                 $taxRate = $productForTax->taxRate->rate;
                             } elseif($productForTax->tax_rate) {
                                 $taxRate = $productForTax->tax_rate;
-                            } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                                $taxRate = $taxRate->rate;
                             } else {
                                 $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                             }
@@ -274,6 +267,7 @@ class OrderService
     {
         $newProduct = Product::create([
             'name' => $product['product_id'],
+            'tax_rate' => Setting::where('name', 'tax_rate')->first()->value ?? null,
             'user_owner_id' => $request->user_owner_id,
         ]);
 

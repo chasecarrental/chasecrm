@@ -1,7 +1,15 @@
-@extends('laravel-crm::layouts.app')
+@extends('layouts.master')
+@include('laravel-crm::layouts.partials.meta')
+@section('css')
+    @include('laravel-crm::styles') 
+@endsection
 
 @section('content')
 
     @include('laravel-crm::deliveries.partials.card-edit')
 
+@endsection
+
+@section('script')
+    @include('laravel-crm::codification') 
 @endsection

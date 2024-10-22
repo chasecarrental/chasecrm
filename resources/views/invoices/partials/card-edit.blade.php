@@ -1,4 +1,4 @@
-<form method="POST" action="{{ url(route('laravel-crm.invoices.update', $invoice)) }}">
+<form id="updateInvoiceForm_{{ $invoice->id }}" method="POST" onsubmit="submitFormCrm(event, 'updateInvoiceForm_{{ $invoice->id }}', '{{ route('laravel-crm.invoices.update', $invoice) }}', '{{ __('Invoice updated successfully!') }}', '{{ route('laravel-crm.invoices.index') }}')">
     @csrf
     @method('PUT')
     @component('laravel-crm::components.card')
@@ -10,10 +10,9 @@
             @endslot
 
             @slot('actions')
-                @include('laravel-crm::partials.return-button',[
-                    'model' => $invoice,
-                    'route' => 'invoices'
-                ])
+                <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.invoices.index') }}')" class="btn btn-outline-secondary">
+                    {{ ucfirst(__('laravel-crm::lang.cancel')) }}
+                </a>
             @endslot
 
         @endcomponent
@@ -25,7 +24,7 @@
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-            <a href="{{ url(route('laravel-crm.invoices.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+            <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.invoices.index') }}')" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
             <button type="submit" class="btn btn-primary">{{ ucwords(__('laravel-crm::lang.save_changes')) }}</button>
         @endcomponent
 

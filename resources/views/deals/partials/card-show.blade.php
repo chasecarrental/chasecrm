@@ -11,21 +11,21 @@
                 @include('laravel-crm::partials.return-button',[
                     'model' => $deal,
                     'route' => 'deals'
-                ]) | 
+                ]) |
                 @can('edit crm deals')
-                @if(!$deal->closed_at)
-                    <a href="{{  route('laravel-crm.deals.won',$deal) }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.won')) }}</a>
-                    <a href="{{  route('laravel-crm.deals.lost',$deal) }}" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.lost')) }}</a>
-                @else
-                    <a href="{{  route('laravel-crm.deals.reopen',$deal) }}" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.reopen')) }}</a>
-                @endif
+                    @if(!$deal->closed_at)
+                        <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.deals.won', $deal) }}')" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.won')) }}</a>
+                        <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.deals.lost', $deal) }}')" class="btn btn-danger btn-sm">{{ ucfirst(__('laravel-crm::lang.lost')) }}</a>
+                    @else
+                        <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.deals.reopen', $deal) }}')" class="btn btn-outline-secondary btn-sm">{{ ucfirst(__('laravel-crm::lang.reopen')) }}</a>
+                    @endif
                 @endcan
                 @include('laravel-crm::partials.navs.activities') |
                 @can('edit crm deals')
-                <a href="{{ url(route('laravel-crm.deals.edit', $deal)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.deals.edit', $deal) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
                 @can('delete crm deals')
-                <form action="{{ route('laravel-crm.deals.destroy',$deal) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                <form id="deleteDealForm_{{ $deal->id }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deleteDealForm_{{ $deal->id }}', '{{ route('laravel-crm.deals.destroy', $deal) }}', '{{ __('Deal deleted successfully!') }}', '{{ route('laravel-crm.deals.index') }}')">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.deal') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
@@ -47,17 +47,17 @@
                     ])</p>
                 <p><span class="fa fa-dollar" aria-hidden="true"></span> {{ money($deal->amount, $deal->currency) }}</p>
                 <p><span class="fa fa-info" aria-hidden="true"></span> {{ $deal->description }}</p>
-                <p><span class="fa fa-user-circle" aria-hidden="true"></span> @if($deal->ownerUser)<a href="{{ route('laravel-crm.users.show', $deal->ownerUser) }}">{{ $deal->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif</p>
+                <p><span class="fa fa-user-circle" aria-hidden="true"></span> <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.users.show', $deal->ownerUser) }}')">{{ $deal->ownerUser->name ?? null }}</a></p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.client')) }}</h6>
                 <hr />
-                <p><span class="fa fa-address-card" aria-hidden="true"></span> @if($deal->client)<a href="{{ route('laravel-crm.clients.show',$deal->client) }}">{{ $deal->client->name }}</a>@endif </p>
+                <p><span class="fa fa-address-card" aria-hidden="true"></span> @if($deal->client)<a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.clients.show', $deal->client) }}')">{{ $deal->client->name }}</a>@endif </p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />
-                <p><span class="fa fa-building" aria-hidden="true"></span> @if($deal->organisation)<a href="{{ route('laravel-crm.organisations.show',$deal->organisation) }}">{{ $deal->organisation->name }}</a>@endif</p>
+                <p><span class="fa fa-building" aria-hidden="true"></span> @if($deal->organisation)<a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.organisations.show', $deal->organisation) }}')">{{ $deal->organisation->name }}</a>@endif</p>
                 <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
-                <p><span class="fa fa-user" aria-hidden="true"></span> @if($deal->person)<a href="{{ route('laravel-crm.people.show',$deal->person) }}">{{ $deal->person->name }}</a>@endif </p>
+                <p><span class="fa fa-user" aria-hidden="true"></span> @if($deal->person)<a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.people.show', $deal->person) }}')">{{ $deal->person->name }}</a>@endif </p>
                 @isset($email)
                     <p><span class="fa fa-envelope" aria-hidden="true"></span> <a href="mailto:{{ $email->address }}">{{ $email->address }}</a> ({{ ucfirst($email->type) }})</p>
                 @endisset
@@ -71,7 +71,7 @@
                     <tr>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.item')) }}</th>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.price')) }}</th>
-                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
+                        <th scope="col">{{ ucfirst(__('laravel-crm::lang.quantity')) }}</th>
                         <th scope="col">{{ ucfirst(__('laravel-crm::lang.amount')) }}</th>
                     </tr>
                     </thead>
@@ -97,4 +97,4 @@
 
     @endcomponent
 
-@endcomponent    
+@endcomponent

@@ -1,5 +1,5 @@
 <div class="card mb-4">
-    <div class="card-body py-3 px-2">
+    <div class="card-body py-3">
         <ul class="nav nav-pills nav-side flex-column">
             <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.dashboard') === 0) ? 'active' : '' }}" aria-current="dashboard" href="{{ url(route('laravel-crm.dashboard')) }}"><i class="fa fa-dashboard"></i> {{ ucfirst(__('laravel-crm::lang.dashboard')) }}</a></li>
             <li class="dropdown-divider"></li>
@@ -40,7 +40,7 @@
             @endcan
             @hasordersenabled
                 @can('view crm orders')
-                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.orders') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.orders.index')) }}"><i class="fa fa-shopping-cart"></i> {{ ucwords(__('laravel-crm::lang.orders')) }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.orders') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.orders.index')) }}"><i class="fa fa-shopping-cart"></i> {{ ucfirst(__('laravel-crm::lang.orders')) }}</a></li>
                 @endcan
             @endhasordersenabled
             @can('view crm projects')
@@ -56,11 +56,6 @@
                     <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.deliveries') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.deliveries.index')) }}"><i class="fa fa-shipping-fast"></i> {{ ucfirst(__('laravel-crm::lang.deliveries')) }}</a></li>
                 @endcan
             @endhasdeliveriesenabled
-            @haspurchaseordersenabled
-            @can('view crm purchase orders')
-                <li class="nav-item"><a class="nav-link {{ (strpos(Route::currentRouteName(), 'laravel-crm.purchase-order') === 0) ? 'active' : '' }}" href="{{ url(route('laravel-crm.purchase-orders.index')) }}"><i class="fa fa-file-invoice-dollar"></i> {{ ucwords(__('laravel-crm::lang.purchase_orders')) }}</a></li>
-            @endcan
-            @endhaspurchaseordersenabled
             @canany(['view crm clients', 'view crm people', 'view crm organisations'])
             <li class="dropdown-divider"></li>
             @endcan

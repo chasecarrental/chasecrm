@@ -1,4 +1,4 @@
-@switch(class_basename($task->taskable->getMorphClass()))
+@switch(class_basename(optional($task->taskable)->getMorphClass()))
     @case('Lead')
         <small>{{ ucfirst(__('laravel-crm::lang.lead')) }}: <a href="{{ route('laravel-crm.leads.show', $task->taskable) }}">{{ $task->taskable->title }}</a></small>
         @break
@@ -17,4 +17,6 @@
     @case('Organisation')
         <small>{{ ucfirst(__('laravel-crm::lang.organisation')) }}: <a href="{{ route('laravel-crm.organisations.show', $task->taskable) }}">{{ $task->taskable->name }}</a></small>
         @break
+    @default
+        <small>{{ __('No relacionado') }}</small>
 @endswitch

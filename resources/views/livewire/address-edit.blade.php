@@ -102,17 +102,23 @@
             </div>
             @if(!in_array($model, ['order','delivery']))
             <div class="col-sm-1">
-                <div class="form-group" wire:ignore>
-                    <label>{{ ucfirst(__('laravel-crm::lang.primary')) }}</label>
-                    <input type="checkbox" wire:model="primary.{{ $value }}" name="addresses[{{ $value }}][primary]" data-toggle="toggle" data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
-                    @error('primary.'.$value) <span class="text-danger invalid-feedback-custom">{{ $message }}</span>@enderror
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="primaryCheckboxAddresses{{ $value }}" wire:model="primary.{{ $value }}" name="addresses[{{ $value }}][primary]">
+                    <label class="form-check-label" for="primaryCheckboxAddresses{{ $value }}">
+                        {{ ucfirst(__('laravel-crm::lang.primary')) }}
+                    </label>
+                </div>
+                @error('primary.'.$value) 
+                    <div class="text-danger invalid-feedback-custom">{{ $message }}</div>
+                @enderror
+                <!-- Este div es para separar visualmente el mensaje de error del botón -->
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-danger btn-sm" wire:click.prevent="remove({{$key}})">
+                        <span class="fa fa-trash-o" aria-hidden="true"></span>
+                    </button>
                 </div>
             </div>
-            <div class="col-sm-1 text-right">
-                <div class="form-group">
-                    <button class="btn btn-danger btn-sm" wire:click.prevent="remove({{$key}})"><span class="fa fa-trash-o" aria-hidden="true"></span></button></span>
-                </div>
-            </div>
+            
             @endif
             </div>
 @if(!$loop->last)

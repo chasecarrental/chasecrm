@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Product;
-use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
@@ -13,15 +12,14 @@ class LiveInvoiceLines extends Component
     use NotifyToast;
 
     private $settingService;
-
+    public $comments;
     public $invoice;
-
     public $invoiceLines;
 
     public $order_product_id;
     public $invoice_line_id;
 
-    public $product_id;
+    public $product_id ;
 
     public $name;
 
@@ -31,13 +29,7 @@ class LiveInvoiceLines extends Component
 
     public $quantity;
 
-    public $tax_amount;
-
-    public $tax_rate;
-
     public $amount;
-
-    public $comments;
 
     public $inputs = [];
 
@@ -51,6 +43,8 @@ class LiveInvoiceLines extends Component
 
     public $fromOrder;
 
+    public $old;
+
     protected $listeners = ['loadInvoiceLineDefault'];
 
     public function boot(SettingService $settingService)
@@ -60,6 +54,7 @@ class LiveInvoiceLines extends Component
 
     public function mount($invoice, $invoiceLines, $old = null, $fromOrder = false)
     {
+      
         $this->invoice = $invoice;
         $this->invoiceLines = $invoiceLines;
         $this->old = $old;
@@ -73,7 +68,7 @@ class LiveInvoiceLines extends Component
                 $this->product_id[$this->i] = $old['product_id'] ?? null;
                 $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
-
+                $this->comments[$this->i] = $old['comments'] ?? null;
                 if ($this->fromOrder) {
                     foreach ($this->invoiceLines as $invoiceLine) {
                         for ($i = 0; $i <= $this->getRemainOrderQuantity($invoiceLine); $i++) {
@@ -83,20 +78,21 @@ class LiveInvoiceLines extends Component
                 }
 
                 $this->price[$this->i] = $old['price'] ?? null;
-                $this->tax_amount[$this->i] = $old['tax_amount'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
-                $this->comments[$this->i] = $old['comments'] ?? null;
             }
         } elseif ($this->invoiceLines && $this->invoiceLines->count() > 0) {
+          
             foreach ($this->invoiceLines as $invoiceLine) {
                 $this->add($this->i);
 
                 if ($this->fromOrder) {
+                  
                     $this->order_product_id[$this->i] = $invoiceLine->id;
                 } else {
+                    
                     $this->invoice_line_id[$this->i] = $invoiceLine->id;
                 }
-
+                
                 $this->product_id[$this->i] = $invoiceLine->product->id ?? null;
                 $this->name[$this->i] = $invoiceLine->product->name ?? null;
                 $this->quantity[$this->i] = $invoiceLine->quantity;
@@ -109,10 +105,10 @@ class LiveInvoiceLines extends Component
                 }
 
                 $this->price[$this->i] = $invoiceLine->price / 100;
-                $this->tax_amount[$this->i] = $invoiceLine->tax_amount / 100;
                 $this->amount[$this->i] = $invoiceLine->amount / 100;
                 $this->comments[$this->i] = $invoiceLine->comments;
             }
+           
         } elseif (! $this->fromOrder) {
             $this->add($this->i);
         }
@@ -126,60 +122,70 @@ class LiveInvoiceLines extends Component
         $this->i = $i;
         $this->price[$i] = null;
         $this->quantity[$i] = null;
-        $this->tax_rate[$i] = null;
         array_push($this->inputs, $i);
 
-        $this->dispatchBrowserEvent('addedItem', ['id' => $this->i]);
-    }
+        $this->dispatch('addedItem', ['id' => $this->i]);
+        $this->calculateAmounts();
+    }   
 
     public function loadInvoiceLineDefault($id)
     {
-        if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id])) {
-            $this->price[$id] = ($product->getDefaultPrice()->unit_price / 100);
-            $this->quantity[$id] = 1;
+    
+       if(isset($this->product_id[$this->i])){
+      
+        if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$this->i])) {
+            $this->price[$this->i] = ($product->getDefaultPrice()->unit_price / 100);
+            $this->quantity[$this->i] = 1;
         } else {
-            $this->price[$id] = null;
-            $this->quantity[$id] = null;
-            $this->amount[$id] = null;
+            $this->price[$this->i] = null;
+            $this->quantity[$this->i] = null;
+            $this->amount[$this->i] = null;
         }
+       }else{
+            $this->product_id[$this->i] = $id;
+            $this->price[$this->i] = null;
+            $this->quantity[$this->i] = null;
+            $this->amount[$this->i] = null;
+        
+       }
+        
 
         $this->calculateAmounts();
     }
-
+    public function changeTbody(){
+      
+        $this->showTbody = true;
+    }
     public function calculateAmounts()
     {
+
         $this->sub_total = 0;
         $this->tax = 0;
         $this->total = 0;
 
         for ($i = 1; $i <= $this->i; $i++) {
             if (isset($this->product_id[$i])) {
-                $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i]);
-
-                if($product && $product->taxRate) {
-                    $taxRate = $product->taxRate->rate;
-                } elseif($product && $product->tax_rate) {
-                    $taxRate = $product->tax_rate;
-                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                    $taxRate = $taxRate->rate;
+               
+                if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+                    $taxRate = $product->taxRate->rate ?? $product->tax_rate ?? 0;
                 } elseif($taxRate = $this->settingService->get('tax_rate')) {
                     $taxRate = $taxRate->value;
                 } else {
                     $taxRate = 0;
                 }
-
-                $this->tax_rate[$i] = $taxRate;
+               
 
                 if (is_numeric($this->price[$i]) && is_numeric($this->quantity[$i])) {
+                   
                     $this->amount[$i] = $this->price[$i] * $this->quantity[$i];
                     $this->price[$i] = $this->currencyFormat($this->price[$i]);
-                    $this->tax_amount[$i] = $this->currencyFormat($this->amount[$i] * ($taxRate / 100));
                 } else {
+                    
                     $this->amount[$i] = 0;
                 }
-
-                $this->sub_total += round($this->amount[$i], 2);
-                $this->tax += round($this->amount[$i] * ($taxRate / 100), 2);
+              
+                $this->sub_total += $this->amount[$i];
+                $this->tax += $this->amount[$i] * ($taxRate / 100);
                 $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
             }
         }
@@ -189,17 +195,85 @@ class LiveInvoiceLines extends Component
         $this->sub_total = $this->currencyFormat($this->sub_total);
         $this->tax = $this->currencyFormat($this->tax);
         $this->total = $this->currencyFormat($this->total);
+       
+       
     }
 
     public function remove($id)
     {
-        unset($this->inputs[$id - 1], $this->product_id[$id], $this->name[$id]);
+    
 
-        $this->dispatchBrowserEvent('removedItem', ['id' => $id]);
+        $this->i = $this->i - 1;
+        if (isset($this->inputs[$id-1])) {
+            // Si existe el índice $id-1, eliminamos ese índice
+            unset($this->inputs[$id-1]);
+        } else {
+            // Si no existe el índice $id-1, eliminamos $id
+            unset($this->inputs[$id]);
+        }
+        
+        // Eliminar el valor usando el índice ajustado
+        unset(
+            $this->product_id[$id], 
+            $this->name[$id], 
+            $this->price[$id],
+            $this->quantity[$id],
+            $this->amount[$id],
+            $this->comments[$id]
+        );
 
+        // Reorganizar las claves y los valores
+        $this->inputs = $this->reorganizeValues($this->inputs,true);
+        $this->product_id = $this->reorganizeValues($this->product_id,false);
+        $this->name = $this->reorganizeValues($this->name,false);
+        $this->price = $this->reorganizeValues($this->price,false);
+        $this->quantity = $this->reorganizeValues($this->quantity,false);
+        $this->amount = $this->reorganizeValues($this->amount,false);
+        $this->comments = $this->reorganizeValues($this->comments,false);
+
+    
+
+        // Recalcular montos si es necesario
+        $this->dispatch('reInitInputs', ['inputs' => $this->inputs,"product"=>$this->product_id]);
+        
         $this->calculateAmounts();
     }
 
+    /**
+     * Función para reorganizar los valores y las claves de un array
+     */
+    private function reorganizeValues($array,$isInput)
+    {
+        // Verificar si el valor pasado es un array
+        if (!is_array($array)) {
+            // Si no es un array, simplemente devolver el valor tal como está
+            return $array;
+        }
+        $newArray = [];
+        $index = 1; // Comenzamos desde 1 para que las claves comiencen desde 1
+        
+        foreach ($array as $key => $value) {
+            if($isInput){
+                $newArray[$index] = $index; // Reorganizamos tanto clave como valor igual INDEX (es input) 
+            }else{
+                $newArray[$index] = $value; // Reorganizamos tanto clave como valor
+            }
+        
+            $index++;
+        }
+
+        return $newArray;
+    }
+    
+    
+    
+    public function testFunction()
+    {
+       
+     
+     
+      info("cambiando datos del input");
+    }
     protected function currencyFormat($number)
     {
         return number_format($number, 2, '.', '');

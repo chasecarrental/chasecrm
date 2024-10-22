@@ -1,4 +1,4 @@
-<form method="POST" action="{{ url(route('laravel-crm.deals.store')) }}">
+<form id="dealCreateForm" method="POST" action="{{ url(route('laravel-crm.deals.store')) }}" onsubmit="submitFormCrm(event, 'dealCreateForm', '{{ route('laravel-crm.deals.store') }}', '{{ __('Deal creado correctamente') }}', '{{ route('laravel-crm.deals.index') }}')">
     @csrf
     @component('laravel-crm::components.card')
 
@@ -24,8 +24,8 @@
         @endcomponent
 
         @component('laravel-crm::components.card-footer')
-                <a href="{{ url(route('laravel-crm.deals.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
-                <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
+            <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.deals.index') }}')" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+            <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
         @endcomponent
 
     @endcomponent

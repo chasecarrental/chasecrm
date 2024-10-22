@@ -96,7 +96,7 @@ class LiveMeeting extends Component
         }
 
         $this->toggleEditMode();
-        $this->emit('refreshComponent');
+        $this->dispatch('refreshComponent');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.meeting_updated'))
         );
@@ -106,7 +106,7 @@ class LiveMeeting extends Component
     {
         $this->meeting->delete();
 
-        $this->emit('meetingDeleted');
+        $this->dispatch('meetingDeleted');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.meeting_deleted'))
         );
@@ -116,7 +116,7 @@ class LiveMeeting extends Component
     {
         $this->editMode = ! $this->editMode;
 
-        $this->dispatchBrowserEvent('meetingEditModeToggled');
+        $this->dispatch('meetingEditModeToggled');
     }
 
     public function render()

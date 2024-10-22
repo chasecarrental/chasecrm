@@ -3,11 +3,11 @@
         @include('laravel-crm::partials.form.hidden',[
             'name' => 'client_id',
              'attributes' => [
-                'wire:model' => 'client_id'        
+                'wire:model.live' => 'client_id'        
             ]   
         ])
         <script type="text/javascript">
-            let clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clients() !!}
+             clients = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\clients() !!}
         </script>
         <span wire:ignore>
             @include('laravel-crm::partials.form.text',[
@@ -16,8 +16,9 @@
                 'prepend' => '<span class="fa fa-address-card" aria-hidden="true"></span>',
                 'attributes' => [
                     'autocomplete' => \Illuminate\Support\Str::random(),
-                    'wire:model' => 'client_name'  
+                    'wire:model.live' => 'client_name'  
                ],   
+              
             ])  
         </span>    
     </span>
@@ -30,7 +31,7 @@
             'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
             'options' => ['' => ''] + $organisations,
             'attributes' => [
-                'wire:model' => 'organisation_id'        
+                'wire:model.live' => 'organisation_id'        
             ],
             'required' => 'true',
         ])
@@ -41,11 +42,11 @@
         @include('laravel-crm::partials.form.hidden',[
             'name' => 'organisation_id',
              'attributes' => [
-                'wire:model' => 'organisation_id'        
+                'wire:model.live' => 'organisation_id'        
             ]   
         ])
         <script type="text/javascript">
-            let organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
+             organisations = {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\organisations() !!}
         </script>
             
         <span wire:ignore>    
@@ -55,11 +56,64 @@
                 'prepend' => '<span class="fa fa-building" aria-hidden="true"></span>',
                 'attributes' => [
                     'autocomplete' => \Illuminate\Support\Str::random(),
-                    'wire:model' => 'organisation_name'  
+                    'wire:model.live' => 'organisation_name'  
                ],
                'required' => 'true'
             ])  
-        </span>    
+        </span> 
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // Asumiendo que el ID de tu input es 'input_organisation_name'
+                $("#input_organisation_name").on('blur', function() {
+                    // Obtiene el valor ingresado por el usuario
+                    var nombreOrganizacionIngresado = $(this).val().trim();
+        
+                    // Verifica si el nombre ingresado existe en los nombres de las organizaciones
+                    // Asume que 'organisations' es un objeto donde las claves son nombres de organización
+                    var existe = Object.keys(organisations).includes(nombreOrganizacionIngresado);
+        
+                    if (existe) {
+                        console.log("La organización existe.");
+                        var orgId = organisations[nombreOrganizacionIngresado];
+                    
+                        // Simula la selección de la organización
+                        // Asumiendo que tienes una función onSelectOrganisation que maneja la selección
+                        simulateOrganisationSelection(orgId);
+
+                        // Adicionalmente, si necesitas realizar acciones como si el usuario hubiera elegido la organización...
+                        
+                      
+                    } else {
+                        console.log("La organización no existe o no ha sido seleccionada correctamente.");
+                      
+                    }
+                });
+                function simulateOrganisationSelection(orgId) {
+                 
+                    // Establece el valor de 'organisation_id' basado en el ID de la organización encontrada
+                    $('input[name="organisation_id"]').val(orgId).trigger('change');
+
+                    // Aquí podrías agregar más lógica, como deshabilitar campos si es necesario
+                    $('.autocomplete-organisation').find('input, select').attr('disabled', 'disabled');
+                    $('.autocomplete-organisation').find('.autocomplete-new').hide();
+
+                    // Simular la obtención y muestra de información adicional de la organización mediante AJAX
+                    $.ajax({
+                        url: '/crm/organisations/' + orgId + '/autocomplete', // Asegúrate de ajustar esta URL a tu API real
+                        cache: false
+                    }).done(function(data) {
+                        // Actualiza los campos con la información de la organización obtenida
+                        // Asegúrate de que los nombres de los campos aquí coincidan con los tuyos
+                        $('.autocomplete-organisation').find('input[name="line1"]').val(data.address_line1);
+                        $('.autocomplete-organisation').find('input[name="line2"]').val(data.address_line2);
+                        // Continúa actualizando otros campos según sea necesario...
+                    }).fail(function() {
+                        console.log("Error al recuperar información de la organización");
+                    });
+                }
+                
+            });
+        </script>     
     </span>
         
     @endif
@@ -72,7 +126,7 @@
             'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
             'options' => ['' => ''] + $people,
             'attributes' => [
-                'wire:model' => 'person_id'        
+                'wire:model.live' => 'person_id'        
             ],
             'required' => 'true'
         ])
@@ -83,11 +137,11 @@
            @include('laravel-crm::partials.form.hidden',[
                'name' => 'person_id',
                'attributes' => [
-                    'wire:model' => 'person_id'        
+                    'wire:model.live' => 'person_id'        
                 ]   
             ])
            <script type="text/javascript">
-            let people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
+             people =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\people() !!}
            </script>
             
             <span wire:ignore>
@@ -97,7 +151,7 @@
                     'prepend' => '<span class="fa fa-user" aria-hidden="true"></span>',
                     'attributes' => [
                        'autocomplete' => \Illuminate\Support\Str::random(),
-                       'wire:model' => 'person_name'        
+                       'wire:model.live' => 'person_name'        
                     ],
                     'required' => 'true'
                 ])

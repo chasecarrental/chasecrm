@@ -1,6 +1,9 @@
 <span>
     @can('edit crm invoices')
-        <a href="{{ route('laravel-crm.invoices.pay',$this->invoice) }}" data-toggle="modal" data-target="#invoicePayModal_{{ $this->invoice->id }}" class="btn btn-success btn-sm">{{ ucfirst(__('laravel-crm::lang.pay')) }}</a>
+        <a href="{{ route('laravel-crm.invoices.pay', $this->invoice) }}" data-toggle="modal" data-target="#invoicePayModal_{{ $this->invoice->id }}" class="btn btn-success btn-sm">
+            {{ ucfirst(__('laravel-crm::lang.pay')) }}
+        </a>
+
         <div wire:ignore.self class="modal fade" id="invoicePayModal_{{ $this->invoice->id }}" tabindex="-1" aria-labelledby="invoicePayModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -10,7 +13,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <x-form wire:submit.prevent="pay">
+                    <x-form wire:submit="pay">
                         <div class="modal-body text-left">
                             <x-form-input wire:model="amount_paid" name="amount_paid" label="{{ ucfirst(__('laravel-crm::lang.amount')) }}" type="number" step="0.01"> 
                                  @slot('prepend')
@@ -27,14 +30,5 @@
             </div>
         </div>
     @endcan
-    @push('livewire-js')
-        <script>
-        $(document).ready(function () {
-            window.addEventListener('invoicePaid', event => {
-                $('#invoicePayModal_{{ $this->invoice->id }}').modal('hide');
-                window.location.reload();
-            });
-        });
-    </script>
-    @endpush
+
 </span>

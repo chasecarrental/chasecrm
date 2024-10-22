@@ -59,7 +59,7 @@ class PayInvoice extends Component
 
         $this->resetFields();
 
-        $this->dispatchBrowserEvent('invoicePaid');
+        $this->dispatch('invoicePaid', ['invoiceId' => $this->invoice->id]);
     }
 
     private function resetFields()

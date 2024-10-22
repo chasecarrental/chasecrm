@@ -110,28 +110,28 @@ class LiveMeetings extends Component
             $this->meetings = Meeting::whereIn('id', $meetingIds)->latest()->get();
         }
 
-        $this->emit('refreshActivities');
+        $this->dispatch('refreshActivities');
     }
 
     public function addMeetingToggle()
     {
         $this->showForm = ! $this->showForm;
 
-        $this->dispatchBrowserEvent('meetingEditModeToggled');
+        $this->dispatch('meetingEditModeToggled');
     }
 
     public function addMeetingOn()
     {
         $this->showForm = true;
 
-        $this->dispatchBrowserEvent('meetingAddOn');
+        $this->dispatch('meetingAddOn');
     }
 
     private function resetFields()
     {
         $this->reset('name', 'description', 'start_at', 'finish_at', 'guests', 'location');
 
-        $this->dispatchBrowserEvent('meetingFieldsReset');
+        $this->dispatch('meetingFieldsReset');
 
         $this->addMeetingToggle();
 

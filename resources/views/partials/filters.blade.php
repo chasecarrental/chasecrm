@@ -1,9 +1,11 @@
-<form method="post" action="{{ $action }}" class="form-inline float-left mr-1">
+<form id="filterForm" method="post" onsubmit="submitFormCrm(event, 'filterForm', '{{ $action }}', '{{ __('Filter applied successfully!') }}', '{{ url()->current() }}')" class="form-inline float-left mr-1">
     @csrf
     <a class="btn btn-sm {{ ($model::anyFilterActive([
     'user_owner_id' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false) + [0 => '(Blank)'],
     'label_id' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all(), false) + [0 => '(Blank)']
-    ])) ? 'btn-outline-success' : 'btn-outline-secondary' }}" data-toggle="modal" data-target="#searchFilterModal">{{ ucfirst(__('laravel-crm::lang.filter')) }}</a>
+    ])) ? 'btn-outline-success' : 'btn-outline-secondary' }}" data-toggle="modal" data-target="#searchFilterModal">
+        {{ ucfirst(__('laravel-crm::lang.filter')) }}
+    </a>
     <div class="modal" id="searchFilterModal" tabindex="-1">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -29,19 +31,15 @@
                             'name' => 'label_id',
                             'label' => 'label',
                             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all(), false) + [0 => '(Blank)'],
-                            'value' => request()->input('label_id') ?? $model::filterValue('label_id')  ?? array_keys(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all(), false) + [0 => '(Blank)'])
+                            'value' => request()->input('label_id') ?? $model::filterValue('label_id') ?? array_keys(\VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel(\VentureDrake\LaravelCrm\Models\Label::all(), false) + [0 => '(Blank)'])
                         ])
                     </div>      
                 </div>
                 <div class="modal-footer">
-                    {{--<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>--}}
                     <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-filter">{{ ucfirst(__('laravel-crm::lang.clear')) }}</button>
                     <button type="submit" class="btn btn-primary btn-sm">{{ ucfirst(__('laravel-crm::lang.filter')) }}</button>
                 </div>
             </div>
         </div>
     </div>
-    
 </form>
-
-

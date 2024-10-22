@@ -37,7 +37,20 @@ class PersonService
             'birthday' => $request->birthday,
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
+            'document_national' => $request->document_national,
+            'document_passport' => $request->document_passport,
+            'document_driving_license' => $request->document_driving_license,
+            'document_national_country' => $request->document_national_country,
+            'document_passport_country' => $request->document_passport_country,
+            'document_driving_license_country' => $request->document_driving_license_country,
+            'document_national_issued' => $request->document_national_issued,
+            'document_passport_issued' => $request->document_passport_issued,
+            'document_driving_license_issued' => $request->document_driving_license_issued,
+            'document_national_expiration' => $request->document_national_expiration,
+            'document_passport_expiration' => $request->document_passport_expiration,
+            'document_driving_license_expiration' => $request->document_driving_license_expiration,
         ]);
+        
 
         $this->updatePersonPhones($person, $request->phones);
         $this->updatePersonEmails($person, $request->emails);
@@ -89,6 +102,18 @@ class PersonService
             'birthday' => $request->birthday,
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
+            'document_national' => $request->document_national,
+            'document_passport' => $request->document_passport,
+            'document_driving_license' => $request->document_driving_license,
+            'document_national_country' => $request->document_national_country,
+            'document_passport_country' => $request->document_passport_country,
+            'document_driving_license_country' => $request->document_driving_license_country,
+            'document_national_issued' => $request->document_national_issued,
+            'document_passport_issued' => $request->document_passport_issued,
+            'document_driving_license_issued' => $request->document_driving_license_issued,
+            'document_national_expiration' => $request->document_national_expiration,
+            'document_passport_expiration' => $request->document_passport_expiration,
+            'document_driving_license_expiration' => $request->document_driving_license_expiration,
         ]);
 
         $this->updatePersonPhones($person, $request->phones);

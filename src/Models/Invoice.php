@@ -28,13 +28,7 @@ class Invoice extends Model
     ];
 
     protected $searchable = [
-        'reference',
-        'invoice_id',
-        'person.first_name',
-        'person.middle_name',
-        'person.last_name',
-        'person.maiden_name',
-        'organisation.name',
+        //
     ];
 
     protected $filterable = [
@@ -77,6 +71,7 @@ class Invoice extends Model
 
     public function setIssueDateAttribute($value)
     {
+       
         if ($value) {
             $this->attributes['issue_date'] = Carbon::createFromFormat($this->dateFormat(), $value);
         }

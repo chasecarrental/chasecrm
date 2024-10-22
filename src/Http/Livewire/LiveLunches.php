@@ -110,28 +110,28 @@ class LiveLunches extends Component
             $this->lunches = Lunch::whereIn('id', $lunchIds)->latest()->get();
         }
 
-        $this->emit('refreshActivities');
+        $this->dispatch('refreshActivities');
     }
 
     public function addLunchToggle()
     {
         $this->showForm = ! $this->showForm;
 
-        $this->dispatchBrowserEvent('lunchEditModeToggled');
+        $this->dispatch('lunchEditModeToggled');
     }
 
     public function addLunchOn()
     {
         $this->showForm = true;
 
-        $this->dispatchBrowserEvent('lunchAddOn');
+        $this->dispatch('lunchAddOn');
     }
 
     private function resetFields()
     {
         $this->reset('name', 'description', 'start_at', 'finish_at', 'guests', 'location');
 
-        $this->dispatchBrowserEvent('lunchFieldsReset');
+        $this->dispatch('lunchFieldsReset');
 
         $this->addLunchToggle();
 

@@ -7,10 +7,10 @@ use Livewire\Component;
 class LivePhoneEdit extends Component
 {
     public $phones;
-    public $number;
-    public $type;
-    public $primary;
-    public $phoneId;
+    public $number = [];
+    public $type = [];
+    public $primary = [];
+    public $phoneId = [];
     public $old;
     public $updateMode = false;
     public $inputs = [];
@@ -26,7 +26,14 @@ class LivePhoneEdit extends Component
                 $this->add($this->i);
                 $this->number[$this->i] = $phone['number'] ?? null;
                 $this->type[$this->i] = $phone['type'] ?? null;
-                $this->primary[$this->i] = $phone['primary'] ?? null;
+                if(isset($phone['primary']) && $phone['primary'] === 0){
+                    $this->primary[$this->i] = false;
+                }elseif(isset($phone['primary'])){
+                    $this->primary[$this->i] = true;
+                }else{
+                    $this->primary[$this->i] = false;
+                }
+                
                 $this->phoneId[$this->i] = $phone['id'] ?? null;
             }
         } elseif ($this->phones && $this->phones->count() > 0) {
@@ -34,7 +41,12 @@ class LivePhoneEdit extends Component
                 $this->add($this->i);
                 $this->number[$this->i] = $phone->number;
                 $this->type[$this->i] = $phone->type;
-                $this->primary[$this->i] = $phone->primary;
+                if($phone->primary === 0){
+                    $this->primary[$this->i] = false;
+                }else{
+                    $this->primary[$this->i] = true;
+                }
+              
                 $this->phoneId[$this->i] = $phone->id;
             }
         } else {
@@ -47,7 +59,7 @@ class LivePhoneEdit extends Component
         $i = $i + 1;
         $this->i = $i;
         array_push($this->inputs, $i);
-        $this->dispatchBrowserEvent('addPhoneInputs');
+        $this->dispatch('addPhoneInputs');
     }
 
     public function remove($i)

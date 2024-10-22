@@ -1,16 +1,10 @@
- <div class="row">
+<div class="row">
     <div class="col-sm-6 border-right">
         @include('laravel-crm::partials.form.select',[
         'name' => 'type',
         'label' => ucfirst(trans('laravel-crm::lang.type')),
         'options' => [
-           'text' => 'Single-line text',
-           'textarea' => 'Multi-line text',
-           'checkbox' => 'Single checkbox',
-           'checkbox_multiple' => 'Multiple checkbox',
-           'select' => 'Dropdown select',
-           'radio' => 'Radio select', 
-           'date' => 'Date picker',
+           'text' => 'Text' 
          ],
         'value' => old('type', $field->type ?? null)
        ])

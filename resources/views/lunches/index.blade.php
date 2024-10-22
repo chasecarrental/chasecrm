@@ -1,7 +1,5 @@
-@extends('laravel-crm::layouts.app')
 
-@section('content')
-
+@include('laravel-crm::styles')
     <div class="card">
         <div class="card-header">
             @include('laravel-crm::layouts.partials.nav-activities')
@@ -16,11 +14,35 @@
                 @endforeach
             @endif
         </div>
-        @if($lunches instanceof \Illuminate\Pagination\LengthAwarePaginator )
-            <div class="card-footer">
-                {{ $lunches->links() }}
-            </div>
-        @endif
+        @if($lunches instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        <div class="card-footer">
+            <ul class="pagination justify-content-end">
+                @if ($lunches->onFirstPage())
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                @else
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/lunches?page=' . ($lunches->currentPage() - 1)) }}')">Previous</a>
+                    </li>
+                @endif
+    
+                @foreach ($lunches->getUrlRange(1, $lunches->lastPage()) as $page => $url)
+                    <li class="page-item @if ($page == $lunches->currentPage()) active @endif">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/lunches?page=' . $page) }}')">{{ $page }}</a>
+                    </li>
+                @endforeach
+    
+                @if ($lunches->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/lunches?page=' . ($lunches->currentPage() + 1)) }}')">Next</a>
+                    </li>
+                @else
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                @endif
+            </ul>
+        </div>
+    @endif
+    
     </div>
 
-@endsection
+
+    @include('laravel-crm::codification')

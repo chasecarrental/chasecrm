@@ -21,9 +21,4 @@ class Field extends Model
     {
         return $this->belongsTo(\VentureDrake\LaravelCrm\Models\FieldGroup::class);
     }
-
-    public function fieldOptions()
-    {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\FieldOption::class);
-    }
 }

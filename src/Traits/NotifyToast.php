@@ -20,7 +20,7 @@ trait NotifyToast
             return redirect()->route($route, $routeParams);
         }
 
-        $this->dispatchBrowserEvent('notifyToast', [
+        $this->dispatch('notifyToast', [
             'message' => $message,
             'level' => $level,
         ]);

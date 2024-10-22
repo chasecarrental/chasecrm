@@ -66,7 +66,7 @@ class LiveNote extends Component
             'noted_at' => $this->noted_at,
         ]);
         $this->toggleEditMode();
-        $this->emit('refreshComponent');
+        $this->dispatch('refreshComponent');
         $this->notify(
             'Note updated',
         );
@@ -76,7 +76,7 @@ class LiveNote extends Component
     {
         $this->note->delete();
 
-        $this->emit('noteDeleted');
+        $this->dispatch('noteDeleted');
         $this->notify(
             'Note deleted.'
         );
@@ -88,7 +88,7 @@ class LiveNote extends Component
             'pinned' => 1,
         ]);
 
-        $this->emit('notePinned');
+        $this->dispatch('notePinned');
         $this->notify(
             'Note pinned'
         );
@@ -100,7 +100,7 @@ class LiveNote extends Component
             'pinned' => 0,
         ]);
 
-        $this->emit('noteUnpinned');
+        $this->dispatch('noteUnpinned');
         $this->notify(
             'Note unpinned'
         );
@@ -110,7 +110,7 @@ class LiveNote extends Component
     {
         $this->editMode = ! $this->editMode;
 
-        $this->dispatchBrowserEvent('noteEditModeToggled');
+        $this->dispatch('noteEditModeToggled');
     }
 
     public function render()

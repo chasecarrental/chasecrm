@@ -31,17 +31,11 @@ class OrganisationService
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->name,
             'organisation_type_id' => $request->organisation_type_id,
-            'vat_number' => $request->vat_number,
-            'industry_id' => $request->industry_id,
-            'timezone_id' => $request->timezone_id,
-            'number_of_employees' => $request->number_of_employees,
-            'annual_revenue' => $request->annual_revenue,
-            'total_money_raised' => $request->total_money_raised,
-            'linkedin' => $request->linkedin,
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
+            'tax_id' =>$request->tax_id
         ]);
-
+        info($request->all());
         $this->updateOrganisationPhones($organisation, $request->phones);
         $this->updateOrganisationEmails($organisation, $request->emails);
         $this->updateOrganisationAddresses($organisation, $request->addresses);
@@ -54,14 +48,6 @@ class OrganisationService
         $organisation = Organisation::create([
             'external_id' => Uuid::uuid4()->toString(),
             'name' => $request->organisation_name,
-            'organisation_type_id' => $request->organisation_type_id,
-            'vat_number' => $request->vat_number,
-            'industry_id' => $request->industry_id,
-            'timezone_id' => $request->timezone_id,
-            'number_of_employees' => $request->number_of_employees,
-            'total_money_raised' => $request->total_money_raised,
-            'linkedin' => $request->linkedin,
-            'description' => $request->description,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 
@@ -85,17 +71,11 @@ class OrganisationService
         $organisation->update([
             'name' => $request->name,
             'organisation_type_id' => $request->organisation_type_id,
-            'vat_number' => $request->vat_number,
-            'industry_id' => $request->industry_id,
-            'timezone_id' => $request->timezone_id,
-            'number_of_employees' => $request->number_of_employees,
-            'annual_revenue' => $request->annual_revenue,
-            'total_money_raised' => $request->total_money_raised,
-            'linkedin' => $request->linkedin,
             'description' => $request->description,
             'user_owner_id' => $request->user_owner_id,
+            'tax_id' =>$request->tax_id
         ]);
-
+       
         $this->updateOrganisationPhones($organisation, $request->phones);
         $this->updateOrganisationEmails($organisation, $request->emails);
         $this->updateOrganisationAddresses($organisation, $request->addresses);
@@ -174,6 +154,7 @@ class OrganisationService
 
         if ($addresses) {
             foreach ($addresses as $addressRequest) {
+             
                 if ($addressRequest['id'] && $address = Address::find($addressRequest['id'])) {
                     $address->update([
                         'address_type_id' => $addressRequest['type'] ?? null,

@@ -47,7 +47,7 @@ class LiveFiles extends Component
         $data = $this->validate([
             'file' => 'required',
         ]);
-
+        info("SUBIENDO ARCHVIO");
         $file = $this->file->store('laravel-crm/'.strtolower(class_basename($this->model)).'/'.$this->model->id.'/files');
 
         $fileModel = $this->model->files()->create([
@@ -71,7 +71,7 @@ class LiveFiles extends Component
             'File uploaded',
         );
 
-        $this->dispatchBrowserEvent('fileUploaded');
+        $this->dispatch('fileUploaded');
 
         $this->resetFields();
     }
@@ -96,19 +96,19 @@ class LiveFiles extends Component
             $this->files = File::whereIn('id', $fileIds)->latest()->get();
         }
 
-        $this->emit('refreshActivities');
+        $this->dispatch('refreshActivities');
     }
 
     public function addFileToggle()
     {
         $this->showForm = ! $this->showForm;
-        $this->dispatchBrowserEvent('addFileToggled');
+        $this->dispatch('addFileToggled');
     }
 
     public function addFileOn()
     {
         $this->showForm = true;
-        $this->dispatchBrowserEvent('fileAddOn');
+        $this->dispatch('fileAddOn');
     }
 
     private function resetFields()

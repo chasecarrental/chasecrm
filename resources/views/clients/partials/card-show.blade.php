@@ -16,30 +16,30 @@
                 ]) | 
                 @hasleadsenabled
                 @can('create crm leads')
-                    <a href="{{ route('laravel-crm.leads.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.leads.create', ['model' => 'client', 'id' => $client->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
                 @endcan
                 @endhasleadsenabled
                 @hasdealsenabled
                 @can('create crm deals')
-                    <a href="{{ route('laravel-crm.deals.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.deals.create', ['model' => 'client', 'id' => $client->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
                 @endcan
                 @endhasdealsenabled
                 @hasquotesenabled
                 @can('create crm quotes')
-                    <a href="{{ route('laravel-crm.quotes.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.quotes.create', ['model' => 'client', 'id' => $client->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
                 @endcan
                 @endhasquotesenabled
                 @hasordersenabled
                 @can('create crm orders')
-                    <a href="{{ route('laravel-crm.orders.create', ['model' => 'client', 'id' => $client->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.orders.create', ['model' => 'client', 'id' => $client->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
                 @endcan
                 @endhasordersenabled
                 @include('laravel-crm::partials.navs.activities') | 
                 @can('edit crm clients')
-                <a href="{{ url(route('laravel-crm.clients.edit', $client)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                <a href="#" onclick="loadContent('{{ url(route('laravel-crm.clients.edit', $client)) }}')" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
                 @can('delete crm clients')
-                <form action="{{ route('laravel-crm.clients.destroy',$client) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                <form id="deleteClientForm_{{ $client->id }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deleteClientForm_{{ $client->id }}', '{{ route('laravel-crm.clients.destroy', $client) }}', '{{ __('Client deleted successfully!') }}', '{{ route('laravel-crm.clients.index') }}')">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.client') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
@@ -64,9 +64,7 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">
-                        @if($client->ownerUser)<a href="{{ route('laravel-crm.users.show', $client->ownerUser) }}">{{ $client->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
-                    </dd>
+                    <dd class="col-sm-9"><a onclick="loadContent('{{ route('laravel-crm.users.show', $client->ownerUser) }}">{{ $client->ownerUser->name }}</a></dd>
                 </dl>
                 @livewire('related-contact-people',[
                     'model' => $client

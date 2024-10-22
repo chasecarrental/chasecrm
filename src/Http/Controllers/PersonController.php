@@ -11,7 +11,7 @@ use VentureDrake\LaravelCrm\Models\Contact;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
 use VentureDrake\LaravelCrm\Services\PersonService;
-
+use Nnjeim\World\World;
 class PersonController extends Controller
 {
     /**
@@ -82,9 +82,16 @@ class PersonController extends Controller
 
                 break;
         }
-
+        $action =  World::countries();
+        
+        if ($action->success) {
+            $countries = $action->data;
+           
+        }
+       
         return view('laravel-crm::people.create', [
             'organisation' => $organisation ?? null,
+            'countries' => $countries->toArray() ?? []
         ]);
     }
 
@@ -116,7 +123,8 @@ class PersonController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.person_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.people.index'));
+        //return redirect(route('laravel-crm.people.index'));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -150,11 +158,19 @@ class PersonController extends Controller
      */
     public function edit(Person $person)
     {
+        $action =  World::countries();
+
+        if ($action->success) {
+            $countries = $action->data;
+           
+        }
         return view('laravel-crm::people.edit', [
             'person' => $person,
             'emails' => $person->emails,
             'phones' => $person->phones,
             'addresses' => $person->addresses,
+            'countries' => $countries->toArray() ?? []
+
         ]);
     }
 
@@ -190,7 +206,8 @@ class PersonController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.person_updated')))->success()->important();
 
-        return redirect(route('laravel-crm.people.show', $person));
+        //return redirect(route('laravel-crm.people.show', $person));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -212,7 +229,8 @@ class PersonController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.person_deleted')))->success()->important();
 
-        return redirect(route('laravel-crm.people.index'));
+        //return redirect(route('laravel-crm.people.index'));
+        return response()->json(["response"=>true]);
     }
 
     public function search(Request $request)
@@ -220,7 +238,8 @@ class PersonController extends Controller
         $searchValue = Person::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            return redirect(route('laravel-crm.people.index'));
+            //return redirect(route('laravel-crm.people.index'));
+        return response()->json(["response"=>true]);
         }
 
         $params = Person::filters($request, 'search');

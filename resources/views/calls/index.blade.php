@@ -1,6 +1,7 @@
-@extends('laravel-crm::layouts.app')
 
-@section('content')
+
+@include('laravel-crm::styles')
+
 
     <div class="card">
         <div class="card-header">
@@ -16,11 +17,35 @@
                 @endforeach
             @endif
         </div>
-        @if($calls instanceof \Illuminate\Pagination\LengthAwarePaginator )
-            <div class="card-footer">
-                {{ $calls->links() }}
-            </div>
-        @endif
+        @if($calls instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        <div class="card-footer">
+            <ul class="pagination justify-content-end">
+                @if ($calls->onFirstPage())
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                @else
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/calls?page=' . ($calls->currentPage() - 1)) }}')">Previous</a>
+                    </li>
+                @endif
+    
+                @foreach ($calls->getUrlRange(1, $calls->lastPage()) as $page => $url)
+                    <li class="page-item @if ($page == $calls->currentPage()) active @endif">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/calls?page=' . $page) }}')">{{ $page }}</a>
+                    </li>
+                @endforeach
+    
+                @if ($calls->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/calls?page=' . ($calls->currentPage() + 1)) }}')">Next</a>
+                    </li>
+                @else
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                @endif
+            </ul>
+        </div>
+    @endif
+    
     </div>
 
-@endsection
+
+    @include('laravel-crm::codification')

@@ -3,7 +3,7 @@
     <hr />--}}
     @if($showForm)
         @if(! $pinned)
-        <form wire:submit.prevent="create" id="inputCreateForm">
+        <form wire:submit="create" id="inputCreateForm">
             @include('laravel-crm::livewire.components.partials.note.form-fields')
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
@@ -30,6 +30,7 @@
                     });
 
                     window.addEventListener('noteAddOn', event => {
+                        console.log("ENTRE ACA")
                         $('.nav-activities li a#tab-notes').tab('show')
                         $('input[name="noted_at"]').datetimepicker({
                             timepicker:true,

@@ -23,7 +23,7 @@ class Team extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'user_id', 'personal_team',
+        'name','phone','address', 'user_id', 'personal_team',
     ];
 
     public function userCreated()

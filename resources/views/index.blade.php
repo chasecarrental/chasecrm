@@ -5,7 +5,7 @@
     <div class="container-content">
         <div class="row">
             @hasleadsenabled
-            <div class="col-3 mb-4">
+            <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.leads')) }}</h4>
@@ -18,7 +18,7 @@
             </div>
             @endhasleadsenabled
             @hasdealsenabled
-            <div class="col-3 mb-4">
+            <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.deals')) }}</h4>
@@ -30,83 +30,7 @@
                 </div>
             </div>
             @endhasdealsenabled
-            @hasquotesenabled
-            <div class="col-3 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.quotes')) }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <h2>{{ $totalQuotesCount ?? 0 }}</h2>
-                        <small>{{ ucfirst(__('laravel-crm::lang.total_quotes')) }}</small>
-                    </div>
-                </div>
-            </div>
-            @endhasquotesenabled
-            @hasordersenabled
-            <div class="col-3 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.orders')) }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <h2>{{ $totalOrdersCount ?? 0 }}</h2>
-                        <small>{{ ucfirst(__('laravel-crm::lang.total_orders')) }}</small>
-                    </div>
-                </div>
-            </div>
-            @endhasordersenabled
-            @hasinvoicesenabled
-            <div class="col-3 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.invoices')) }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <h2>{{ $totalInvoicesCount ?? 0 }}</h2>
-                        <small>{{ ucfirst(__('laravel-crm::lang.total_invoices')) }}</small>
-                    </div>
-                </div>
-            </div>
-            @endhasinvoicesenabled
-            @hasdeliveriesenabled
-            <div class="col-3 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.deliveries')) }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <h2>{{ $totalDeliveriesCount ?? 0 }}</h2>
-                        <small>{{ ucfirst(__('laravel-crm::lang.total_deliveries')) }}</small>
-                    </div>
-                </div>
-            </div>
-            @endhasdeliveriesenabled
-            @haspurchaseordersenabled
-            <div class="col-3 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.purchase_orders')) }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <h2>{{ $totalPurchaseOrdersCount ?? 0 }}</h2>
-                        <small>{{ ucfirst(__('laravel-crm::lang.total_purchase_orders')) }}</small>
-                    </div>
-                </div>
-            </div>
-            @endhaspurchaseordersenabled
-            <div class="col-3 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.clients')) }}</h4>
-                    </div>
-                    <div class="card-body">
-                        <h2>{{ $totalClientsCount ?? 0 }}</h2>
-                        <small>{{ ucfirst(__('laravel-crm::lang.total_clients')) }}</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-3 mb-4">
+            <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.people')) }}</h4>
@@ -117,7 +41,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-3 mb-4">
+            <div class="col-sm mb-4">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title float-left m-0">{{ ucfirst(__('laravel-crm::lang.organizations')) }}</h4>

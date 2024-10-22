@@ -15,14 +15,14 @@
 
         @if($logoFile)
         <div class="mb-3">
-            <img src=" {{ ($logoFile) ? asset('storage/'.$logoFile->value) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" width="200" />
+            <img src=" {{ ($logoFile) ? asset($logoFile->value) : 'https://via.placeholder.com/140x90' }}" class="img-fluid" width="200" />
         </div>
         @endif
         @include('laravel-crm::partials.form.file',[
              'name' => 'logo',
              'label' => ucfirst(trans('laravel-crm::lang.logo')),
-             'value' => old('logo')
-        ])
+             'value' => old('logo', $timezone ?? null)
+         ])
 
         @include('laravel-crm::partials.form.select',[
                 'name' => 'country',
@@ -49,48 +49,34 @@
              'name' => 'timezone',
              'label' => ucfirst(trans('laravel-crm::lang.timezone')),
              'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\timezones(),
-             'value' => old('timezone', $timezoneSetting->value ?? null),
+             'value' => old('timezone', $timezone->value ?? null),
              'required' => 'true'
         ])
         @include('laravel-crm::partials.form.select',[
             'name' => 'date_format',
             'label' => ucfirst(trans('laravel-crm::lang.date_format')),
             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\dateFormats(),
-            'value' => old('date_format', $dateFormatSetting->value ?? null),
+            'value' => old('date_format', $dateFormat->value ?? null),
             'required' => 'true'
        ])
         @include('laravel-crm::partials.form.select',[
             'name' => 'time_format',
             'label' => ucfirst(trans('laravel-crm::lang.time_format')),
             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\timeFormats(),
-            'value' => old('time_format', $timeFormatSetting->value ?? null),
+            'value' => old('time_format', $timeFormat->value ?? null),
             'required' => 'true'
        ])
         @include('laravel-crm::partials.form.text',[
             'name' => 'tax_name',
             'label' => ucfirst(trans('laravel-crm::lang.tax_name')),
-            'value' => old('tax_name', $taxNameSetting->value ?? null)
+            'value' => old('tax_name', $taxName->value ?? null)
        ])
         @include('laravel-crm::partials.form.text',[
             'name' => 'tax_rate',
             'label' => ucfirst(trans('laravel-crm::lang.tax_rate')),
-            'value' => old('tax_rate', $taxRateSetting->value ?? null),
+            'value' => old('tax_rate', $taxRate->value ?? null),
             'append' => '%'
        ])
-        @hasleadsenabled
-        @include('laravel-crm::partials.form.text',[
-         'name' => 'lead_prefix',
-         'label' => ucfirst(trans('laravel-crm::lang.lead_prefix')),
-         'value' => old('lead_prefix', $leadPrefix->value ?? null)
-        ])
-        @endhasleadsenabled
-        @hasdealsenabled
-        @include('laravel-crm::partials.form.text',[
-         'name' => 'deal_prefix',
-         'label' => ucfirst(trans('laravel-crm::lang.deal_prefix')),
-         'value' => old('deal_prefix', $dealPrefix->value ?? null)
-        ])
-        @endhasdealsenabled
         @hasquotesenabled
         @include('laravel-crm::partials.form.text',[
          'name' => 'quote_prefix',
@@ -119,13 +105,6 @@
          'value' => old('delivery_prefix', $deliveryPrefix->value ?? null)
         ])
         @endhasdeliveriesenabled
-        @haspurchaseordersenabled
-        @include('laravel-crm::partials.form.text',[
-         'name' => 'purchase_order_prefix',
-         'label' => ucfirst(trans('laravel-crm::lang.purchase_order_prefix')),
-         'value' => old('purchase_order_prefix', $purchaseOrderPrefix->value ?? null)
-        ])
-        @endhaspurchaseordersenabled
         @hasquotesenabled
         @include('laravel-crm::partials.form.textarea',[
          'name' => 'quote_terms',
@@ -147,39 +126,20 @@
          'rows' => 5,
          'value' => old('invoice_terms', $invoiceTerms->value ?? null)
         ])
-        @include('laravel-crm::partials.form.textarea',[
-         'name' => 'invoice_payment_instructions',
-         'label' => ucfirst(trans('laravel-crm::lang.invoice_payment_instructions')),
-         'rows' => 5,
-         'value' => old('invoice_payment_instructions', $invoicePaymentInstructions->value ?? null)
-        ])
         @endhasinvoicesenabled
-        @haspurchaseordersenabled
-        @include('laravel-crm::partials.form.textarea',[
-         'name' => 'purchase_order_terms',
-         'label' => ucfirst(trans('laravel-crm::lang.purchase_order_terms')),
-         'rows' => 5,
-         'value' => old('purchase_order_terms', $purchaseOrderTerms->value ?? null)
-        ])
-        @include('laravel-crm::partials.form.textarea',[
-         'name' => 'purchase_order_delivery_instructions',
-         'label' => ucfirst(trans('laravel-crm::lang.purchase_order_delivery_instructions')),
-         'rows' => 5,
-         'value' => old('purchase_order_delivery_instructions', $purchaseOrderDeliveryInstructions->value ?? null)
-        ])
-        @endhaspurchaseordersenabled
         <div class="form-group">
             <label for="dynamic_products">{{ ucfirst(__('laravel-crm::lang.allow_creating_products_when_creating_quotes_orders_and_invoices')) }}</label>
-            <span class="form-control-toggle">
-                 <input id="dynamic_products" type="checkbox" name="dynamic_products" {{ (isset($dynamicProductsSetting->value) && ($dynamicProductsSetting->value == 1)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
-            </span>
+            <div class="form-check form-switch">
+                <input id="dynamic_products" class="form-check-input" type="checkbox" name="dynamic_products" {{ (isset($dynamicProducts->value) && $dynamicProducts->value == 1) ? 'checked' : '' }}  data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+            </div>
         </div>
         <div class="form-group">
             <label for="show_related_activity">{{ ucfirst(__('laravel-crm::lang.show_related_contact_activity')) }}</label>
-            <span class="form-control-toggle">
-                 <input id="show_related_activity" type="checkbox" name="show_related_activity" {{ (isset($showRelatedActivity->value) && ($showRelatedActivity->value == 1)) ? 'checked' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
-            </span>
+            <div class="form-check form-switch">
+                <input id="show_related_activity" class="form-check-input" type="checkbox" name="show_related_activity" {{ (isset($showRelatedActivity->value) && $showRelatedActivity->value == 1) ? 'checked' : '' }}  data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
+            </div>
         </div>
+        
     </div>
     <div class="col">
         @livewire('phone-edit', [

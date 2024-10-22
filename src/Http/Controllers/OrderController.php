@@ -3,7 +3,6 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Ramsey\Uuid\Uuid;
@@ -71,12 +70,16 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+      
         Order::resetSearchValue($request);
+       
         $params = Order::filters($request);
-
+       
         if (Order::filter($params)->get()->count() < 30) {
+          
             $orders = Order::filter($params)->latest()->get();
         } else {
+          
             $orders = Order::filter($params)->latest()->paginate(30);
         }
 
@@ -191,8 +194,8 @@ class OrderController extends Controller
         $this->orderService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.order_stored')))->success()->important();
-
-        return redirect(route('laravel-crm.orders.index'));
+        return response()->json(["response"=>true]);
+       // return redirect(route('laravel-crm.orders.index'));
     }
 
     /**
@@ -218,7 +221,6 @@ class OrderController extends Controller
             'phone' => $phone ?? null,
             'organisation_address' => $address ?? null,
             'addresses' => $order->addresses,
-            'purchaseOrders' => $order->purchaseOrders()->latest()->get(),
             'invoices' => $order->invoices()->latest()->get(),
             'deliveries' => $order->deliveries()->latest()->get(),
         ]);
@@ -299,8 +301,8 @@ class OrderController extends Controller
         $order = $this->orderService->update($request, $order, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.order_updated')))->success()->important();
-
-        return redirect(route('laravel-crm.orders.show', $order));
+        return response()->json(["response"=>true]);
+       // return redirect(route('laravel-crm.orders.show', $order));
     }
 
     /**
@@ -314,14 +316,15 @@ class OrderController extends Controller
         $order->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.order_deleted')))->success()->important();
-
-        return redirect(route('laravel-crm.orders.index'));
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.orders.index'));
     }
 
     public function search(Request $request)
     {
+        
         $searchValue = Order::searchValue($request);
-
+       
         if (! $searchValue || trim($searchValue) == '') {
             return redirect(route('laravel-crm.orders.index'));
         }
@@ -339,29 +342,21 @@ class OrderController extends Controller
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'orders.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'orders.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
-            ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
                 foreach ($record->getSearchable() as $field) {
+                    
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
-
-                        if(config('laravel-crm.encrypt_db_fields')) {
-                            try {
-                                $relatedField = decrypt($record->{$field[1]});
-                            } catch (DecryptException $e) {
-                                $relatedField = $record->{$field[1]};
-                            }
-                        } else {
-                            $relatedField = $record->{$field[1]};
-                        }
-
-                        if ($record->{$field[1]} && $relatedField) {
-                            if (Str::contains(strtolower($relatedField), strtolower($searchValue))) {
+                        if ($record->{$field[1]} ) {
+                           
+                            if (Str::contains(strtolower($record->{$field[1]}), strtolower($searchValue))) {
+                                
                                 return $record;
                             }
                         }
                     } elseif ($record->{$field}) {
+                       
                         if (Str::contains(strtolower($record->{$field}), strtolower($searchValue))) {
                             return $record;
                         }

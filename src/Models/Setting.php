@@ -41,11 +41,6 @@ class Setting extends Model
         return config('laravel-crm.db_table_prefix').'settings';
     }
 
-    public function user()
-    {
-        return $this->belongsTo(\App\Models\User::class);
-    }
-
     public function scopeCurrency($query)
     {
         return $query->where('name', 'currency')->first();

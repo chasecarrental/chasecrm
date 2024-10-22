@@ -11,6 +11,7 @@
         @endif   
         <input id="input_{{ $name }}" type="{{ $type ?? 'text' }}" name="{{ $name }}" value="{{ $value ?? null }}" class="form-control @error($name) is-invalid @enderror" @include('laravel-crm::partials.form.attributes') >
         @if(isset($prepend) || isset($append))
+        
             @isset($append)
                 <div class="input-group-append">
                     <span class="input-group-text" id="inputGroupPrepend">{!! $append !!}</span>
@@ -18,9 +19,10 @@
             @endisset
         </div>
         @endif
+        
         <span class="badge badge-primary autocomplete-new" @if((isset($new) && $new)) style="display: inline" @endif>New</span>
     </div>
     @error($name)
     <div class="text-danger invalid-feedback-custom">{{ $message }}</div>
     @enderror
-</div>        
+</div>     

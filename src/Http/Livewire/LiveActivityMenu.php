@@ -8,32 +8,32 @@ class LiveActivityMenu extends Component
 {
     public function addNote()
     {
-        $this->emit('addNoteActivity');
+        $this->dispatch('addNoteActivity');
     }
 
     public function addTask()
     {
-        $this->emit('addTaskActivity');
+        $this->dispatch('addTaskActivity');
     }
 
     public function addCall()
     {
-        $this->emit('addCallActivity');
+        $this->dispatch('addCallActivity');
     }
 
     public function addMeeting()
     {
-        $this->emit('addMeetingActivity');
+        $this->dispatch('addMeetingActivity');
     }
 
     public function addLunch()
     {
-        $this->emit('addLunchActivity');
+        $this->dispatch('addLunchActivity');
     }
 
     public function addFile()
     {
-        $this->emit('addFileActivity');
+        $this->dispatch('addFileActivity');
     }
 
     public function render()

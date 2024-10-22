@@ -71,7 +71,7 @@ class LiveTask extends Component
             'reminder_sms' => 0,
         ]);
         $this->toggleEditMode();
-        $this->emit('refreshComponent');
+        $this->dispatch('refreshComponent');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.task_updated'))
         );
@@ -83,7 +83,7 @@ class LiveTask extends Component
             'completed_at' => Carbon::now(),
         ]);
 
-        $this->emit('taskCompleted');
+        $this->dispatch('taskCompleted');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.task_completed'))
         );
@@ -93,7 +93,7 @@ class LiveTask extends Component
     {
         $this->task->delete();
 
-        $this->emit('taskDeleted');
+        $this->dispatch('taskDeleted');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.task_deleted'))
         );
@@ -103,7 +103,7 @@ class LiveTask extends Component
     {
         $this->editMode = ! $this->editMode;
 
-        $this->dispatchBrowserEvent('taskEditModeToggled');
+        $this->dispatch('taskEditModeToggled');
     }
 
     public function render()

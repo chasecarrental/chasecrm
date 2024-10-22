@@ -6,23 +6,16 @@ require('chart.js/dist/chart.min')
 require('../../bower_components/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js')
 require('select2/dist/js/select2.min')
 require('bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min')
-require('trix/dist/trix.esm')
+require('trix/dist/trix')
 
 import bsCustomFileInput from 'bs-custom-file-input'
 
 const Swal = require('sweetalert2')
 
-window.Sortable = require('sortablejs').default;
-
 // Little bit of Jquery
 const appJquery = function() {
     return {
         init: function () {
-            $('form button[type="submit"]').on('click', function(event) {
-                setTimeout(function () {
-                    event.target.disabled = true;
-                }, 0);
-            });
 
             $.ajaxSetup({
                 headers: {
@@ -52,7 +45,6 @@ const appJquery = function() {
                 ' input[name="expire_at"],' +
                 ' input[name="issue_date"],' +
                 ' input[name="due_date"],' +
-                ' input[name="delivery_date"],' +
                 ' input[name="delivery_expected"],' +
                 ' input[name="delivered_on"]').datetimepicker({
                 timepicker:false,
@@ -107,23 +99,12 @@ const appJquery = function() {
                     data: products,
                     tags: tags
                 });
-
-                $("td.bind-select2 select[name^='purchaseOrderLines']").select2({
-                    data: products,
-                    tags: tags
-                });
-            }
-
-            if(typeof organisations !== 'undefined'){
-                $("td.bind-select2-organisations select[name^='purchaseOrderLines']").select2({
-                    data: organisations
-                });
             }
 
             $('#input_hex').colorpicker();
 
             $('form.form-delete-button > button[type="submit"]').on('click', function (e) {
-
+                console.log("Entre Aca 2");
                 Swal.fire({
                     customClass: {
                         confirmButton: 'btn btn-danger',
@@ -145,6 +126,8 @@ const appJquery = function() {
 
                 e.preventDefault();
             })
+
+        
 
             if (typeof people !== 'undefined') {
                 appJquery.bindPersonAutocomplete();

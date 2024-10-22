@@ -66,21 +66,6 @@
              'rows' => 5,
              'value' => old('terms', $quote->terms ?? $quoteTerms->value ?? null) 
         ])
-
-        @if($pipeline)
-            @include('laravel-crm::partials.form.select',[
-                     'name' => 'pipeline_stage_id',
-                     'label' => ucfirst(__('laravel-crm::lang.stage')),
-                     'options' => $pipeline->pipelineStages()
-                                            ->orderBy('order')
-                                            ->orderBy('id')
-                                            ->pluck('name', 'id') ?? [],
-                     'value' =>  old('pipeline_stage_id', $quote->pipelineStage->id ?? $stage ?? $pipeline->pipelineStages()
-                                            ->orderBy('order')
-                                            ->orderBy('id')
-                                            ->first()->id ?? null),
-              ])
-        @endif
         
         @include('laravel-crm::partials.form.multiselect',[
             'name' => 'labels',
@@ -90,14 +75,11 @@
         ])
 
         @include('laravel-crm::partials.form.select',[
-             'name' => 'user_owner_id',
-             'label' => ucfirst(__('laravel-crm::lang.owner')),
-             'options' => ['' => ucfirst(__('laravel-crm::lang.unallocated'))] + \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-             'value' =>  old('user_owner_id', (isset($quote)) ? $quote->user_owner_id ?? '' : auth()->user()->id),
-        ])
-
-        @include('laravel-crm::fields.partials.model', ['model' => $quote ?? new \VentureDrake\LaravelCrm\Models\Quote()])
-
+                 'name' => 'user_owner_id',
+                 'label' => ucfirst(__('laravel-crm::lang.owner')),
+                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+                 'value' =>  old('user_owner_id', $quote->user_owner_id ?? auth()->user()->id),
+              ])
     </div>
     <div class="col-sm-7">
         @livewire('quote-items',[

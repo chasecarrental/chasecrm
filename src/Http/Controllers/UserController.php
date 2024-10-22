@@ -4,8 +4,10 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Ramsey\Uuid\Uuid;
 use App\User;
+use App\Models\Location;
 use DB;
 use Illuminate\Support\Facades\Hash;
+
 use VentureDrake\LaravelCrm\Http\Requests\InviteUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\StoreUserRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateUserRequest;
@@ -64,8 +66,8 @@ class UserController extends Controller
     public function sendInvite(InviteUserRequest $request)
     {
         flash(ucfirst(trans('laravel-crm::lang.user_invitation_sent')))->success()->important();
-
-        return redirect(route('laravel-crm.users.index'));
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.users.index'));
     }
 
     /**
@@ -75,10 +77,14 @@ class UserController extends Controller
      */
     public function create()
     {
+        $locations = Location::pluck('name', 'id');
+        $user = new User();
         $teams = Team::orderBy('name', 'ASC')->get();
 
         return view('laravel-crm::users.create', [
+            'user'=>$user,
             'teams' => $teams,
+            'locations' =>$locations
         ]);
     }
 
@@ -94,6 +100,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'location' => $request->location,
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ]);
 
@@ -132,8 +139,8 @@ class UserController extends Controller
         }
 
         flash(ucfirst(trans('laravel-crm::lang.user_stored')))->success()->important();
-
-        return redirect(route('laravel-crm.users.index'));
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.users.index'));
     }
 
     /**
@@ -159,12 +166,15 @@ class UserController extends Controller
     {
         $teams = Team::orderBy('name', 'ASC')->get();
 
+        $locations = Location::pluck('name', 'id'); 
+
         return view('laravel-crm::users.edit', [
             'user' => $user,
             'teams' => $teams,
             'emails' => $user->emails,
             'phones' => $user->phones,
             'addresses' => $user->addresses,
+            'locations' =>$locations
         ]);
     }
 
@@ -177,9 +187,11 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+       
         $user->forceFill([
             'name' => $request->name,
             'email' => $request->email,
+            'location' => $request->location,
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ])->save();
 
@@ -204,8 +216,8 @@ class UserController extends Controller
         }
 
         flash(ucfirst(trans('laravel-crm::lang.user_updated')))->success()->important();
-
-        return redirect(route('laravel-crm.users.show', $user));
+        return response()->json(["response"=>true]);
+       // return redirect(route('laravel-crm.users.show', $user));
     }
 
     /**
@@ -219,8 +231,8 @@ class UserController extends Controller
         $user->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.user_deleted')))->success()->important();
-
-        return redirect(route('laravel-crm.users.index'));
+        return response()->json(["response"=>true]);
+       // return redirect(route('laravel-crm.users.index'));
     }
 
     protected function updateUserPhones($user, $phones)

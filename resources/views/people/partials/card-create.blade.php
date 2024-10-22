@@ -1,4 +1,5 @@
-<form method="POST" action="{{ url(route('laravel-crm.people.store')) }}">
+<form id="personForm" method="POST" action="{{ url(route('laravel-crm.people.store')) }}" onsubmit="submitFormCrm(event, 'personForm', '{{ url(route('laravel-crm.people.store')) }}', '¡Se ha guardado correctamente la persona!', '{{ route('laravel-crm.people.show', $person ?? 1) }}')">
+    <form method="POST" action="{{ url(route('laravel-crm.people.store')) }}">
     @csrf
     @component('laravel-crm::components.card')
 
@@ -24,7 +25,7 @@
         @endcomponent
         
         @component('laravel-crm::components.card-footer')
-                <a href="{{ url(route('laravel-crm.people.index')) }}" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
+                <a href="#" onclick="loadContent('{{ url(route('laravel-crm.people.index')) }}')" class="btn btn-outline-secondary">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</a>
                 <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>
         @endcomponent
         

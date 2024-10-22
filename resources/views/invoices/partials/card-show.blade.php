@@ -27,31 +27,33 @@
                 @livewire('send-invoice',[
                     'invoice' => $invoice
                 ])
-                <a class="btn btn-outline-secondary btn-sm" href="{{ route('laravel-crm.invoices.download', $invoice) }}">{{ ucfirst(__('laravel-crm::lang.download')) }}</a>
-                @if(! $invoice->xeroInvoice)
-                    @if(! $invoice->fully_paid_at)
-                        @livewire('pay-invoice',[
-                            'invoice' => $invoice
-                        ])
-                    @endif
+               <a class="btn btn-outline-secondary btn-sm" href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.invoices.download', $invoice) }}')">
+                    {{ ucfirst(__('laravel-crm::lang.download')) }}
+                </a>
+            
+                @if(! $invoice->fully_paid_at)
+                    @livewire('pay-invoice',[
+                        'invoice' => $invoice
+                    ])
                 @endif
                 @include('laravel-crm::partials.navs.activities') @if($invoice->amount_paid <= 0) |
-                @if(! $invoice->xeroInvoice)
-                    @can('edit crm invoices')
-                    <a href="{{ url(route('laravel-crm.invoices.edit', $invoice)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
-                    @endcan
-                    @can('delete crm invoices')
-                    <form action="{{ route('laravel-crm.invoices.destroy', $invoice) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                @can('edit crm invoices')
+                    <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.invoices.edit', $invoice) }}')" class="btn btn-outline-secondary btn-sm">
+                        <span class="fa fa-edit" aria-hidden="true"></span>
+                    </a>
+                @endcan
+            
+                @can('delete crm invoices')
+                    <form id="deleteInvoiceForm_{{ $invoice->id }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deleteInvoiceForm_{{ $invoice->id }}', '{{ route('laravel-crm.invoices.destroy', $invoice) }}', '{{ __('Invoice deleted successfully!') }}', '{{ route('laravel-crm.invoices.index') }}')">
                         {{ method_field('DELETE') }}
                         {{ csrf_field() }}
-                        <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
+                        <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.invoice') }}">
+                            <span class="fa fa-trash-o" aria-hidden="true"></span>
+                        </button>
                     </form>
-                    @endcan
-                    @endif  
-                @endif
-                @if($invoice->xeroInvoice)
-                    <img src="/vendor/laravel-crm/img/xero-icon.png" height="30" />
-                @endif  
+                @endcan
+            
+                @endif                                                      
             </span>
         @endslot
 
@@ -60,14 +62,14 @@
     @component('laravel-crm::components.card-body')
 
         <div class="row card-show card-fa-w30">
-            <div class="col-sm-6 border-right">
+            <div class="col-sm-6 binvoice-right">
                 <h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.details')) }}</h6>
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">Number</dt>
-                    <dd class="col-sm-9">{{ $invoice->xeroInvoice->number ?? $invoice->invoice_id }}</dd>
+                    <dd class="col-sm-9">{{ $invoice->invoice_id }}</dd>
                     <dt class="col-sm-3 text-right">Reference</dt>
-                    <dd class="col-sm-9">{{ $invoice->xeroInvoice->reference ?? $invoice->reference }}</dd>
+                    <dd class="col-sm-9">{{ $invoice->reference }}</dd>
                     @hasordersenabled
                         @if($invoice->order)
                             <dt class="col-sm-3 text-right">Order</dt>
@@ -85,7 +87,14 @@
                 </dl>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.organization')) }}</h6>
                 <hr />
-                <p><span class="fa fa-building" aria-hidden="true"></span> @if($invoice->organisation)<a href="{{ route('laravel-crm.organisations.show',$invoice->organisation) }}">{{ $invoice->organisation->name }}</a>@endif</p>
+                <p><span class="fa fa-building" aria-hidden="true"></span> 
+                    @if($invoice->organisation)
+                        <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.organisations.show', $invoice->organisation) }}')">
+                            {{ $invoice->organisation->name }}
+                        </a>
+                    @endif
+                </p>
+                
                 <p><span class="fa fa-map-marker" aria-hidden="true"></span> {{ ($organisation_address) ? \VentureDrake\LaravelCrm\Http\Helpers\AddressLine\addressSingleLine($organisation_address) : null }} </p>
                 <h6 class="mt-4 text-uppercase">{{ ucfirst(__('laravel-crm::lang.contact_person')) }}</h6>
                 <hr />
@@ -122,14 +131,6 @@
                             <td>{{ money($invoiceLine->tax_amount ?? null, $invoiceLine->currency) }}</td>
                             <td>{{ money($invoiceLine->amount ?? null, $invoiceLine->currency) }}</td>
                         </tr>
-                        @if($invoiceLine->comments)
-                            <tr>
-                                <td colspan="5" class="border-0 pt-0">
-                                    <strong>{{ ucfirst(__('laravel-crm::lang.comments')) }}</strong><br />
-                                    {{ $invoiceLine->comments }}
-                                </td>
-                            </tr>
-                        @endif    
                     @endforeach
                     </tbody>
                     <tfoot>

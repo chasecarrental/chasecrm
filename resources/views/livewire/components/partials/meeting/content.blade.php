@@ -1,5 +1,5 @@
 @if($editMode)
-    <form wire:submit.prevent="update">
+    <form wire:submit="update">
         @include('laravel-crm::livewire.components.partials.meeting.form-fields')
         <div class="form-group">
             <button type="button" class="btn btn-outline-secondary" wire:click="toggleEditMode()">{{ ucfirst(__('laravel-crm::lang.cancel')) }}</button>

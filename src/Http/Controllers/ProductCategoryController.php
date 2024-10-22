@@ -53,7 +53,8 @@ class ProductCategoryController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.product_category_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.product-categories.index'));
+        //return redirect(route('laravel-crm.product-categories.index'));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -98,7 +99,8 @@ class ProductCategoryController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.product_category_updated')))->success()->important();
 
-        return redirect(route('laravel-crm.product-categories.show', $productCategory));
+        //return redirect(route('laravel-crm.product-categories.show', $productCategory));
+        return response()->json(["response"=>true, 'productCategory' => $productCategory]);
     }
 
     /**
@@ -113,6 +115,7 @@ class ProductCategoryController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.product_category_deleted')))->success()->important();
 
-        return redirect(route('laravel-crm.product-categories.index'));
+        //return redirect(route('laravel-crm.product-categories.index'));
+        return response()->json(["response"=>true]);
     }
 }

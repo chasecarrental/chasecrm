@@ -44,21 +44,14 @@ class TaxRateController extends Controller
      */
     public function store(StoreTaxRateRequest $request)
     {
-        $taxRate = TaxRate::create([
+        TaxRate::create([
             'name' => $request->name,
             'rate' => $request->rate,
             'description' => $request->description,
-            'default' => (($request->default == 'on') ? 1 : 0),
-            'tax_type' => $request->tax_type
         ]);
-
-        if($request->default == 'on') {
-            TaxRate::where('id', '!=', $taxRate->id)->update(['default' => 0]);
-        }
 
         flash(ucfirst(trans('laravel-crm::lang.tax_rate_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.tax-rates.index'));
     }
 
     /**
@@ -100,17 +93,12 @@ class TaxRateController extends Controller
             'name' => $request->name,
             'rate' => $request->rate,
             'description' => $request->description,
-            'default' => (($request->default == 'on') ? 1 : 0),
-            'tax_type' => $request->tax_type
         ]);
-
-        if($request->default == 'on') {
-            TaxRate::where('id', '!=', $taxRate->id)->update(['default' => 0]);
-        }
 
         flash(ucfirst(trans('laravel-crm::lang.tax_rate_updated')))->success()->important();
 
-        return redirect(route('laravel-crm.tax-rates.show', $taxRate));
+        //return redirect(route('laravel-crm.tax-rates.show', $taxRate));
+        return response()->json(["response"=>true, 'taxRate' => $taxRate]);
     }
 
     /**
@@ -125,6 +113,7 @@ class TaxRateController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.tax_rate_deleted')))->success()->important();
 
-        return redirect(route('laravel-crm.tax-rates.index'));
+        //return redirect(route('laravel-crm.tax-rates.index'));
+        return response()->json(["response"=>true]);
     }
 }

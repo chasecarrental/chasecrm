@@ -1,7 +1,5 @@
-@extends('laravel-crm::layouts.app')
 
-@section('content')
-
+@include('laravel-crm::styles')
     <div class="card">
         <div class="card-header">
             @include('laravel-crm::layouts.partials.nav-activities')
@@ -16,11 +14,35 @@
                 @endforeach
             @endif
         </div>
-        @if($files instanceof \Illuminate\Pagination\LengthAwarePaginator )
-            <div class="card-footer">
-                {{ $files->links() }}
-            </div>
-        @endif
+        @if($files instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        <div class="card-footer">
+            <ul class="pagination justify-content-end">
+                @if ($files->onFirstPage())
+                    <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                @else
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/files?page=' . ($files->currentPage() - 1)) }}')">Previous</a>
+                    </li>
+                @endif
+    
+                @foreach ($files->getUrlRange(1, $files->lastPage()) as $page => $url)
+                    <li class="page-item @if ($page == $files->currentPage()) active @endif">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/files?page=' . $page) }}')">{{ $page }}</a>
+                    </li>
+                @endforeach
+    
+                @if ($files->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/files?page=' . ($files->currentPage() + 1)) }}')">Next</a>
+                    </li>
+                @else
+                    <li class="page-item disabled"><span class="page-link">Next</span></li>
+                @endif
+            </ul>
+        </div>
+    @endif
+    
     </div>
 
-@endsection
+
+    @include('laravel-crm::codification')

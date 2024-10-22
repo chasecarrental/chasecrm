@@ -24,12 +24,12 @@
           'value' => old('password_confirmation'),
           'required' => 'true'
         ])
-        <div class="form-group">
-            <label for="crm_access">{{ ucfirst(__('laravel-crm::lang.CRM_access')) }}</label>
-            <span class="form-control-toggle">
-                 <input id="crm_access" type="checkbox" name="crm_access" {{ (isset($user) && ($user->crm_access == 1 || $user->isCrmOwner())) ? 'checked' : null }} {{ (isset($user) && $user->isCrmOwner()) ? 'disabled' : null }} data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">
-            </span>
-            </div>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="crm_access" name="crm_access" 
+                   {{ (isset($user) && ($user->crm_access == 1 || $user->isCrmOwner())) ? 'checked' : null }}
+                   {{ (isset($user) && $user->isCrmOwner()) ? 'disabled' : null }}>
+            <label class="form-check-label" for="crm_access">{{ ucfirst(__('laravel-crm::lang.CRM_access')) }}</label>
+        </div>
         @if(isset($user) && $user->isCrmOwner())
             @include('laravel-crm::partials.form.select',[
                'name' => 'role',
@@ -51,6 +51,14 @@
                 })->get()),
                 'value' => old('role', ((isset($user)) ? ($user->roles()->first()->id ?? null) : null)),
             ]) 
+        @endif
+        
+        @if(Auth::user()->hasRole('Administrador'))
+            <div class="form-group mt-2">
+                {{ Form::label('location', 'Ubicación') }}
+                {{ Form::select('location', $locations, $user->location, ['class' => 'form-control' . ($errors->has('location') ? ' is-invalid' : '')]) }}
+                {!! $errors->first('location', '<div class="invalid-feedback">:message</div>') !!}
+            </div>
         @endif
 
         @hasteamsenabled

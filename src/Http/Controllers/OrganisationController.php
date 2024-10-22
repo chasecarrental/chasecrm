@@ -89,7 +89,8 @@ class OrganisationController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.organization_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.organisations.index'));
+        //return redirect(route('laravel-crm.organisations.index'));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -116,6 +117,7 @@ class OrganisationController extends Controller
      */
     public function edit(Organisation $organisation)
     {
+        
         return view('laravel-crm::organisations.edit', [
             'organisation' => $organisation,
             'emails' => $organisation->emails,
@@ -139,7 +141,8 @@ class OrganisationController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.organization_updated')))->success()->important();
 
-        return redirect(route('laravel-crm.organisations.show', $organisation));
+        //return redirect(route('laravel-crm.organisations.show', $organisation));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -161,7 +164,8 @@ class OrganisationController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.organization_deleted')))->success()->important();
 
-        return redirect(route('laravel-crm.organisations.index'));
+        //return redirect(route('laravel-crm.organisations.index'));
+        return response()->json(["response"=>true]);
     }
 
     public function search(Request $request)
@@ -169,7 +173,8 @@ class OrganisationController extends Controller
         $searchValue = Organisation::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            return redirect(route('laravel-crm.organisations.index'));
+            //return redirect(route('laravel-crm.organisations.index'));
+        return response()->json(["response"=>true]);
         }
 
         $params = Organisation::filters($request, 'search');

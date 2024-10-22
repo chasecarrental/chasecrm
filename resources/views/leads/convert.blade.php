@@ -1,7 +1,12 @@
-@extends('laravel-crm::layouts.app')
 
-@section('content')
+    @include('laravel-crm::styles') 
+
+
     
     @include('laravel-crm::leads.partials.card-convert')
     
-@endsection
+
+
+
+    @include('laravel-crm::codification') 
+

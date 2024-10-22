@@ -65,7 +65,7 @@ class LiveTasks extends Component
             'recordable_id' => $task->id,
         ]);
 
-        $this->emit('taskAdded');
+        $this->dispatch('taskAdded');
 
         $this->notify(
             'Task created',
@@ -94,21 +94,21 @@ class LiveTasks extends Component
             $this->tasks = Task::whereIn('id', $taskIds)->latest()->get();
         }
 
-        $this->emit('refreshActivities');
+        $this->dispatch('refreshActivities');
     }
 
     public function addTaskToggle()
     {
         $this->showForm = ! $this->showForm;
 
-        $this->dispatchBrowserEvent('taskEditModeToggled');
+        $this->dispatch('taskEditModeToggled');
     }
 
     public function addTaskOn()
     {
         $this->showForm = true;
 
-        $this->dispatchBrowserEvent('taskAddOn');
+        $this->dispatch('taskAddOn');
     }
 
     private function resetFields()

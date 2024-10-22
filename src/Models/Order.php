@@ -30,7 +30,7 @@ class Order extends Model
 
     protected $filterable = [
         'user_owner_id',
-        'labels.id',
+        'labels.id'
     ];
 
     public function getSearchable()
@@ -185,11 +185,6 @@ class Order extends Model
     public function labels()
     {
         return $this->morphToMany(\VentureDrake\LaravelCrm\Models\Label::class, config('laravel-crm.db_table_prefix').'labelable');
-    }
-
-    public function purchaseOrders()
-    {
-        return $this->hasMany(\VentureDrake\LaravelCrm\Models\PurchaseOrder::class);
     }
 
     public function invoices()

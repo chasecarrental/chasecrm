@@ -115,18 +115,6 @@ class Settings
             ]);
 
             Setting::firstOrCreate([
-                'name' => 'lead_prefix',
-            ], [
-                'value' => 'LD-',
-            ]);
-
-            Setting::firstOrCreate([
-                'name' => 'deal_prefix',
-            ], [
-                'value' => 'DL-',
-            ]);
-
-            Setting::firstOrCreate([
                 'name' => 'quote_prefix',
             ], [
                 'value' => 'QU-',
@@ -151,12 +139,6 @@ class Settings
             ]);
 
             Setting::firstOrCreate([
-                'name' => 'purchase_order_prefix',
-            ], [
-                'value' => 'PO-',
-            ]);
-
-            Setting::firstOrCreate([
                 'name' => 'dynamic_products',
             ], [
                 'value' => '1',
@@ -168,13 +150,7 @@ class Settings
                 'value' => '0',
             ]);
 
-            if(Str::startsWith(config('laravel-crm.version'), '0.')) {
-                $currentVersion = (int) Str::replace('.', '', config('laravel-crm.version'));
-            } else {
-                $currentVersion = (int) Str::replace('.', '', config('laravel-crm.version')) * 10;
-            }
-
-            if($currentVersion >= 180) {
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 180) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0180',
@@ -183,7 +159,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 181) {
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 181) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0181',
@@ -192,7 +168,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 191) {
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 191) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0191',
@@ -201,7 +177,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 193) {
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 193) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0193',
@@ -210,7 +186,7 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 194) {
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 194) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0194',
@@ -219,19 +195,10 @@ class Settings
                 ]);
             }
 
-            if($currentVersion >= 199) {
+            if((int) Str::replace('.', '', config('laravel-crm.version')) >= 199) {
                 Setting::firstOrCreate([
                     'global' => 1,
                     'name' => 'db_update_0199',
-                ], [
-                    'value' => 0,
-                ]);
-            }
-
-            if($currentVersion >= 1200) {
-                Setting::firstOrCreate([
-                    'global' => 1,
-                    'name' => 'db_update_1200',
                 ], [
                     'value' => 0,
                 ]);

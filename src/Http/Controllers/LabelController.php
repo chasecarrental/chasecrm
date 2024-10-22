@@ -56,7 +56,8 @@ class LabelController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.label_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.labels.index'));
+        //return redirect(route('laravel-crm.labels.index'));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -102,7 +103,8 @@ class LabelController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.label_updated')))->success()->important();
 
-        return redirect(route('laravel-crm.labels.show', $label));
+        //return redirect(route('laravel-crm.labels.show', $label));
+        return response()->json(["response"=>true, 'label' => $label]);
     }
 
     /**
@@ -117,6 +119,7 @@ class LabelController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.label_deleted')))->success()->important();
 
-        return redirect(route('laravel-crm.labels.index'));
+        //return redirect(route('laravel-crm.labels.index'));
+        return response()->json(["response"=>true]);
     }
 }

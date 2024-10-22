@@ -110,7 +110,7 @@ class SendQuote extends Component
 
         $this->resetFields();
 
-        $this->dispatchBrowserEvent('quoteSent');
+        $this->dispatch('quoteSent');
     }
 
     public function generateUrl()

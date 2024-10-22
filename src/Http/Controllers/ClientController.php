@@ -26,8 +26,10 @@ class ClientController extends Controller
         $params = Client::filters($request);
         $clients = Client::filter($params);
 
+       
         // This is  not the best, will refactor. Problem with trying to sort encryoted fields
         if (request()->only(['sort', 'direction']) && config('laravel-crm.encrypt_db_fields')) {
+            
             $clients = $clients->get();
 
             foreach ($clients as $key => $client) {
@@ -46,13 +48,14 @@ class ClientController extends Controller
                 $clients = $clients->paginate(30);
             }
         } else {
+           
             if ($clients->count() < 30) {
                 $clients = $clients->sortable(['created_at' => 'desc'])->get();
             } else {
                 $clients = $clients->sortable(['created_at' => 'desc'])->paginate(30);
             }
         }
-
+       
         return view('laravel-crm::clients.index', [
             'clients' => $clients,
         ]);
@@ -76,6 +79,7 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
+     
         $client = Client::create([
              'name' => $request->name,
              'user_owner_id' => $request->user_owner_id,
@@ -85,7 +89,8 @@ class ClientController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.client_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.clients.index'));
+        //return redirect(route('laravel-crm.clients.index'));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -96,6 +101,7 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
+      
         return view('laravel-crm::clients.show', [
              'client' => $client,
          ]);
@@ -132,7 +138,8 @@ class ClientController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.client_updated')))->success()->important();
 
-        return redirect(route('laravel-crm.clients.show', $client));
+        //return redirect(route('laravel-crm.clients.show', $client));
+        return response()->json(["response"=>true, 'client' => $client]);
     }
 
     /**
@@ -147,7 +154,8 @@ class ClientController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.client_deleted')))->success()->important();
 
-        return redirect(route('laravel-crm.clients.index'));
+        //return redirect(route('laravel-crm.clients.index'));
+        return response()->json(["response"=>true]);
     }
 
     public function search(Request $request)
@@ -155,7 +163,8 @@ class ClientController extends Controller
         $searchValue = Client::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            return redirect(route('laravel-crm.clients.index'));
+            //return redirect(route('laravel-crm.clients.index'));
+            return response()->json(["response"=>true]);
         }
 
         $params = Client::filters($request, 'search');

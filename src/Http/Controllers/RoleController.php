@@ -6,6 +6,7 @@ use Spatie\Permission\Models\Permission;
 use VentureDrake\LaravelCrm\Http\Requests\StoreRoleRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateRoleRequest;
 use VentureDrake\LaravelCrm\Models\Role;
+use App\Models\User;
 
 class RoleController extends Controller
 {
@@ -34,9 +35,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        return view('laravel-crm::roles.create', [
-            'permissions' => \VentureDrake\LaravelCrm\Models\Permission::all(),
-        ]);
+        $data = User::obtener_permisos();
+        return view('laravel-crm::roles.create', ['datos' => $data]);
     }
 
     /**
@@ -73,7 +73,8 @@ class RoleController extends Controller
 
         flash(ucfirst(trans('laravel-crm::lang.role_stored')))->success()->important();
 
-        return redirect(route('laravel-crm.roles.index'));
+        //return redirect(route('laravel-crm.roles.index'));
+        return response()->json(["response"=>true]);
     }
 
     /**
@@ -86,6 +87,7 @@ class RoleController extends Controller
     {
         return view('laravel-crm::roles.show', [
             'role' => $role,
+            
         ]);
     }
 
@@ -97,9 +99,10 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        $data = User::obtener_permisos();
         return view('laravel-crm::roles.edit', [
             'role' => $role,
-            'permissions' => \VentureDrake\LaravelCrm\Models\Permission::all(),
+            'datos' => $data
         ]);
     }
 
@@ -129,7 +132,8 @@ class RoleController extends Controller
             flash(ucfirst(trans('laravel-crm::lang.role_cant_be_updated')))->error()->important();
         }
 
-        return redirect(route('laravel-crm.roles.show', $role));
+        //return redirect(route('laravel-crm.roles.show', $role));
+        return response()->json(["response"=>true, 'role' => $role]);
     }
 
     /**
@@ -152,6 +156,7 @@ class RoleController extends Controller
             flash(ucfirst(trans('laravel-crm::lang.role_cant_be_deleted')))->error()->important();
         }
 
-        return redirect(route('laravel-crm.roles.index'));
+        //return redirect(route('laravel-crm.roles.index'));
+        return response()->json(["response"=>true]);
     }
 }

@@ -43,7 +43,7 @@ class LiveFile extends Component
     {
         $this->file->delete();
 
-        $this->emit('fileDeleted');
+        $this->dispatch('fileDeleted');
         $this->notify(
             'File deleted.'
         );

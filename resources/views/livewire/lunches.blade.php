@@ -2,7 +2,7 @@
     {{--<h6 class="text-uppercase">{{ ucfirst(__('laravel-crm::lang.lunches')) }}</h6>
     <hr />--}}
     @if($showForm)
-        <form wire:submit.prevent="create" id="inputCreateForm">
+        <form wire:submit="create" id="inputCreateForm">
             @include('laravel-crm::livewire.components.partials.lunch.form-fields')
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">{{ ucfirst(__('laravel-crm::lang.save')) }}</button>

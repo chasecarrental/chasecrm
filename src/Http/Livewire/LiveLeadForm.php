@@ -60,14 +60,14 @@ class LiveLeadForm extends Component
 
             $this->clientHasPeople = false;
 
-            $this->dispatchBrowserEvent('clientNameUpdated');
+            $this->dispatch('clientNameUpdated');
 
             if (! $this->organisation_id) {
-                $this->dispatchBrowserEvent('selectedOrganisation');
+                $this->dispatch('selectedOrganisation');
             }
 
             if (! $this->person_id) {
-                $this->dispatchBrowserEvent('selectedPerson');
+                $this->dispatch('selectedPerson');
             }
         }
     }
@@ -76,7 +76,7 @@ class LiveLeadForm extends Component
     {
         if ($organisation = Organisation::find($value)) {
             $address = $organisation->getPrimaryAddress();
-            $this->dispatchBrowserEvent('selectedOrganisation', [
+            $this->dispatch('selectedOrganisation', [
                 'id' => $value,
                 'address_line1' => $address->line1 ?? null,
                 'address_line2' => $address->line2 ?? null,
@@ -88,7 +88,7 @@ class LiveLeadForm extends Component
             ]);
             $this->organisation_name = $organisation->name;
         } else {
-            $this->dispatchBrowserEvent('selectedOrganisation');
+            $this->dispatch('selectedOrganisation');
         }
     }
 
@@ -102,7 +102,7 @@ class LiveLeadForm extends Component
         if ($person = Person::find($value)) {
             $email = $person->getPrimaryEmail();
             $phone = $person->getPrimaryPhone();
-            $this->dispatchBrowserEvent('selectedPerson', [
+            $this->dispatch('selectedPerson', [
                 'id' => $value,
                 'email' => $email->address ?? null,
                 'email_type' => $email->type ?? null,
@@ -110,7 +110,7 @@ class LiveLeadForm extends Component
                 'phone_type' => $phone->type ?? null,
             ]);
         } else {
-            $this->dispatchBrowserEvent('selectedPerson');
+            $this->dispatch('selectedPerson');
         }
     }
 

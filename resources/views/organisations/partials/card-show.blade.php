@@ -16,30 +16,30 @@
                 ]) | 
                 @hasleadsenabled
                 @can('create crm leads')
-                    <a href="{{ route('laravel-crm.leads.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.leads.create', ['model' => 'organisation', 'id' => $organisation->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-crosshairs" aria-hidden="true"></span></a>
                 @endcan
                 @endhasleadsenabled
                 @hasdealsenabled
                 @can('create crm deals')
-                    <a href="{{ route('laravel-crm.deals.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.deals.create', ['model' => 'organisation', 'id' => $organisation->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-dollar" aria-hidden="true"></span></a>
                 @endcan
                 @endhasdealsenabled
                 @hasquotesenabled
                 @can('create crm quotes')
-                    <a href="{{ route('laravel-crm.quotes.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.quotes.create', ['model' => 'organisation', 'id' => $organisation->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-file-text" aria-hidden="true"></span></a>
                 @endcan
                 @endhasquotesenabled
                 @hasordersenabled
                 @can('create crm orders')
-                    <a href="{{ route('laravel-crm.orders.create', ['model' => 'organisation', 'id' => $organisation->id]) }}" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
+                    <a href="#" onclick="loadContent('{{ route('laravel-crm.orders.create', ['model' => 'organisation', 'id' => $organisation->id]) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-arrow-right" aria-hidden="true"></span> <span class="fa fa-shopping-cart" aria-hidden="true"></span></a>
                 @endcan
                 @endhasordersenabled
                 @include('laravel-crm::partials.navs.activities') | 
                 @can('edit crm organisations')
-                <a href="{{ url(route('laravel-crm.organisations.edit', $organisation)) }}" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
+                <a href="#" onclick="loadContent('{{ url(route('laravel-crm.organisations.edit', $organisation)) }}')" type="button" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                 @endcan
                 @can('delete crm organisations')
-                <form action="{{ route('laravel-crm.organisations.destroy',$organisation) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                <form id="deleteOrganisationForm_{{ $organisation->id }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deleteOrganisationForm_{{ $organisation->id }}', '{{ route('laravel-crm.organisations.destroy', $organisation) }}', '{{ __('Organisation deleted successfully!') }}', '{{ route('laravel-crm.organisations.index') }}')">
                     {{ method_field('DELETE') }}
                     {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.organization') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
@@ -61,18 +61,6 @@
                     <dd class="col-sm-9">{{ $organisation->name }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.type')) }}</dt>
                     <dd class="col-sm-9">{{ $organisation->organisationType->name ?? null }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.vat_number')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->vat_number }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.industry')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->industry->name ?? null }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.timezone')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->timezone->name ?? null }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.number_of_employees')) }}</dt>
-                    <dd class="col-sm-9">{{ $organisation->number_of_employees }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.annual_revenue')) }}</dt>
-                    <dd class="col-sm-9">{{ money($organisation->annual_revenue, $organisation->currency) }}</dd>
-                    <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.linkedin')) }}</dt>
-                    <dd class="col-sm-9">https://linkedin.com/company/{{ $organisation->linkedin }}</dd>
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.description')) }}</dt>
                     <dd class="col-sm-9">{{ $organisation->description }}</dd>
                     @foreach($phones as $phone)
@@ -100,9 +88,7 @@
                 <hr />
                 <dl class="row">
                     <dt class="col-sm-3 text-right">{{ ucfirst(__('laravel-crm::lang.name')) }}</dt>
-                    <dd class="col-sm-9">
-                        @if($organisation->ownerUser)<a href="{{ route('laravel-crm.users.show', $organisation->ownerUser) }}">{{ $organisation->ownerUser->name ?? null }}</a> @else  {{ ucfirst(__('laravel-crm::lang.unallocated')) }} @endif
-                    </dd>
+                    <dd class="col-sm-9"><a href="{{ route('laravel-crm.users.show', $organisation->ownerUser) }}">{{ $organisation->ownerUser->name }}</a></dd>
                 </dl>
                 @livewire('related-contact-people',[
                     'model' => $organisation

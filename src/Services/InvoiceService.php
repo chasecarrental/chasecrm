@@ -8,7 +8,6 @@ use VentureDrake\LaravelCrm\Models\Invoice;
 use VentureDrake\LaravelCrm\Models\InvoiceLine;
 use VentureDrake\LaravelCrm\Models\Product;
 use VentureDrake\LaravelCrm\Models\Setting;
-use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Models\XeroInvoice;
 use VentureDrake\LaravelCrm\Repositories\InvoiceRepository;
 
@@ -30,12 +29,13 @@ class InvoiceService
 
     public function create($request, $person = null, $organisation = null)
     {
+      
         $invoice = Invoice::create([
             'order_id' => $request->order_id ?? null,
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
             'reference' => $request->reference,
-            'issue_date' => $request->issue_date,
+            'issue_date' => $request->issue_date, // AQUI DEBE PASARSE LA FECHA DE HOY EN ESE FORMATO
             'due_date' => $request->due_date,
             'currency' => $request->currency,
             'terms' => $request->terms,
@@ -44,7 +44,8 @@ class InvoiceService
             'total' => $request->total,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
-
+        
+      
         if (isset($request->invoiceLines)) {
             foreach ($request->invoiceLines as $invoiceLine) {
                 if(isset($invoiceLine['product_id']) && $invoiceLine['quantity'] > 0) {
@@ -60,8 +61,6 @@ class InvoiceService
                             $taxRate = $product->taxRate->rate;
                         } elseif($product->tax_rate) {
                             $taxRate = $product->tax_rate;
-                        } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                            $taxRate = $taxRate->rate;
                         } else {
                             $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                         }
@@ -75,8 +74,8 @@ class InvoiceService
                         'tax_rate' => $taxRate ?? 0,
                         'tax_amount' => $invoiceLine['amount'] * ($taxRate / 100),
                         'currency' => $request->currency,
-                        'order_product_id' => $invoiceLine['order_product_id'] ?? null,
                         'comments' => $invoiceLine['comments'],
+                        //'order_product_id' => $invoiceLine['order_product_id'] ?? null,
                     ]);
                 }
             }
@@ -94,7 +93,7 @@ class InvoiceService
                     /*'TaxAmount' => ($line->tax_total->value / 100),*/
                     // 'LineAmount' => null,
                     'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
-                    'AccountCode' => $line->product->sales_account ?? 200,
+                    'AccountCode' => 200, // Added setting for this
                 ];
             }
 
@@ -126,9 +125,95 @@ class InvoiceService
 
         return $invoice;
     }
+    public function duplicate($request, $person = null, $organisation = null,$invoiceLines,$dateFormat)
+    {
+        // Obtiene la fecha de hoy usando Carbon
+        $today = Carbon::now();
 
+        // Formatea la fecha al formato d/m/Y
+        $today = $today->format('d/m/Y');
+       
+       
+        $invoice = Invoice::create([
+            'order_id' => $request->order_id ?? null,
+            'person_id' => $person->id ?? null,
+            'organisation_id' => $organisation->id ?? null,
+            'reference' => $request->reference,
+            'issue_date' => $today,
+            'due_date' => $today,
+            'currency' => $request->currency,
+            'terms' => $request->terms,
+            'subtotal' => $request->sub_total/100,
+            'tax' => $request->tax/100,
+            'total' => $request->total/100,
+            'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
+        ]);
+
+        if (isset($invoiceLines)) {
+            foreach ($invoiceLines as $invoiceLine) {
+                     
+                    $invoice->invoiceLines()->create([
+                        'product_id' => $invoiceLine['product_id'],
+                        'quantity' => $invoiceLine['quantity'],
+                        'price' => $invoiceLine['price']/100,
+                        'amount' => $invoiceLine['amount']/100,
+                        'tax_rate' => $invoiceLine['tax_rate'],
+                        'tax_amount' => $invoiceLine['tax_amount']/100,
+                        'currency' => $request->currency,
+                        'comments' => $invoiceLine['comments'],
+                        'order_product_id' => $invoiceLine['order_product_id'] ?? null,
+                    ]);
+                
+            }
+        }
+
+        if (Xero::isConnected()) {
+            $lineItems = [];
+
+            foreach ($invoice->invoiceLines as $line) {
+                $lineItems[] = [
+                    'Description' => $line->product->name,
+                    'Quantity' => $line->quantity,
+                    'UnitAmount' => $line->price / 100,
+                    'TaxType' => 'OUTPUT',
+                    /*'TaxAmount' => ($line->tax_total->value / 100),*/
+                    // 'LineAmount' => null,
+                    'ItemCode' => $line->product->xeroItem->code ?? $line->product->code ?? null,
+                    'AccountCode' => 200, // Added setting for this
+                ];
+            }
+
+            try {
+                $xeroInvoice = Xero::invoices()->store([
+                    'Type' => 'ACCREC',
+                    'Status' => 'AUTHORISED',
+                    'Contact' => [
+                        'ContactID' => $invoice->organisation->xeroContact->contact_id,
+                    ],
+                    'LineItems' => $lineItems ?? [],
+                    'Date' => ($invoice->issue_date) ? $invoice->issue_date->format('Y-m-d') : Carbon::now()->format('Y-m-d'),
+                    'DueDate' => ($invoice->due_date) ? $invoice->due_date->format('Y-m-d') : Carbon::now()->addDays(30)->format('Y-m-d'),
+                    'Reference' => $invoice->reference,
+                ]);
+
+                XeroInvoice::create([
+                    'xero_id' => $xeroInvoice['InvoiceID'],
+                    'xero_type' => $xeroInvoice['Type'],
+                    'number' => $xeroInvoice['InvoiceNumber'],
+                    'reference' => $xeroInvoice['Reference'],
+                    'invoice_id' => $invoice->id,
+                    'status' => $xeroInvoice['Status'],
+                ]);
+            } catch (Exception $e) {
+                //
+            }
+        }
+
+        return $invoice;
+    }
     public function update($request, Invoice $invoice, $person = null, $organisation = null)
     {
+        
         $invoice->update([
             'person_id' => $person->id ?? null,
             'organisation_id' => $organisation->id ?? null,
@@ -146,7 +231,7 @@ class InvoiceService
 
         if (isset($request->invoiceLines)) {
             $invoiceLineIds = [];
-
+            info($request->invoiceLines);
             foreach ($request->invoiceLines as $line) {
                 if (isset($line['invoice_line_id']) && $invoiceLine = InvoiceLine::find($line['invoice_line_id'])) {
                     if (! isset($line['product_id']) || $line['quantity'] == 0) {
@@ -163,13 +248,11 @@ class InvoiceService
                                     $taxRate = $product->taxRate->rate;
                                 } elseif($product->tax_rate) {
                                     $taxRate = $product->tax_rate;
-                                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                                    $taxRate = $taxRate->rate;
                                 } else {
                                     $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                                 }
                             }
-
+                           
                             $invoiceLine->update([
                                 'product_id' => $line['product_id'],
                                 'quantity' => $line['quantity'],
@@ -191,13 +274,11 @@ class InvoiceService
                     }
 
                     if (isset($line['product_id']) && $line['product_id'] > 0 && $line['quantity'] > 0) {
-                        if($product = Product::find($line['product_id'])) {
+                        if($product = Product::find($line['product_id'] )) {
                             if($product->taxRate) {
                                 $taxRate = $product->taxRate->rate;
                             } elseif($product->tax_rate) {
                                 $taxRate = $product->tax_rate;
-                            } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                                $taxRate = $taxRate->rate;
                             } else {
                                 $taxRate = Setting::where('name', 'tax_rate')->first()->value ?? 0;
                             }
@@ -233,6 +314,7 @@ class InvoiceService
     {
         $newProduct = Product::create([
             'name' => $product['product_id'],
+            'tax_rate' => Setting::where('name', 'tax_rate')->first()->value ?? null,
             'user_owner_id' => $request->user_owner_id ?? auth()->user()->id,
         ]);
 

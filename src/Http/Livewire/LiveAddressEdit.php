@@ -8,20 +8,20 @@ use VentureDrake\LaravelCrm\Models\AddressType;
 class LiveAddressEdit extends Component
 {
     public $addresses;
-    public $address;
-    public $type;
-    public $type_name;
-    public $contact;
-    public $phone;
-    public $line1;
-    public $line2;
-    public $line3;
-    public $code;
-    public $city;
-    public $state;
-    public $country;
-    public $primary;
-    public $addressId;
+    public $address =[];
+    public $type = [];
+    public $type_name = [];
+    public $contact = [];
+    public $phone = [];
+    public $line1 = [];
+    public $line2 = [];
+    public $line3 = [];
+    public $code = [];
+    public $city = [];
+    public $state = [];
+    public $country = [];
+    public $primary = [];
+    public $addressId = [];
     public $old;
     public $model;
     public $updateMode = false;
@@ -49,16 +49,23 @@ class LiveAddressEdit extends Component
                 $this->city[$this->i] = $address['city'] ?? null;
                 $this->state[$this->i] = $address['state'] ?? null;
                 $this->country[$this->i] = $address['country'] ?? null;
-                $this->primary[$this->i] = $address['primary'] ?? null;
+                if(isset($address['primary']) && $address['primary'] === 0){
+                    $this->primary[$this->i] = false;
+                }elseif(isset($address['primary'])){
+                    $this->primary[$this->i] = true;
+                }else{
+                    $this->primary[$this->i] = false;
+                }
+              
                 $this->addressId[$this->i] = $address['id'] ?? null;
             }
         } elseif ($this->addresses && $this->addresses->count() > 0) {
             foreach ($this->addresses as $address) {
 
-                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->name == 'Shipping') {
+                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->id == 6) {
                     $this->add($this->i);
-                    $this->type[$this->i] = AddressType::where('name', 'Billing')->first()->id;
-                    $this->type_name[$this->i] = 'Billing';
+                    $this->type[$this->i] = 5;
+                    $this->type_name[$this->i] = AddressType::find(5)->name;
                 }
 
                 $this->add($this->i);
@@ -74,13 +81,18 @@ class LiveAddressEdit extends Component
                 $this->city[$this->i] = $address->city;
                 $this->state[$this->i] = $address->state;
                 $this->country[$this->i] = $address->country;
-                $this->primary[$this->i] = $address->primary;
+                if($address->primary === 0){
+                      $this->primary[$this->i] = false;
+                }else{
+                    $this->primary[$this->i] = true;
+                }
+              
                 $this->addressId[$this->i] = $address->id;
 
-                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->name == 'Billing') {
+                if($model == 'order' && $this->addresses->count() == 1 && $address->addressType->id == 5) {
                     $this->add($this->i);
-                    $this->type[$this->i] = AddressType::where('name', 'Billing')->first()->id;
-                    $this->type_name[$this->i] = 'Billing';
+                    $this->type[$this->i] = 5;
+                    $this->type_name[$this->i] = AddressType::find(5)->name;
                 }
             }
         } else {
@@ -97,15 +109,15 @@ class LiveAddressEdit extends Component
                         }
                     }
                 } else {
-                    $this->type[$this->i] = AddressType::where('name', 'Billing')->first()->id;
-                    $this->type_name[$this->i] = 'Billing';
+                    $this->type[$this->i] = 5;
+                    $this->type_name[$this->i] = AddressType::find(5)->name;
                     $this->add($this->i);
-                    $this->type[$this->i] = AddressType::where('name', 'Shipping')->first()->id;
-                    $this->type_name[$this->i] = 'Shipping';
+                    $this->type[$this->i] = 6;
+                    $this->type_name[$this->i] = AddressType::find(6)->name;
                 }
             } elseif ($model == 'delivery') {
-                $this->type[$this->i] = AddressType::where('name', 'Shipping')->first()->id;
-                $this->type_name[$this->i] = 'Shipping';
+                $this->type[$this->i] = 6;
+                $this->type_name[$this->i] = AddressType::find(6)->name;
             }
         }
     }
@@ -116,7 +128,7 @@ class LiveAddressEdit extends Component
         $this->i = $i;
         array_push($this->inputs, $i);
         $this->country[$i] = \VentureDrake\LaravelCrm\Models\Setting::country()->value;
-        $this->dispatchBrowserEvent('addAddressInputs');
+        $this->dispatch('addAddressInputs');
     }
 
     public function remove($i)

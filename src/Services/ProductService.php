@@ -27,7 +27,6 @@ class ProductService
         $product = Product::create([
             'name' => $request->name,
             'code' => $request->code ?? null,
-            'barcode' => $request->barcode ?? null,
             'purchase_account' => $request->purchase_account ?? null,
             'sales_account' => $request->sales_account ?? null,
             'product_category_id' => $request->product_category,
@@ -81,7 +80,6 @@ class ProductService
         $product->update([
             'name' => $request->name,
             'code' => $request->code ?? null,
-            'barcode' => $request->barcode ?? null,
             'purchase_account' => $request->purchase_account ?? null,
             'sales_account' => $request->sales_account ?? null,
             'product_category_id' => $request->product_category,

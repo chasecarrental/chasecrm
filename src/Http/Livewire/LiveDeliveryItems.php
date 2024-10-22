@@ -105,7 +105,7 @@ class LiveDeliveryItems extends Component
         $this->quantity[$i] = null;
         array_push($this->inputs, $i);
 
-        $this->dispatchBrowserEvent('addedItem', ['id' => $this->i]);
+        $this->dispatch('addedItem', ['id' => $this->i]);
     }
 
     public function loadItemDefault($id)

@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Http\Livewire;
 
 use Livewire\Component;
 use VentureDrake\LaravelCrm\Models\Product;
-use VentureDrake\LaravelCrm\Models\TaxRate;
 use VentureDrake\LaravelCrm\Services\SettingService;
 use VentureDrake\LaravelCrm\Traits\NotifyToast;
 
@@ -27,10 +26,6 @@ class LiveQuoteItems extends Component
     public $unit_price;
 
     public $quantity;
-
-    public $tax_amount;
-
-    public $tax_rate;
 
     public $amount;
 
@@ -71,7 +66,6 @@ class LiveQuoteItems extends Component
                 $this->name[$this->i] = Product::find($old['product_id'])->name ?? null;
                 $this->quantity[$this->i] = $old['quantity'] ?? null;
                 $this->unit_price[$this->i] = $old['unit_price'] ?? null;
-                $this->tax_amount[$this->i] = $old['tax_amount'] ?? null;
                 $this->amount[$this->i] = $old['amount'] ?? null;
                 $this->comments[$this->i] = $old['comments'] ?? null;
             }
@@ -83,7 +77,6 @@ class LiveQuoteItems extends Component
                 $this->name[$this->i] = $quoteProduct->product->name ?? null;
                 $this->quantity[$this->i] = $quoteProduct->quantity;
                 $this->unit_price[$this->i] = $quoteProduct->price / 100;
-                $this->tax_amount[$this->i] = $quoteProduct->tax_amount / 100;
                 $this->amount[$this->i] = $quoteProduct->amount / 100;
                 $this->comments[$this->i] = $quoteProduct->comments;
             }
@@ -96,26 +89,37 @@ class LiveQuoteItems extends Component
 
     public function add($i)
     {
+        
         $i = $i + 1;
         $this->i = $i;
         $this->unit_price[$i] = null;
         $this->quantity[$i] = null;
-        $this->tax_rate[$i] = null;
         array_push($this->inputs, $i);
 
-        $this->dispatchBrowserEvent('addedItem', ['id' => $this->i]);
+        $this->dispatch('addedItem', ['id' => $this->i]);
+        $this->calculateAmounts();
     }
 
     public function loadItemDefault($id)
     {
-        if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$id])) {
-            $this->unit_price[$id] = ($product->getDefaultPrice()->unit_price / 100);
-            $this->quantity[$id] = 1;
-        } else {
-            $this->unit_price[$id] = null;
-            $this->quantity[$id] = null;
-            $this->amount[$id] = null;
+       
+        if(isset($this->product_id[$this->i])){
+            if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$this->i])) {
+                $this->unit_price[$this->i] = ($product->getDefaultPrice()->unit_price / 100);
+                $this->quantity[$this->i] = 1;
+            } else {
+                $this->product_id[$this->i] = $id;
+                $this->unit_price[$this->i] = null;
+                $this->quantity[$this->i] = null;
+                $this->amount[$this->i] = null;
+            }
+        }else{
+            $this->product_id[$this->i] = $id;
+            $this->unit_price[$this->i] = null;
+            $this->quantity[$this->i] = null;
+            $this->amount[$this->i] = null;
         }
+      
 
         $this->calculateAmounts();
     }
@@ -128,32 +132,23 @@ class LiveQuoteItems extends Component
 
         for ($i = 1; $i <= $this->i; $i++) {
             if (isset($this->product_id[$i])) {
-                $product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i]);
-
-                if($product && $product->taxRate) {
-                    $taxRate = $product->taxRate->rate;
-                } elseif($product && $product->tax_rate) {
-                    $taxRate = $product->tax_rate;
-                } elseif($taxRate = TaxRate::where('default', 1)->first()) {
-                    $taxRate = $taxRate->rate;
+                if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+                    $taxRate = $product->taxRate->rate ?? $product->tax_rate ?? 0;
                 } elseif($taxRate = $this->settingService->get('tax_rate')) {
                     $taxRate = $taxRate->value;
                 } else {
                     $taxRate = 0;
                 }
 
-                $this->tax_rate[$i] = $taxRate;
-
                 if (is_numeric($this->unit_price[$i]) && is_numeric($this->quantity[$i])) {
                     $this->amount[$i] = $this->unit_price[$i] * $this->quantity[$i];
                     $this->unit_price[$i] = $this->currencyFormat($this->unit_price[$i]);
-                    $this->tax_amount[$i] = $this->currencyFormat($this->amount[$i] * ($taxRate / 100));
                 } else {
                     $this->amount[$i] = 0;
                 }
 
-                $this->sub_total += round($this->amount[$i], 2);
-                $this->tax += round($this->amount[$i] * ($taxRate / 100), 2);
+                $this->sub_total += $this->amount[$i];
+                $this->tax += $this->amount[$i] * ($taxRate / 100);
                 $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
             }
         }
@@ -169,9 +164,10 @@ class LiveQuoteItems extends Component
 
     public function remove($id)
     {
+        $this->i = $this->i-1;
         unset($this->inputs[$id - 1], $this->product_id[$id], $this->name[$id]);
+        $this->dispatch('removedItem', id: $id); 
 
-        $this->dispatchBrowserEvent('removedItem', ['id' => $id]);
 
         $this->calculateAmounts();
     }

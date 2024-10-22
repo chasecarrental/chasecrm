@@ -96,7 +96,7 @@ class LiveCall extends Component
         }
 
         $this->toggleEditMode();
-        $this->emit('refreshComponent');
+        $this->dispatch('refreshComponent');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.call_updated'))
         );
@@ -106,7 +106,7 @@ class LiveCall extends Component
     {
         $this->call->delete();
 
-        $this->emit('callDeleted');
+        $this->dispatch('callDeleted');
         $this->notify(
             ucfirst(trans('laravel-crm::lang.call_deleted'))
         );
@@ -116,7 +116,7 @@ class LiveCall extends Component
     {
         $this->editMode = ! $this->editMode;
 
-        $this->dispatchBrowserEvent('callEditModeToggled');
+        $this->dispatch('callEditModeToggled');
     }
 
     public function render()

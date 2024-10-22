@@ -9,12 +9,12 @@ use VentureDrake\LaravelCrm\Traits\HasCrmActivities;
 use VentureDrake\LaravelCrm\Traits\HasCrmFields;
 use VentureDrake\LaravelCrm\Traits\HasCrmUserRelations;
 use VentureDrake\LaravelCrm\Traits\SearchFilters;
-use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
+//use VentureDrake\LaravelEncryptable\Traits\LaravelEncryptableTrait;
 
 class Client extends Model
 {
     use SoftDeletes;
-    use LaravelEncryptableTrait;
+   // use LaravelEncryptableTrait;
     use BelongsToTeams;
     use HasCrmFields;
     use SearchFilters;

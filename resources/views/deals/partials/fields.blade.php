@@ -46,21 +46,6 @@
               ]
          ])
 
-        @if($pipeline)
-            @include('laravel-crm::partials.form.select',[
-                     'name' => 'pipeline_stage_id',
-                     'label' => ucfirst(__('laravel-crm::lang.stage')),
-                     'options' => $pipeline->pipelineStages()
-                                            ->orderBy('order')
-                                            ->orderBy('id')
-                                            ->pluck('name', 'id') ?? [],
-                     'value' =>  old('pipeline_stage_id', $deal->pipelineStage->id ?? $stage ?? $pipeline->pipelineStages()
-                                            ->orderBy('order')
-                                            ->orderBy('id')
-                                            ->first()->id ?? null),
-              ])
-        @endif
-
         @include('laravel-crm::partials.form.multiselect',[
             'name' => 'labels',
             'label' => ucfirst(__('laravel-crm::lang.labels')),
@@ -71,11 +56,9 @@
         @include('laravel-crm::partials.form.select',[
                  'name' => 'user_owner_id',
                  'label' => ucfirst(__('laravel-crm::lang.owner')),
-                 'options' => ['' => ucfirst(__('laravel-crm::lang.unallocated'))] + \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
-                 'value' =>  old('user_owner_id', (isset($deal)) ? $deal->user_owner_id ?? '' : auth()->user()->id),
+                 'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\users(false),
+                 'value' =>  old('user_owner_id', $deal->user_owner_id ?? auth()->user()->id),
               ])
-
-        @include('laravel-crm::fields.partials.model', ['model' => $deal ?? new \VentureDrake\LaravelCrm\Models\Deal()])
     </div>
     <div class="col-sm-6">
         <h6 class="text-uppercase"><span class="fa fa-user" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.person')) }}</h6>
@@ -209,7 +192,7 @@
         <h6 class="text-uppercase mt-4 section-h6-title"><span class="fa fa-cart-arrow-down" aria-hidden="true"></span> {{ ucfirst(__('laravel-crm::lang.products')) }} <span class="float-right"><a href="{{ (isset($deal)) ? url(route('laravel-crm.deal-products.create', $deal)) : url(route('laravel-crm.deal-products.create-product')) }}" class="btn btn-outline-secondary btn-sm btn-action-add-deal-product"><span class="fa fa-plus" aria-hidden="true"></span></a></span></h6>
         <hr />
         <script type="text/javascript">
-            let products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}
+             products =  {!! \VentureDrake\LaravelCrm\Http\Helpers\AutoComplete\products() !!}
         </script>
         <span id="dealProducts">
             @if(isset($deal) && method_exists($deal,'dealProducts'))

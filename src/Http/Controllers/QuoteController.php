@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreQuoteRequest;
@@ -12,7 +11,6 @@ use VentureDrake\LaravelCrm\Http\Requests\UpdateQuoteRequest;
 use VentureDrake\LaravelCrm\Models\Client;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Models\Quote;
 use VentureDrake\LaravelCrm\Services\OrderService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
@@ -63,17 +61,6 @@ class QuoteController extends Controller
      */
     public function index(Request $request)
     {
-        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_quotes')->first();
-
-        if(! $viewSetting) {
-            auth()->user()->crmSettings()->create([
-                'name' => 'view_quotes',
-                'value' => 'list',
-            ]);
-        } elseif($viewSetting->value == 'board') {
-            return redirect(route('laravel-crm.quotes.board'));
-        }
-
         Quote::resetSearchValue($request);
         $params = Quote::filters($request);
 
@@ -84,9 +71,7 @@ class QuoteController extends Controller
         }
 
         return view('laravel-crm::quotes.index', [
-            'quotes' => $quotes,
-            'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
+            'quotes' => $quotes
         ]);
     }
 
@@ -123,8 +108,6 @@ class QuoteController extends Controller
             'prefix' => $this->settingService->get('quote_prefix'),
             'number' => (Quote::latest()->first()->number ?? 1000) + 1,
             'quoteTerms' => $quoteTerms,
-            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
-            'stage' => $request->stage ?? null
         ]);
     }
 
@@ -176,8 +159,8 @@ class QuoteController extends Controller
         $this->quoteService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_stored')))->success()->important();
-
-        return redirect(route('laravel-crm.quotes.index'));
+        return response()->json(["response"=>true]);
+       // return redirect(route('laravel-crm.quotes.index'));
     }
 
     /**
@@ -230,7 +213,6 @@ class QuoteController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Quote()))->first()
         ]);
     }
 
@@ -283,8 +265,8 @@ class QuoteController extends Controller
         $quote = $this->quoteService->update($request, $quote, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_updated')))->success()->important();
-
-        return redirect(route('laravel-crm.quotes.show', $quote));
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.quotes.show', $quote));
     }
 
     /**
@@ -298,14 +280,12 @@ class QuoteController extends Controller
         $quote->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.quote_deleted')))->success()->important();
-
-        return redirect(route('laravel-crm.quotes.index'));
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.quotes.index'));
     }
 
     public function search(Request $request)
     {
-        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_quotes')->first();
-
         $searchValue = Quote::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
@@ -325,25 +305,13 @@ class QuoteController extends Controller
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'quotes.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'quotes.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
-            ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
                 foreach ($record->getSearchable() as $field) {
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
-
-                        if(config('laravel-crm.encrypt_db_fields')) {
-                            try {
-                                $relatedField = decrypt($record->{$field[1]});
-                            } catch (DecryptException $e) {
-                                $relatedField = $record->{$field[1]};
-                            }
-                        } else {
-                            $relatedField = $record->{$field[1]};
-                        }
-
-                        if ($record->{$field[1]} && $relatedField) {
-                            if (Str::contains(strtolower($relatedField), strtolower($searchValue))) {
+                        if ($record->{$field[1]}) {
+                            if (Str::contains(strtolower($record->{$field[1]}), strtolower($searchValue))) {
                                 return $record;
                             }
                         }
@@ -355,20 +323,10 @@ class QuoteController extends Controller
                 }
             });
 
-        if($viewSetting->value === 'board') {
-            return view('laravel-crm::quotes.board', [
-                'quotes' => $quotes,
-                'searchValue' => $searchValue ?? null,
-                'viewSetting' => $viewSetting->value ?? null
-            ]);
-        } else {
-            return view('laravel-crm::quotes.index', [
-                'quotes' => $quotes,
-                'searchValue' => $searchValue ?? null,
-                'viewSetting' => $viewSetting->value ?? null,
-                'pipeline' => Pipeline::where('model', get_class(new Quote()))->first(),
-            ]);
-        }
+        return view('laravel-crm::quotes.index', [
+            'quotes' => $quotes,
+            'searchValue' => $searchValue ?? null,
+        ]);
     }
 
     /**
@@ -384,8 +342,13 @@ class QuoteController extends Controller
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_accepted')))->success()->important();
+        $quotes = Quote::latest()->paginate(30);
 
-        return back();
+        // Retornar la vista de index con los deals actualizados
+        return view('laravel-crm::quotes.index', [
+            'quotes' => $quotes,
+        ]);
+       // return back();
     }
 
     /**
@@ -401,8 +364,13 @@ class QuoteController extends Controller
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_rejected')))->success()->important();
+        $quotes = Quote::latest()->paginate(30);
 
-        return back();
+        // Retornar la vista de index con los deals actualizados
+        return view('laravel-crm::quotes.index', [
+            'quotes' => $quotes,
+        ]);
+       // return back();
     }
 
     /**
@@ -418,19 +386,13 @@ class QuoteController extends Controller
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.quote_unaccepted')))->success()->important();
+        $quotes = Quote::latest()->paginate(30);
 
-        return back();
-    }
-
-    public function unreject(Quote $quote)
-    {
-        $quote->update([
-            'rejected_at' => null,
+        // Retornar la vista de index con los deals actualizados
+        return view('laravel-crm::quotes.index', [
+            'quotes' => $quotes,
         ]);
-
-        flash(ucfirst(trans('laravel-crm::lang.quote_unrejected')))->success()->important();
-
-        return back();
+     //   return back();
     }
 
     public function download(Quote $quote)
@@ -457,42 +419,5 @@ class QuoteController extends Controller
             'fromName' => $this->settingService->get('organisation_name')->value ?? null,
             'logo' => $this->settingService->get('logo_file')->value ?? null,
         ])->download('quote-'.strtolower($quote->quote_id).'.pdf');
-    }
-
-    public function list(Request $request)
-    {
-        auth()->user()->crmSettings()->updateOrCreate([
-            'name' => 'view_quotes',
-        ], [
-            'value' => 'list',
-        ]);
-
-        return redirect(route('laravel-crm.quotes.index'));
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function board(Request $request)
-    {
-        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_quotes')->first();
-
-        auth()->user()->crmSettings()->updateOrCreate([
-            'name' => 'view_quotes',
-        ], [
-            'value' => 'board',
-        ]);
-
-        Quote::resetSearchValue($request);
-        $params = Quote::filters($request);
-
-        $quotes = Quote::filter($params)->latest()->get();
-
-        return view('laravel-crm::quotes.board', [
-            'quotes' => $quotes,
-            'viewSetting' => $viewSetting->value ?? null
-        ]);
     }
 }

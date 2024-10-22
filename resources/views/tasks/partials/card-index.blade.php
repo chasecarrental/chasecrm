@@ -44,10 +44,33 @@
         </div>
     </div>
 
-    @if($tasks instanceof \Illuminate\Pagination\LengthAwarePaginator )
-        @component('laravel-crm::components.card-footer')
-            {{ $tasks->links() }}
-        @endcomponent
-    @endif
+    @if($tasks instanceof \Illuminate\Pagination\LengthAwarePaginator)
+    @component('laravel-crm::components.card-footer')
+        <ul class="pagination justify-content-end">
+            @if ($tasks->onFirstPage())
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            @else
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/tasks?page=' . ($tasks->currentPage() - 1)) }}')">Previous</a>
+                </li>
+            @endif
+
+            @foreach ($tasks->getUrlRange(1, $tasks->lastPage()) as $page => $url)
+                <li class="page-item @if ($page == $tasks->currentPage()) active @endif">
+                    <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/tasks?page=' . $page) }}')">{{ $page }}</a>
+                </li>
+            @endforeach
+
+            @if ($tasks->hasMorePages())
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="loadContent('{{ url('crm/tasks?page=' . ($tasks->currentPage() + 1)) }}')">Next</a>
+                </li>
+            @else
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+            @endif
+        </ul>
+    @endcomponent
+@endif
+
 
 @endcomponent

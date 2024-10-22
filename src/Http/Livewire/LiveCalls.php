@@ -110,28 +110,28 @@ class LiveCalls extends Component
             $this->calls = Call::whereIn('id', $callIds)->latest()->get();
         }
 
-        $this->emit('refreshActivities');
+        $this->dispatch('refreshActivities');
     }
 
     public function addCallToggle()
     {
         $this->showForm = ! $this->showForm;
 
-        $this->dispatchBrowserEvent('callEditModeToggled');
+        $this->dispatch('callEditModeToggled');
     }
 
     public function addCallOn()
     {
         $this->showForm = true;
 
-        $this->dispatchBrowserEvent('callAddOn');
+        $this->dispatch('callAddOn');
     }
 
     private function resetFields()
     {
         $this->reset('name', 'description', 'start_at', 'finish_at', 'guests', 'location');
 
-        $this->dispatchBrowserEvent('callFieldsReset');
+        $this->dispatch('callFieldsReset');
 
         $this->addCallToggle();
 

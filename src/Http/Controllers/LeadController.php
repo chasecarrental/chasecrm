@@ -3,17 +3,14 @@
 namespace VentureDrake\LaravelCrm\Http\Controllers;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VentureDrake\LaravelCrm\Http\Requests\StoreLeadRequest;
 use VentureDrake\LaravelCrm\Http\Requests\UpdateLeadRequest;
 use VentureDrake\LaravelCrm\Models\Client;
-use VentureDrake\LaravelCrm\Models\Deal;
 use VentureDrake\LaravelCrm\Models\Lead;
 use VentureDrake\LaravelCrm\Models\Organisation;
 use VentureDrake\LaravelCrm\Models\Person;
-use VentureDrake\LaravelCrm\Models\Pipeline;
 use VentureDrake\LaravelCrm\Services\DealService;
 use VentureDrake\LaravelCrm\Services\LeadService;
 use VentureDrake\LaravelCrm\Services\OrganisationService;
@@ -56,17 +53,6 @@ class LeadController extends Controller
      */
     public function index(Request $request)
     {
-        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
-
-        if(! $viewSetting) {
-            auth()->user()->crmSettings()->create([
-                'name' => 'view_leads',
-                'value' => 'list',
-            ]);
-        } elseif($viewSetting->value == 'board') {
-            return redirect(route('laravel-crm.leads.board'));
-        }
-
         Lead::resetSearchValue($request);
         $params = Lead::filters($request);
 
@@ -78,8 +64,6 @@ class LeadController extends Controller
 
         return view('laravel-crm::leads.index', [
             'leads' => $leads,
-            'viewSetting' => $viewSetting->value ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
         ]);
     }
 
@@ -111,8 +95,6 @@ class LeadController extends Controller
             'client' => $client ?? null,
             'organisation' => $organisation ?? null,
             'person' => $person ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
-            'stage' => $request->stage ?? null
         ]);
     }
 
@@ -164,8 +146,8 @@ class LeadController extends Controller
         $lead = $this->leadService->create($request, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_stored')))->success()->important();
-
-        return redirect(route('laravel-crm.leads.index'));
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.leads.index'));
     }
 
     /**
@@ -205,7 +187,6 @@ class LeadController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Lead()))->first()
         ]);
     }
 
@@ -258,8 +239,8 @@ class LeadController extends Controller
         $lead = $this->leadService->update($request, $lead, $person ?? null, $organisation ?? null, $client ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_updated')))->success()->important();
-
-        return redirect(route('laravel-crm.leads.show', $lead));
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.leads.show', $lead));
     }
 
     /**
@@ -273,14 +254,12 @@ class LeadController extends Controller
         $lead->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.lead_deleted')))->success()->important();
-
-        return redirect(route('laravel-crm.leads.index'));
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.leads.index'));
     }
 
     public function search(Request $request)
     {
-        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
-
         $searchValue = Lead::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
@@ -300,26 +279,13 @@ class LeadController extends Controller
             )
             ->leftJoin(config('laravel-crm.db_table_prefix').'people', config('laravel-crm.db_table_prefix').'leads.person_id', '=', config('laravel-crm.db_table_prefix').'people.id')
             ->leftJoin(config('laravel-crm.db_table_prefix').'organisations', config('laravel-crm.db_table_prefix').'leads.organisation_id', '=', config('laravel-crm.db_table_prefix').'organisations.id')
-            ->latest()
             ->get()
             ->filter(function ($record) use ($searchValue) {
                 foreach ($record->getSearchable() as $field) {
                     if (Str::contains($field, '.')) {
                         $field = explode('.', $field);
-
-                        if(config('laravel-crm.encrypt_db_fields')) {
-                            try {
-                                $relatedField = decrypt($record->{$field[1]});
-                            } catch (DecryptException $e) {
-                            }
-
-                            $relatedField = $record->{$field[1]};
-                        } else {
-                            $relatedField = $record->{$field[1]};
-                        }
-
-                        if ($record->{$field[1]} && $relatedField) {
-                            if (Str::contains(strtolower($relatedField), strtolower($searchValue))) {
+                        if ($record->{$field[1]} ) {
+                            if (Str::contains(strtolower($record->{$field[1]}), strtolower($searchValue))) {
                                 return $record;
                             }
                         }
@@ -331,20 +297,10 @@ class LeadController extends Controller
                 }
             });
 
-        if($viewSetting->value === 'board') {
-            return view('laravel-crm::leads.board', [
-                'leads' => $leads,
-                'searchValue' => $searchValue ?? null,
-                'viewSetting' => $viewSetting->value ?? null
-            ]);
-        } else {
-            return view('laravel-crm::leads.index', [
-                'leads' => $leads,
-                'searchValue' => $searchValue ?? null,
-                'viewSetting' => $viewSetting->value ?? null,
-                'pipeline' => Pipeline::where('model', get_class(new Lead()))->first(),
-            ]);
-        }
+        return view('laravel-crm::leads.index', [
+            'leads' => $leads,
+            'searchValue' => $searchValue ?? null,
+        ]);
     }
 
     /**
@@ -364,7 +320,6 @@ class LeadController extends Controller
             'email' => $email ?? null,
             'phone' => $phone ?? null,
             'address' => $address ?? null,
-            'pipeline' => Pipeline::where('model', get_class(new Deal()))->first()
         ]);
     }
 
@@ -395,44 +350,7 @@ class LeadController extends Controller
         ]);
 
         flash(ucfirst(trans('laravel-crm::lang.lead_converted_to_deal')))->success()->important();
-
-        return redirect(route('laravel-crm.leads.index'));
-    }
-
-    public function list(Request $request)
-    {
-        auth()->user()->crmSettings()->updateOrCreate([
-            'name' => 'view_leads',
-        ], [
-            'value' => 'list',
-        ]);
-
-        return redirect(route('laravel-crm.leads.index'));
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function board(Request $request)
-    {
-        $viewSetting = auth()->user()->crmSettings()->where('name', 'view_leads')->first();
-
-        auth()->user()->crmSettings()->updateOrCreate([
-            'name' => 'view_leads',
-        ], [
-            'value' => 'board',
-        ]);
-
-        Lead::resetSearchValue($request);
-        $params = Lead::filters($request);
-
-        $leads = Lead::filter($params)->whereNull('converted_at')->latest()->get();
-
-        return view('laravel-crm::leads.board', [
-            'leads' => $leads,
-            'viewSetting' => $viewSetting->value ?? null
-        ]);
+        return response()->json(["response"=>true]);
+        //return redirect(route('laravel-crm.leads.index'));
     }
 }

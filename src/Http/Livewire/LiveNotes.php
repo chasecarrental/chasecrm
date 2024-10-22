@@ -64,7 +64,7 @@ class LiveNotes extends Component
             'recordable_id' => $note->id,
         ]);
 
-        $this->emit('noteAdded');
+        $this->dispatch('noteAdded');
 
         $this->notify(
             'Note created',
@@ -97,21 +97,21 @@ class LiveNotes extends Component
             }
         }
 
-        $this->emit('refreshActivities');
+        $this->dispatch('refreshActivities');
     }
 
     public function addNoteToggle()
     {
         $this->showForm = ! $this->showForm;
 
-        $this->dispatchBrowserEvent('noteEditModeToggled');
+        $this->dispatch('noteEditModeToggled');
     }
 
     public function addNoteOn()
     {
         $this->showForm = true;
 
-        $this->dispatchBrowserEvent('noteAddOn');
+        $this->dispatch('noteAddOn');
     }
 
     private function resetFields()

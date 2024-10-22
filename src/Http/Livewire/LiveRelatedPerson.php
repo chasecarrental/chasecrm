@@ -12,12 +12,10 @@ class LiveRelatedPerson extends Component
     public $people;
     public $person_id;
     public $person_name;
-    public $actions;
 
-    public function mount($model, $actions = true)
+    public function mount($model)
     {
         $this->model = $model;
-        $this->actions = $actions;
         $this->getPeople();
     }
 
@@ -48,7 +46,7 @@ class LiveRelatedPerson extends Component
 
         $this->getPeople();
 
-        $this->dispatchBrowserEvent('linkedPerson');
+        $this->dispatch('linkedPerson');
     }
 
     public function remove($id)
@@ -61,12 +59,12 @@ class LiveRelatedPerson extends Component
 
         $this->getPeople();
 
-        $this->dispatchBrowserEvent('linkedPerson');
+        $this->dispatch('linkedPerson');
     }
 
     public function updatedPersonName($value)
     {
-        $this->dispatchBrowserEvent('updatedNameFieldAutocomplete');
+        $this->dispatch('updatedNameFieldAutocomplete');
     }
 
     private function getPeople()

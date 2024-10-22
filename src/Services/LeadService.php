@@ -4,7 +4,6 @@ namespace VentureDrake\LaravelCrm\Services;
 
 use Ramsey\Uuid\Uuid;
 use VentureDrake\LaravelCrm\Models\Lead;
-use VentureDrake\LaravelCrm\Models\PipelineStage;
 use VentureDrake\LaravelCrm\Repositories\LeadRepository;
 
 class LeadService
@@ -36,8 +35,6 @@ class LeadService
             'currency' => $request->currency,
             'lead_status_id' => 1,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
-            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
         $lead->labels()->sync($request->labels ?? []);
@@ -56,8 +53,6 @@ class LeadService
             'amount' => $request->amount,
             'currency' => $request->currency,
             'user_owner_id' => $request->user_owner_id,
-            'pipeline_id' => PipelineStage::find($request->pipeline_stage_id)->pipeline->id ?? null,
-            'pipeline_stage_id' => $request->pipeline_stage_id ?? null,
         ]);
 
         $lead->labels()->sync($request->labels ?? []);

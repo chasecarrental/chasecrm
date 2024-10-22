@@ -25,12 +25,6 @@ class UpdateSettingRequest extends FormRequest
     {
         return [
             'organisation_name' => 'required|max:255',
-            'country' => 'required',
-            'language' => 'required',
-            'currency' => 'required',
-            'timezone' => 'required',
-            'date_format' => 'required',
-            'time_format' => 'required'
         ];
     }
 }
