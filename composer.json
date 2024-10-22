@@ -21,6 +21,12 @@
         "crm platform"
     ],
     "homepage": "https://github.com/alezcanossj/chaseCrm.git",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/alezcanossj/chaseCrm.git"
+        }
+    ],
     "license": "MIT",
     "type": "library",
     "authors": [
