@@ -1,4 +1,4 @@
-<form id="organisationForm" method="POST" action="{{ url(route('laravel-crm.organisations.store')) }}" onsubmit="submitFormCrm(event, 'organisationForm', '{{ url(route('laravel-crm.organisations.store')) }}', '¡Se ha guardado correctamente la organizacion!', '{{ route('laravel-crm.organisations.show', $organisation ?? 1) }}')">
+<form id="organisationForm" method="POST" action="{{ url(route('laravel-crm.organisations.store')) }}" onsubmit="submitFormCrm(event, 'organisationForm', '{{ url(route('laravel-crm.organisations.store')) }}', '¡Se ha guardado correctamente la organizacion!', '{{ route('laravel-crm.organisations.index') }}')">
     @csrf
     @component('laravel-crm::components.card')
 

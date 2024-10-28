@@ -2,7 +2,7 @@
 @include('laravel-crm::layouts.partials.meta')
 
 @include('laravel-crm::styles') 
-<form id="productCategoryForm" method="POST" action="{{ url(route('laravel-crm.product-categories.store')) }}" onsubmit="submitFormCrm(event, 'productCategoryForm', '{{ url(route('laravel-crm.product-categories.store')) }}', '¡Se ha guardado correctamente la categoria!', '{{ route('laravel-crm.product-categories.show', $productCategory ?? 1) }}')">
+<form id="productCategoryForm" method="POST" action="{{ url(route('laravel-crm.product-categories.store')) }}" onsubmit="submitFormCrm(event, 'productCategoryForm', '{{ url(route('laravel-crm.product-categories.store')) }}', '¡Se ha guardado correctamente la categoria!', '{{ route('laravel-crm.product-categories.index') }}')">
     @csrf
     <div class="card">
         <div class="card-header">
