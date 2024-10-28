@@ -1,4 +1,4 @@
-<form id="productForm" method="POST" action="{{ url(route('laravel-crm.products.store')) }}" onsubmit="submitFormCrm(event, 'productForm', '{{ url(route('laravel-crm.products.store')) }}', '¡Se ha guardado correctamente el producto!', '{{ route('laravel-crm.products.show', $product ?? 1) }}')">
+<form id="productForm" method="POST" action="{{ url(route('laravel-crm.products.store')) }}" onsubmit="submitFormCrm(event, 'productForm', '{{ url(route('laravel-crm.products.store')) }}', '¡Se ha guardado correctamente el producto!', '{{ route('laravel-crm.products.index') }}')">
     @csrf
     @component('laravel-crm::components.card')
 

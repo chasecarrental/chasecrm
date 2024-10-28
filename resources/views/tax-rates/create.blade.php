@@ -2,7 +2,7 @@
 @include('laravel-crm::layouts.partials.meta')
 
     @include('laravel-crm::styles') 
-    <form id="taxRateForm" method="POST" action="{{ url(route('laravel-crm.tax-rates.store')) }}" onsubmit="submitFormCrm(event, 'taxRateForm', '{{ url(route('laravel-crm.tax-rates.store')) }}', '¡Se ha guardado correctamente!', '{{ route('laravel-crm.tax-rates.show', $taxRate ?? 1) }}')">
+    <form id="taxRateForm" method="POST" action="{{ url(route('laravel-crm.tax-rates.store')) }}" onsubmit="submitFormCrm(event, 'taxRateForm', '{{ url(route('laravel-crm.tax-rates.store')) }}', '¡Se ha guardado correctamente!', '{{ route('laravel-crm.tax-rates.index') }}')">
         @csrf
         <div class="card">
             <div class="card-header">

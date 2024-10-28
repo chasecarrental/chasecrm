@@ -1,4 +1,4 @@
-<form id="invoiceForm" method="POST" action="{{ url(route('laravel-crm.invoices.store')) }}" onsubmit="submitFormCrm(event, 'invoiceForm', '{{ url(route('laravel-crm.invoices.store')) }}', '¡Se ha guardado correctamente la factura!', '{{ route('laravel-crm.invoices.show', $invoice ?? 1) }}')">
+<form id="invoiceForm" method="POST" action="{{ url(route('laravel-crm.invoices.store')) }}" onsubmit="submitFormCrm(event, 'invoiceForm', '{{ url(route('laravel-crm.invoices.store')) }}', '¡Se ha guardado correctamente la factura!', '{{ route('laravel-crm.invoices.index') }}')">
     @csrf
     @component('laravel-crm::components.card')
         @component('laravel-crm::components.card-header')

@@ -1,4 +1,4 @@
-<form id="clientForm" method="POST" action="{{ url(route('laravel-crm.clients.store')) }}" onsubmit="submitFormCrm(event, 'clientForm', '{{ url(route('laravel-crm.clients.store')) }}', '¡Se ha guardado correctamente el cliente!', '{{ route('laravel-crm.clients.show', $client ?? 1) }}')">
+<form id="clientForm" method="POST" action="{{ url(route('laravel-crm.clients.store')) }}" onsubmit="submitFormCrm(event, 'clientForm', '{{ url(route('laravel-crm.clients.store')) }}', '¡Se ha guardado correctamente el cliente!', '{{ route('laravel-crm.clients.index') }}')">
     @csrf
     @component('laravel-crm::components.card')
 
