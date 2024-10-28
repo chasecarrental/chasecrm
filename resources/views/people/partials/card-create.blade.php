@@ -1,5 +1,4 @@
 <form id="personForm" method="POST" action="{{ url(route('laravel-crm.people.store')) }}" onsubmit="submitFormCrm(event, 'personForm', '{{ url(route('laravel-crm.people.store')) }}', '¡Se ha guardado correctamente la persona!', '{{ route('laravel-crm.people.index') }}')">
-    <form method="POST" action="{{ url(route('laravel-crm.people.store')) }}">
     @csrf
     @component('laravel-crm::components.card')
 
