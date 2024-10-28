@@ -3,7 +3,7 @@
 
 @include('laravel-crm::styles') 
 
-<form id="labelForm" method="POST" action="{{ url(route('laravel-crm.labels.store')) }}" onsubmit="submitFormCrm(event, 'labelForm', '{{ url(route('laravel-crm.labels.store')) }}', '¡Se ha guardado correctamente!', '{{ route('laravel-crm.labels.show', $label ?? 1) }}')">
+<form id="labelForm" method="POST" action="{{ url(route('laravel-crm.labels.store')) }}" onsubmit="submitFormCrm(event, 'labelForm', '{{ url(route('laravel-crm.labels.store')) }}', '¡Se ha guardado correctamente!', '{{ route('laravel-crm.labels.index') }}')">
     @csrf
     <div class="card">
         <div class="card-header">
