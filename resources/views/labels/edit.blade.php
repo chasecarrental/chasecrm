@@ -5,7 +5,6 @@
 <form method="POST" id="labelForm" action="{{ url(route('laravel-crm.labels.update', $label)) }}" 
 onsubmit="submitFormCrm(event, 'labelForm', '{{ url(route('laravel-crm.labels.update', $label)) }}', 
 '¡Se ha editado correctamente!', '{{ route('laravel-crm.labels.show', $label ?? 1) }}')">
-<form method="POST" action="{{ url(route('laravel-crm.labels.update', $label)) }}">
     @csrf
     @method('PUT')
     <div class="card">
