@@ -17,7 +17,7 @@
                 </a>
                 @endcan
                 @can('delete crm users')
-                <form action="{{ route('laravel-crm.users.destroy', $user) }}" method="POST" class="form-check-inline mr-0 form-delete-button">
+                <form id="deleteUserForm_{{ $user->id }}" nsubmit="submitFormCrm(event, 'deleteUserForm_{{ $user->id }}', '{{ route('laravel-crm.users.destroy', $user) }}', '{{ __('User deleted successfully!') }}', '{{ route('laravel-crm.users.index') }}')"   method="POST" class="form-check-inline mr-0 form-delete-button">
                     {{ method_field('DELETE') }}
                      {{ csrf_field() }}
                     <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.user') }}" {{ (auth()->user()->id == $user->id) ? 'disabled' : null }}>
