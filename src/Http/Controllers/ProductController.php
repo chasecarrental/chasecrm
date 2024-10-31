@@ -132,8 +132,8 @@ class ProductController extends Controller
         $searchValue = Product::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            //return redirect(route('laravel-crm.products.index'));
-            return response()->json(["response"=>true]);
+            return redirect(route('laravel-crm.products.index'));
+            //return response()->json(["response"=>true]);
         }
 
         $products = Product::all()->filter(function ($record) use ($searchValue) {

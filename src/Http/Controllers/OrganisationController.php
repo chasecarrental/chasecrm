@@ -173,8 +173,8 @@ class OrganisationController extends Controller
         $searchValue = Organisation::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            //return redirect(route('laravel-crm.organisations.index'));
-        return response()->json(["response"=>true]);
+            return redirect(route('laravel-crm.organisations.index'));
+            //return response()->json(["response"=>true]);
         }
 
         $params = Organisation::filters($request, 'search');

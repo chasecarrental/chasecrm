@@ -238,8 +238,8 @@ class PersonController extends Controller
         $searchValue = Person::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            //return redirect(route('laravel-crm.people.index'));
-        return response()->json(["response"=>true]);
+            return redirect(route('laravel-crm.people.index'));
+            //return response()->json(["response"=>true]);
         }
 
         $params = Person::filters($request, 'search');
