@@ -163,8 +163,8 @@ class ClientController extends Controller
         $searchValue = Client::searchValue($request);
 
         if (! $searchValue || trim($searchValue) == '') {
-            //return redirect(route('laravel-crm.clients.index'));
-            return response()->json(["response"=>true]);
+            return redirect(route('laravel-crm.clients.index'));
+            //return response()->json(["response"=>true]);
         }
 
         $params = Client::filters($request, 'search');
