@@ -64,9 +64,9 @@
                            @endif
                         @endcan
                         @can('view crm quotes')
-                           <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.quotes.download', $quote) }}')" class="btn btn-outline-secondary btn-sm">
-                               <span class="fa fa-download" aria-hidden="true"></span>
-                           </a>
+                            <a href="{{ route('laravel-crm.quotes.download', $quote) }}"  class="btn btn-outline-secondary btn-sm">
+                                <span class="fa fa-download" aria-hidden="true"></span>
+                            </a>
                            <a href="javascript:void(0)" onclick="loadContent('{{ route('laravel-crm.quotes.show', $quote) }}')" class="btn btn-outline-secondary btn-sm">
                                <span class="fa fa-eye" aria-hidden="true"></span>
                            </a>
