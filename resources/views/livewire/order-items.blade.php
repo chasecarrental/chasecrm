@@ -93,9 +93,9 @@
 
     @script
     <script>
-       
+      
         $(document).ready(function () {
-          
+            window.removeEventListener('addedItem', () => {});
             window.addEventListener('addedItem', event => {
                 setTimeout(function() {
                     if($('meta[name=dynamic_products]').length > 0){
