@@ -90,7 +90,8 @@
 
     @script
     <script>
-       
+         window.removeEventListener('addedItem', () => {});
+
         $(document).ready(function () {
           
             window.addEventListener('addedItem', event => {
