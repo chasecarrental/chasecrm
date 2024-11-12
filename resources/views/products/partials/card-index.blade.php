@@ -52,7 +52,7 @@
                         <a href="#" onclick="loadContent('{{  route('laravel-crm.products.edit',$product) }}')" class="btn btn-outline-secondary btn-sm"><span class="fa fa-edit" aria-hidden="true"></span></a>
                         @endcan
                         @can('delete crm products')    
-                        <form id="deleteProductForm_{{ $product->id }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deleteProductForm_{{ $product->id }}', '{{ route('laravel-crm.clients.destroy', $product) }}', '{{ __('Client deleted successfully!') }}', '{{ route('laravel-crm.clients.index') }}')">
+                        <form id="deleteProductForm_{{ $product->id }}" method="POST" class="form-check-inline mr-0 form-delete-button" onsubmit="submitFormCrm(event, 'deleteProductForm_{{ $product->id }}', '{{ route('laravel-crm.products.destroy', $product) }}', '{{ __('Product deleted successfully!') }}', '{{ route('laravel-crm.products.index') }}')">
                             {{ method_field('DELETE') }}
                             {{ csrf_field() }}
                             <button class="btn btn-danger btn-sm" type="submit" data-model="{{ __('laravel-crm::lang.product') }}"><span class="fa fa-trash-o" aria-hidden="true"></span></button>
