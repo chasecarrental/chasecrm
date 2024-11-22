@@ -80,6 +80,9 @@ function emailTypes($null = true)
     $array = array_merge($array, [
         'work' => 'Work',
         'home' => 'Home',
+        'client' => 'Client',
+        'support' => 'Support',
+        'billing' => 'Billing',
         'other' => "Other",
     ]);
 
