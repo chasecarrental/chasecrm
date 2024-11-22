@@ -72,42 +72,19 @@
     </span>
 
     @script
+
         <script>
-           
-            $(document).ready(function () {
-              
-               
-                window.addEventListener('addedItem', event => {
-                    setTimeout(function() {
-                        if($('meta[name=dynamic_products]').length > 0){
-                        var tags = JSON.parse($('meta[name=dynamic_products]').attr('content'));
-                    }else{
-                        var tags = true;
-                    }
-
-                    var selectProduct = $("#select_invoiceLines\\[" + event.detail[0].id + "\\]\\[product_id\\]");
-
-                   selectProduct.select2({
-                        data: products
-                    }).select2('open')
-                        .on('change', function (e) {
-                            $wire.set('product_id.' + $(this).data('value'), $(this).val());
-                            $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
-                            
-                            $wire.dispatch('loadInvoiceLineDefault', { id: $(this).val() });
-                        });
-
-                        
-                    }, 700); // Esperar 500 milisegundos antes de ejecutar el bloque de código
-                });
-
-                setTimeout(() => {
-                    var selectProduct = $("#select_invoiceLines\\[1\\]\\[product_id\\]");
-    
+             window.removeEventListener('addedItem', () => {});
+             window.removeEventListener('reInitInputs', () => {});
+            // Este evento asegura que el componente Livewire está disponible antes de ejecutar el código
+            window.addEventListener('addedItem', event => {
+                setTimeout(function() {
+                    let selectProduct = $("#select_invoiceLines\\[" + event.detail[0].id + "\\]\\[product_id\\]");
                     selectProduct.select2({
                         data: products
                     }).select2('open')
                         .on('change', function (e) {
+
                             $wire.set('product_id.' + $(this).data('value'), $(this).val());
                             $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
                             
@@ -131,20 +108,71 @@
                                 }).val(event.detail[0].product[key]).trigger('change') // Abre el select
                                 .on('change', function (e) {
                                     // Actualiza los valores en Livewire cuando se cambia la selección
+                            try {
+                                if ($wire) {
                                     $wire.set('product_id.' + $(this).data('value'), $(this).val());
                                     $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
-
-                                    // Despacha otro evento para cargar los detalles de la línea de factura
-                                    $wire.dispatch('loadInvoiceLineDefault', { id: $(this).val() });
-                                });
+                                } else {
+                                    console.error("El componente Livewire no está disponible en el DOM.");
+                                }
+                                
+                                $wire.dispatch('loadInvoiceLineDefault', { id: $(this).val() });
+                            } catch (error) {
+                                console.error("Error en el evento 'addedItem' al intentar interactuar con $wire:", error);
                             }
+                        });
+                }, 700);
+            });
+        
+            setTimeout(() => {
+                var selectProduct = $("#select_invoiceLines\\[1\\]\\[product_id\\]");
+                selectProduct.select2({
+                    data: products
+                }).select2('open')
+                    .on('change', function (e) {
+                        try {
+                            if ($wire) {
+                                $wire.set('product_id.' + $(this).data('value'), $(this).val());
+                                $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
+                            } else {
+                                console.error("El componente Livewire no está disponible en el DOM.");
+                            }
+                            
+                            $wire.dispatch('loadInvoiceLineDefault', { id: $(this).val() });
+                        } catch (error) {
+                            console.error("Error en el setTimeout de selectProduct al intentar interactuar con $wire:", error);
                         }
-                    }, 700); // Espera 500ms antes de ejecutar el bloque de código
-                });
-
-
-
+                    });
+            }, 700);
+        
+            window.addEventListener('reInitInputs', event => {
+                setTimeout(function() {
+                    for (const key in event.detail[0].inputs) {
+                        if (event.detail[0].inputs.hasOwnProperty(key)) {
+                            let input = event.detail[0].inputs[key];
+                            var selectProduct = $("#select_invoiceLines\\[" + key + "\\]\\[product_id\\]");
+                            selectProduct.select2({
+                                data: products
+                            }).val(event.detail[0].product[key]).trigger('change')
+                            .on('change', function (e) {
+                                try {
+                                    if ($wire) {
+                                        $wire.set('product_id.' + $(this).data('value'), $(this).val());
+                                        $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
+                                    } else {
+                                        console.error("El componente Livewire no está disponible en el DOM.");
+                                    }
+                                    
+                                    $wire.dispatch('loadInvoiceLineDefault', { id: $(this).val() });
+                                } catch (error) {
+                                    console.error("Error en el evento 'reInitInputs' al intentar interactuar con $wire:", error);
+                                }
+                            });
+                        }
+                    }
+                }, 700);
             });
         </script>
+    
     @endscript
 </div>

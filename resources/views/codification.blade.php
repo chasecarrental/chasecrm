@@ -1,31 +1,48 @@
+
+
+<script>
+    // Encuentra el script por su "src" completo y lo elimina
+    var script = document.querySelector('script[src="{{ asset('build/js/app.js') }}"]');
+
+    if (script) {
+        script.remove();  // Elimina el script del DOM
+        console.log('Script de app.js master eliminado correctamente');
+    } else {
+        console.log('No se encontró el de app.js master script');
+    }
+    
+
+</script>
+
 <script src="{{ URL::asset('build/js/app.js') }}"></script>
+
 <script>
     function isScriptLoaded(url) {
-    // Seleccionar todos los elementos script en el documento
-    const scripts = document.getElementsByTagName('script');
+        // Seleccionar todos los elementos script en el documento
+        const scripts = document.getElementsByTagName('script');
 
-    // Recorrer los scripts para ver si alguno coincide con la URL proporcionada
-    for (let i = 0; i < scripts.length; i++) {
-        if (scripts[i].src.includes(url)) {
-            return true; // El script ya está cargado
+        // Recorrer los scripts para ver si alguno coincide con la URL proporcionada
+        for (let i = 0; i < scripts.length; i++) {
+            if (scripts[i].src.includes(url)) {
+                return true; // El script ya está cargado
+            }
         }
+        return false; // El script no está cargado
     }
-    return false; // El script no está cargado
-}
 
-// Ejemplo de uso
+    // Ejemplo de uso
 
 
-// Verificar si el script ya está cargado antes de agregarlo
-if (!isScriptLoaded(scriptUrl)) {
-    // Si no está cargado, crear un nuevo elemento script y agregarlo al DOM
-    const script = document.createElement('script');
-    script.src = scriptUrl + "?v=467867598789"; // Incluir el parámetro de versión
-    document.head.appendChild(script);
-    console.log("El script se ha cargado.");
-} else {
-    console.log("El script ya estaba cargado.");
-}
+    // Verificar si el script ya está cargado antes de agregarlo
+    if (!isScriptLoaded(scriptUrl)) {
+        // Si no está cargado, crear un nuevo elemento script y agregarlo al DOM
+        const script = document.createElement('script');
+        script.src = scriptUrl + "?v=467867598789"; // Incluir el parámetro de versión
+        document.head.appendChild(script);
+        console.log("El script se ha cargado.");
+    } else {
+        console.log("El script ya estaba cargado.");
+    }
 
 </script>
 <!-- <script src="{{ asset('vendor/laravel-crm/js/app.js') }}?v=467867598789"></script> -->
@@ -84,8 +101,9 @@ if (!isScriptLoaded(scriptUrl)) {
         });
     });
 </script>
-
-
-
 @stack('livewire-js')
+
+
+
+
 

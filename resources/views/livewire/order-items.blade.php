@@ -93,47 +93,53 @@
 
     @script
     <script>
-       
-        $(document).ready(function () {
-          
-            window.addEventListener('addedItem', event => {
-                setTimeout(function() {
-                    if($('meta[name=dynamic_products]').length > 0){
-                    var tags = JSON.parse($('meta[name=dynamic_products]').attr('content'));
-                }else{
-                    var tags = true;
+        // Elimina el listener 'addedItem' si ya existe
+        window.removeEventListener('addedItem', () => {});
+    
+        // Agrega el listener para 'addedItem'
+        window.addEventListener('addedItem', event => {
+            setTimeout(function() {
+                let tags;
+                if ($('meta[name=dynamic_products]').length > 0) {
+                    tags = JSON.parse($('meta[name=dynamic_products]').attr('content'));
+                } else {
+                    tags = true;
                 }
-
-                var selectProduct = $("#select_products\\[" + event.detail[0].id + "\\]\\[product_id\\]");
-
-               selectProduct.select2({
-                    data: products
-                }).select2('open')
-                    .on('change', function (e) {
-                        $wire.set('product_id.' + $(this).data('value'), $(this).val());
-                        $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
-                        
-                        $wire.dispatch('loadItemDefault', { id: $(this).data('value') });
-                    });
-
-                    
-                }, 500); // Esperar 500 milisegundos antes de ejecutar el bloque de código
-            });
-            setTimeout(() => {
-                var selectProduct = $("#select_products\\[1\\]\\[product_id\\]");
-
+    
+                let selectProduct = $("#select_products\\[" + event.detail[0].id + "\\]\\[product_id\\]");
+    
                 selectProduct.select2({
                     data: products
                 }).select2('open')
                     .on('change', function (e) {
+                        try {
+                            $wire.set('product_id.' + $(this).data('value'), $(this).val());
+                            $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
+                            $wire.dispatch('loadItemDefault', { id: $(this).data('value') });
+                        } catch (error) {
+                            console.error("Error en el evento 'addedItem' al intentar interactuar con $wire:", error);
+                        }
+                    });
+            }, 500); // Esperar 500 milisegundos antes de ejecutar el bloque de código
+        });
+    
+        // Configura el primer selectProduct con un retardo de 500ms
+        setTimeout(() => {
+            let selectProduct = $("#select_products\\[1\\]\\[product_id\\]");
+    
+            selectProduct.select2({
+                data: products
+            }).select2('open')
+                .on('change', function (e) {
+                    try {
                         $wire.set('product_id.' + $(this).data('value'), $(this).val());
                         $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
-                        
                         $wire.dispatch('loadItemDefault', { id: $(this).data('value') });
-                    });
-            }, 500);
-
-        });
+                    } catch (error) {
+                        console.error("Error en el setTimeout al intentar interactuar con $wire:", error);
+                    }
+                });
+        }, 500);
     </script>
     @endscript
 </div>
