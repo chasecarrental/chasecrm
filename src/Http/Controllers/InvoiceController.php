@@ -114,14 +114,14 @@ class InvoiceController extends Controller
      */
     public function store(StoreInvoiceRequest $request)
     {
-     
-        if ($request->person_name && ! $request->person_id) {
+
+        if ($request->person_name && !$request->person_id) {
             $person = $this->personService->createFromRelated($request);
         } elseif ($request->person_id) {
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
+        if ($request->organisation_name && !$request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         } elseif ($request->organisation_id) {
             $organisation = Organisation::find($request->organisation_id);
@@ -130,7 +130,7 @@ class InvoiceController extends Controller
         $this->invoiceService->create($request, $person ?? null, $organisation ?? null);
 
         flash(ucfirst(trans('laravel-crm::lang.invoice_created')))->success()->important();
-        return response()->json(["response"=>true]);
+        return response()->json(["response" => true]);
         // return redirect(route('laravel-crm.invoices.index'));
     }
 
@@ -195,13 +195,13 @@ class InvoiceController extends Controller
      */
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
-        if ($request->person_name && ! $request->person_id) {
+        if ($request->person_name && !$request->person_id) {
             $person = $this->personService->createFromRelated($request);
         } elseif ($request->person_id) {
             $person = Person::find($request->person_id);
         }
 
-        if ($request->organisation_name && ! $request->organisation_id) {
+        if ($request->organisation_name && !$request->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($request);
         } elseif ($request->organisation_id) {
             $organisation = Organisation::find($request->organisation_id);
@@ -225,14 +225,14 @@ class InvoiceController extends Controller
         $invoice->delete();
 
         flash(ucfirst(trans('laravel-crm::lang.invoice_deleted')))->success()->important();
-        return response()->json(["response"=>true]);
+        return response()->json(["response" => true]);
         //return redirect(route('laravel-crm.invoices.index'));
     }
 
     public function download_old_1(Invoice $invoice)
     {
-       
-        
+
+
         if ($invoice->person) {
             $email = $invoice->person->getPrimaryEmail();
             $phone = $invoice->person->getPrimaryPhone();
@@ -246,23 +246,23 @@ class InvoiceController extends Controller
         return Pdf::setOption([
             'fontDir' => public_path('vendor/laravel-crm/fonts'),
         ])->loadView('pdf.invoice', [
-                'invoice' => $invoice,
-                'contactDetails' => $this->settingService->get('invoice_contact_details')->value ?? null,
-                'email' => $email ?? null,
-                'phone' => $phone ?? null,
-                'address' => $address ?? null,
-                'organisation_address' => $organisation_address ?? null,
-                'fromName' => $this->settingService->get('organisation_name')->value ?? null,
-                'logo' => $this->settingService->get('logo_file')->value ?? null
-            ])->download('invoice-'.strtolower($invoice->invoice_id).'.pdf');
+                    'invoice' => $invoice,
+                    'contactDetails' => $this->settingService->get('invoice_contact_details')->value ?? null,
+                    'email' => $email ?? null,
+                    'phone' => $phone ?? null,
+                    'address' => $address ?? null,
+                    'organisation_address' => $organisation_address ?? null,
+                    'fromName' => $this->settingService->get('organisation_name')->value ?? null,
+                    'logo' => $this->settingService->get('logo_file')->value ?? null
+                ])->download('invoice-' . strtolower($invoice->invoice_id) . '.pdf');
     }
     public function download(Invoice $invoice)
     {
-     
+
         try {
             // Lee el contenido del archivo CSS de Bootstrap line1,city,country,code
-            $bootstrapCSS = file_get_contents(public_path('build/css/bootstrap.min.css'));
-            $appCss = file_get_contents(public_path('build/css/app.min.css'));
+            $bootstrapCSS = file_get_contents(public_path('buildVelzon/css/bootstrap.min.css'));
+            $appCss = file_get_contents(public_path('buildVelzon/css/app.min.css'));
             $related = $this->settingService->get('team');
             $emails = $related->emails;
             $phones = $related->phones;
@@ -270,33 +270,33 @@ class InvoiceController extends Controller
 
             if (isset($emails[0])) {
                 $empresaEmail = $emails[0]['address'];
-            } 
+            }
 
-            if(isset($phones[0])){
+            if (isset($phones[0])) {
                 $phone_empresa = $phones[0]['number'];
             }
-            if(isset($addresses[0])){
+            if (isset($addresses[0])) {
                 $address_empresa = $addresses[0]["line1"];
                 $city_empresa = $addresses[0]["city"];
                 $country_empresa = $addresses[0]["country"];
                 $zipCode_empresa = $addresses[0]["code"];
             }
-            
+
             if ($invoice->person) {
                 $email = $invoice->person->getPrimaryEmail();
                 $phone = $invoice->person->getPrimaryPhone();
                 $address = $invoice->person->getPrimaryAddress();
             }
-    
+
             if ($invoice->organisation) {
                 $organisation_address = $invoice->organisation->getPrimaryAddress();
             }
-            
+
             $logoPath = public_path($this->settingService->get('logo_file')->value);
             $logoBase64 = base64_encode(File::get($logoPath));
             // Carga la vista de la factura en una variable
 
-            
+
             $html = view('pdf.invoice', [
                 'invoice' => $invoice,
                 'contactDetails' => $this->settingService->get('invoice_contact_details')->value ?? null,
@@ -306,23 +306,23 @@ class InvoiceController extends Controller
                 'organisation_address' => $organisation_address ?? null,
                 'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                 'logoBase64' => $logoBase64, // Envía la imagen como base64 a la vista
-                'empresa_email'=> $empresaEmail ?? null,
+                'empresa_email' => $empresaEmail ?? null,
                 'empresa_phone' => $phone_empresa ?? null,
-                'empresa_address'=> $address_empresa ?? null,
+                'empresa_address' => $address_empresa ?? null,
                 'empresa_city' => $city_empresa ?? null,
                 'empresa_country' => $country_empresa ?? null,
                 'empresa_zipCode' => $zipCode_empresa ?? null,
                 'tax_rate' => $this->settingService->get('tax_rate')->value ?? null
             ])->render();
-        
+
             // Configura DomPDF
             $dompdf = new Dompdf();
             $dompdf->set_option('isHtml5ParserEnabled', true); // Habilita el uso de CSS en línea
-           
+
             // Aplica los estilos de Bootstrap (en línea)
             $htmlWithBootstrap = '<style>' . $appCss . '</style>' . '<style>' . $bootstrapCSS . '</style>' . $html;
             $dompdf->loadHtml($htmlWithBootstrap);
-           
+
             // Genera el PDF
             $dompdf->render();
 
@@ -336,7 +336,7 @@ class InvoiceController extends Controller
     }
     public function download_show(Invoice $invoice)
     {
-     
+
         try {
             $related = $this->settingService->get('team');
             $emails = $related->emails;
@@ -345,35 +345,35 @@ class InvoiceController extends Controller
 
             if (isset($emails[0])) {
                 $empresaEmail = $emails[0]['address'];
-            } 
+            }
 
-            if(isset($phones[0])){
+            if (isset($phones[0])) {
                 $phone_empresa = $phones[0]['number'];
             }
-            if(isset($addresses[0])){
+            if (isset($addresses[0])) {
                 $address_empresa = $addresses[0]["line1"];
                 $city_empresa = $addresses[0]["city"];
                 $country_empresa = $addresses[0]["country"];
                 $zipCode_empresa = $addresses[0]["code"];
                 $line_1 = $addresses[0]["line1"];
             }
-          
+
             if ($invoice->amount_paid == $invoice->total) {
                 // Si no se debe nada, la factura está pagada.
                 $status = "translation.paid";
                 $status_color = "success";
-                
+
             } else if ($invoice->amount_paid > 0 && $invoice->amount_paid < $invoice->total) {
                 // Si se debe algo pero es menor al total, entonces es un pago parcial.
                 $status = "translation.partialPayment";
                 $status_color = "warning";
-                
+
             } else {
                 // Si se debe el total o más, se considera pendiente de pago. 
                 // Este último caso cubre la condición de monto igual al total y cualquier situación inesperada.
                 $status = "translation.pendingPayment";
                 $status_color = "danger";
-               
+
             }
 
             if ($invoice->person) {
@@ -381,28 +381,28 @@ class InvoiceController extends Controller
                 $phone = $invoice->person->getPrimaryPhone();
                 $address = $invoice->person->getPrimaryAddress();
             }
-    
+
             if ($invoice->organisation) {
-             
+
                 $tax_id = $invoice->organisation->tax_id;
                 $organisation_address = $invoice->organisation->getPrimaryAddress();
                 $billing_address = $invoice->organisation->getBillingAddress();
 
-                if(!$billing_address){
+                if (!$billing_address) {
                     $billing_address = $organisation_address;
                 }
-                
+
                 $shipping_address = $invoice->organisation->getShippingAddress();
-                if(!$shipping_address){
+                if (!$shipping_address) {
                     $shipping_address = $billing_address;
                 }
             }
-            $invoice_terms = $this->settingService->get('invoice_terms')->value ; 
+            $invoice_terms = $this->settingService->get('invoice_terms')->value;
 
 
             return view('invoices-details', [
                 'empresa_name' => $this->settingService->get('organisation_name')->value ?? null,
-                'vat_number' => $this->settingService->get('vat_number')->value ?? null, 
+                'vat_number' => $this->settingService->get('vat_number')->value ?? null,
                 'invoice' => $invoice,
                 'contactDetails' => $this->settingService->get('invoice_contact_details')->value ?? null,
                 'email' => $email ?? null,
@@ -413,9 +413,9 @@ class InvoiceController extends Controller
                 'shipping_address' => $shipping_address ?? null,
                 'fromName' => $this->settingService->get('organisation_name')->value ?? null,
                 'logo' => $this->settingService->get('logo_file')->value, // Envía la imagen como base64 a la vista
-                'empresa_email'=> $empresaEmail ?? null,
+                'empresa_email' => $empresaEmail ?? null,
                 'empresa_phone' => $phone_empresa ?? null,
-                'empresa_address'=> $address_empresa ?? null,
+                'empresa_address' => $address_empresa ?? null,
                 'empresa_city' => $city_empresa ?? null,
                 'empresa_country' => $country_empresa ?? null,
                 'empresa_zipCode' => $zipCode_empresa ?? null,
@@ -427,7 +427,7 @@ class InvoiceController extends Controller
                 'tax_id' => $tax_id ?? null
             ]);
 
-           
+
 
         } catch (\Exception $e) {
             // Maneja cualquier excepción
@@ -437,26 +437,26 @@ class InvoiceController extends Controller
     public function duplicate(Invoice $invoice)
     {
         $dateformat = $this->settingService->get('date_format');
-        if ($invoice->person_name && ! $invoice->person_id) {
+        if ($invoice->person_name && !$invoice->person_id) {
             $person = $this->personService->createFromRelated($invoice);
         } elseif ($invoice->person_id) {
             $person = Person::find($invoice->person_id);
         }
 
-        if ($invoice->organisation_name && ! $invoice->organisation_id) {
+        if ($invoice->organisation_name && !$invoice->organisation_id) {
             $organisation = $this->organisationService->createFromRelated($invoice);
         } elseif ($invoice->organisation_id) {
             $organisation = Organisation::find($invoice->organisation_id);
         }
 
         $invoiceLines = $invoice->invoiceLines()->get();
-        $this->invoiceService->duplicate($invoice, $person ?? null, $organisation ?? null,$invoiceLines,$dateformat );
+        $this->invoiceService->duplicate($invoice, $person ?? null, $organisation ?? null, $invoiceLines, $dateformat);
 
         flash(ucfirst(trans('laravel-crm::lang.invoice_created')))->success()->important();
-        return response()->json(["response"=>true]);
+        return response()->json(["response" => true]);
         //return redirect(route('laravel-crm.invoices.index'));
-      
-        
+
+
     }
 
 }

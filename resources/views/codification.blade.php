@@ -2,7 +2,7 @@
 
 <script>
     // Encuentra el script por su "src" completo y lo elimina
-    var script = document.querySelector('script[src="{{ asset('build/js/app.js') }}"]');
+    var script = document.querySelector('script[src="{{ asset('buildVelzon/js/app.js') }}"]');
 
     if (script) {
         script.remove();  // Elimina el script del DOM
@@ -14,7 +14,7 @@
 
 </script>
 
-<script src="{{ URL::asset('build/js/app.js') }}"></script>
+<script src="{{ URL::asset('buildVelzon/js/app.js') }}"></script>
 
 <script>
     function isScriptLoaded(url) {
