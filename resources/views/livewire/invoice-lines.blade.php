@@ -16,7 +16,7 @@
             <div class="col-4">
                 @include('laravel-crm::partials.form.text',[
                     'name' => 'sub_total',
-                     'label' => ucfirst(__('laravel-crm::lang.sub_total')),
+                     'label' => TEST,
                      'type' => 'number',
                      'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
                     
@@ -63,7 +63,7 @@
         <div id="linesProducts">
             @foreach($inputs as $key => $value)
               
-                @include('laravel-crm::invoice-lines.partials.fields', ['wire:key' => 'invoice-line-' . $key])
+                @include('laravel-crm::invoice-lines.partials.fields')
             @endforeach
         </div>
       
