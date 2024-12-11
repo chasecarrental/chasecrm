@@ -16,7 +16,7 @@
             <div class="col-4">
                 @include('laravel-crm::partials.form.text',[
                     'name' => 'sub_total',
-                     'label' => TEST,
+                    'label' => ucfirst(__('laravel-crm::lang.sub_total')),
                      'type' => 'number',
                      'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
                     
