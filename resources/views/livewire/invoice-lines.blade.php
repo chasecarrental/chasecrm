@@ -63,7 +63,7 @@
         <div id="linesProducts">
             @foreach($inputs as $key => $value)
               
-                @include('laravel-crm::invoice-lines.partials.fields')
+                @include('laravel-crm::invoice-lines.partials.fields', ['wire:key' => 'invoice-line-' . $key])
             @endforeach
         </div>
       
