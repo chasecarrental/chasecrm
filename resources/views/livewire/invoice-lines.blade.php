@@ -75,7 +75,7 @@
 
     <script>
            
-        $(document).ready(function () {
+        
           
            
             window.addEventListener('addedItem', event => {
@@ -99,7 +99,7 @@
                     });
 
                     
-                }, 700); // Esperar 500 milisegundos antes de ejecutar el bloque de código
+                }, 5000); // Esperar 500 milisegundos antes de ejecutar el bloque de código
             });
 
             setTimeout(() => {
@@ -114,7 +114,7 @@
                         
                         $wire.dispatch('loadInvoiceLineDefault', { id: $(this).val() });
                     });
-            }, 700); // Esperar 500 milisegundos antes de ejecutar el bloque de código
+            }, 5000); // Esperar 500 milisegundos antes de ejecutar el bloque de código
 
             window.addEventListener('reInitInputs', event => {
                 setTimeout(function() {
@@ -140,12 +140,12 @@
                             });
                         }
                     }
-                }, 700); // Espera 500ms antes de ejecutar el bloque de código
+                }, 5000); // Espera 500ms antes de ejecutar el bloque de código
             });
 
 
 
-        });
+       
     </script>
     
     @endscript
