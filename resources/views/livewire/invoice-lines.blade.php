@@ -62,9 +62,7 @@
         <hr>
         <div id="linesProducts">
             @foreach($inputs as $key => $value)
-                @php
-                    //info("EL VALOR DEL INPUT ES: ".$value);
-                @endphp
+              
                 @include('laravel-crm::invoice-lines.partials.fields')
             @endforeach
         </div>
