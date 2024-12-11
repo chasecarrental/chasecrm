@@ -16,7 +16,7 @@
             <div class="col-4">
                 @include('laravel-crm::partials.form.text',[
                     'name' => 'sub_total',
-                     'label' => TEST,
+                     'label' => ucfirst(__('laravel-crm::lang.sub_total')),
                      'type' => 'number',
                      'prepend' => '<span class="fa fa-dollar" aria-hidden="true"></span>',
                     
@@ -62,7 +62,9 @@
         <hr>
         <div id="linesProducts">
             @foreach($inputs as $key => $value)
-              
+                @php
+                    //info("EL VALOR DEL INPUT ES: ".$value);
+                @endphp
                 @include('laravel-crm::invoice-lines.partials.fields')
             @endforeach
         </div>
@@ -82,6 +84,30 @@
                         data: products
                     }).select2('open')
                         .on('change', function (e) {
+
+                            $wire.set('product_id.' + $(this).data('value'), $(this).val());
+                            $wire.set('name.' + $(this).data('value'), $(this).find("option:selected").text());
+                            
+                            $wire.dispatch('loadInvoiceLineDefault', { id: $(this).val() });
+                        });
+                }, 700); // Esperar 500 milisegundos antes de ejecutar el bloque de código
+
+                window.addEventListener('reInitInputs', event => {
+                    setTimeout(function() {
+                        // Recorremos el objeto en lugar de asumir que es un array
+                        for (const key in event.detail[0].inputs) {
+                            if (event.detail[0].inputs.hasOwnProperty(key)) {
+                                let input = event.detail[0].inputs[key]; // Este es el valor actual del input
+
+                                // Selecciona el producto correspondiente usando el ID del input
+                                var selectProduct = $("#select_invoiceLines\\[" + key + "\\]\\[product_id\\]");
+
+                                // Inicializa el select2 con los productos
+                                selectProduct.select2({
+                                    data: products // Asegúrate de que 'products' esté disponible con los datos correctos
+                                }).val(event.detail[0].product[key]).trigger('change') // Abre el select
+                                .on('change', function (e) {
+                                    // Actualiza los valores en Livewire cuando se cambia la selección
                             try {
                                 if ($wire) {
                                     $wire.set('product_id.' + $(this).data('value'), $(this).val());
