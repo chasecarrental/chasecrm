@@ -1,4 +1,6 @@
-
+@php
+    sleep(5);
+@endphp
     @include('laravel-crm::layouts.partials.meta')
 
     @include('laravel-crm::styles') 
