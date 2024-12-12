@@ -19,7 +19,7 @@ class LiveInvoiceLines extends Component
     public $order_product_id;
     public $invoice_line_id;
 
-    public $product_id ;
+    public $product_id;
 
     public $name;
 
@@ -54,7 +54,7 @@ class LiveInvoiceLines extends Component
 
     public function mount($invoice, $invoiceLines, $old = null, $fromOrder = false)
     {
-      
+
         $this->invoice = $invoice;
         $this->invoiceLines = $invoiceLines;
         $this->old = $old;
@@ -81,18 +81,18 @@ class LiveInvoiceLines extends Component
                 $this->amount[$this->i] = $old['amount'] ?? null;
             }
         } elseif ($this->invoiceLines && $this->invoiceLines->count() > 0) {
-          
+
             foreach ($this->invoiceLines as $invoiceLine) {
                 $this->add($this->i);
 
                 if ($this->fromOrder) {
-                  
+
                     $this->order_product_id[$this->i] = $invoiceLine->id;
                 } else {
-                    
+
                     $this->invoice_line_id[$this->i] = $invoiceLine->id;
                 }
-                
+
                 $this->product_id[$this->i] = $invoiceLine->product->id ?? null;
                 $this->name[$this->i] = $invoiceLine->product->name ?? null;
                 $this->quantity[$this->i] = $invoiceLine->quantity;
@@ -108,8 +108,8 @@ class LiveInvoiceLines extends Component
                 $this->amount[$this->i] = $invoiceLine->amount / 100;
                 $this->comments[$this->i] = $invoiceLine->comments;
             }
-           
-        } elseif (! $this->fromOrder) {
+
+        } elseif (!$this->fromOrder) {
             $this->add($this->i);
         }
 
@@ -126,34 +126,35 @@ class LiveInvoiceLines extends Component
 
         $this->dispatch('addedItem', ['id' => $this->i]);
         $this->calculateAmounts();
-    }   
+    }
 
     public function loadInvoiceLineDefault($id)
     {
-    
-       if(isset($this->product_id[$this->i])){
-      
-        if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$this->i])) {
-            $this->price[$this->i] = ($product->getDefaultPrice()->unit_price / 100);
-            $this->quantity[$this->i] = 1;
+
+        if (isset($this->product_id[$this->i])) {
+
+            if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$this->i])) {
+                $this->price[$this->i] = ($product->getDefaultPrice()->unit_price / 100);
+                $this->quantity[$this->i] = 1;
+            } else {
+                $this->price[$this->i] = null;
+                $this->quantity[$this->i] = null;
+                $this->amount[$this->i] = null;
+            }
         } else {
-            $this->price[$this->i] = null;
-            $this->quantity[$this->i] = null;
-            $this->amount[$this->i] = null;
-        }
-       }else{
             $this->product_id[$this->i] = $id;
             $this->price[$this->i] = null;
             $this->quantity[$this->i] = null;
             $this->amount[$this->i] = null;
-        
-       }
-        
+
+        }
+
 
         $this->calculateAmounts();
     }
-    public function changeTbody(){
-      
+    public function changeTbody()
+    {
+
         $this->showTbody = true;
     }
     public function calculateAmounts()
@@ -165,25 +166,25 @@ class LiveInvoiceLines extends Component
 
         for ($i = 1; $i <= $this->i; $i++) {
             if (isset($this->product_id[$i])) {
-               
-                if($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
+
+                if ($product = \VentureDrake\LaravelCrm\Models\Product::find($this->product_id[$i])) {
                     $taxRate = $product->taxRate->rate ?? $product->tax_rate ?? 0;
-                } elseif($taxRate = $this->settingService->get('tax_rate')) {
+                } elseif ($taxRate = $this->settingService->get('tax_rate')) {
                     $taxRate = $taxRate->value;
                 } else {
                     $taxRate = 0;
                 }
-               
+
 
                 if (is_numeric($this->price[$i]) && is_numeric($this->quantity[$i])) {
-                   
+
                     $this->amount[$i] = $this->price[$i] * $this->quantity[$i];
                     $this->price[$i] = $this->currencyFormat($this->price[$i]);
                 } else {
-                    
+
                     $this->amount[$i] = 0;
                 }
-              
+
                 $this->sub_total += $this->amount[$i];
                 $this->tax += $this->amount[$i] * ($taxRate / 100);
                 $this->amount[$i] = $this->currencyFormat($this->amount[$i]);
@@ -195,27 +196,27 @@ class LiveInvoiceLines extends Component
         $this->sub_total = $this->currencyFormat($this->sub_total);
         $this->tax = $this->currencyFormat($this->tax);
         $this->total = $this->currencyFormat($this->total);
-       
-       
+
+
     }
 
     public function remove($id)
     {
-    
+
 
         $this->i = $this->i - 1;
-        if (isset($this->inputs[$id-1])) {
+        if (isset($this->inputs[$id - 1])) {
             // Si existe el índice $id-1, eliminamos ese índice
-            unset($this->inputs[$id-1]);
+            unset($this->inputs[$id - 1]);
         } else {
             // Si no existe el índice $id-1, eliminamos $id
             unset($this->inputs[$id]);
         }
-        
+
         // Eliminar el valor usando el índice ajustado
         unset(
-            $this->product_id[$id], 
-            $this->name[$id], 
+            $this->product_id[$id],
+            $this->name[$id],
             $this->price[$id],
             $this->quantity[$id],
             $this->amount[$id],
@@ -223,26 +224,26 @@ class LiveInvoiceLines extends Component
         );
 
         // Reorganizar las claves y los valores
-        $this->inputs = $this->reorganizeValues($this->inputs,true);
-        $this->product_id = $this->reorganizeValues($this->product_id,false);
-        $this->name = $this->reorganizeValues($this->name,false);
-        $this->price = $this->reorganizeValues($this->price,false);
-        $this->quantity = $this->reorganizeValues($this->quantity,false);
-        $this->amount = $this->reorganizeValues($this->amount,false);
-        $this->comments = $this->reorganizeValues($this->comments,false);
+        $this->inputs = $this->reorganizeValues($this->inputs, true);
+        $this->product_id = $this->reorganizeValues($this->product_id, false);
+        $this->name = $this->reorganizeValues($this->name, false);
+        $this->price = $this->reorganizeValues($this->price, false);
+        $this->quantity = $this->reorganizeValues($this->quantity, false);
+        $this->amount = $this->reorganizeValues($this->amount, false);
+        $this->comments = $this->reorganizeValues($this->comments, false);
 
-    
+
 
         // Recalcular montos si es necesario
-        $this->dispatch('reInitInputs', ['inputs' => $this->inputs,"product"=>$this->product_id]);
-        
+        $this->dispatch('reInitInputs', ['inputs' => $this->inputs, "product" => $this->product_id]);
+
         $this->calculateAmounts();
     }
 
     /**
      * Función para reorganizar los valores y las claves de un array
      */
-    private function reorganizeValues($array,$isInput)
+    private function reorganizeValues($array, $isInput)
     {
         // Verificar si el valor pasado es un array
         if (!is_array($array)) {
@@ -251,28 +252,28 @@ class LiveInvoiceLines extends Component
         }
         $newArray = [];
         $index = 1; // Comenzamos desde 1 para que las claves comiencen desde 1
-        
+
         foreach ($array as $key => $value) {
-            if($isInput){
+            if ($isInput) {
                 $newArray[$index] = $index; // Reorganizamos tanto clave como valor igual INDEX (es input) 
-            }else{
+            } else {
                 $newArray[$index] = $value; // Reorganizamos tanto clave como valor
             }
-        
+
             $index++;
         }
 
         return $newArray;
     }
-    
-    
-    
+
+
+
     public function testFunction()
     {
-       
-     
-     
-      info("cambiando datos del input");
+
+
+
+        info("cambiando datos del input");
     }
     protected function currencyFormat($number)
     {
