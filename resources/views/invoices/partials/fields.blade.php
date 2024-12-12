@@ -1,5 +1,5 @@
 <div class="row">
-    {{--
+    
     <div class="col-sm-5 border-right">
         @include('laravel-crm::partials.form.hidden',[
              'name' => 'order_id',
@@ -145,7 +145,7 @@
              'value' => old('terms', $invoice->terms ?? $invoiceTerms->value ??  null)
         ])
        
-    </div> --}}
+    </div> 
     <div class="col-sm-7">
         @livewire('invoice-lines',[
             'invoice' => $invoice ?? null,
