@@ -71,7 +71,7 @@
       
     </span>
 
-<!--  @script
+  @script
 
     <script>
            
@@ -148,5 +148,5 @@
        
     </script>
     
-    @endscript-->  
+    @endscript
 </div>
