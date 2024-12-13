@@ -1,6 +1,18 @@
 
 
+<script>
+    // Encuentra el script por su "src" completo y lo elimina
+    var script = document.querySelector('script[src="{{ asset('buildVelzon/js/app.js') }}"]');
 
+    if (script) {
+        script.remove();  // Elimina el script del DOM
+        console.log('Script de app.js master eliminado correctamente');
+    } else {
+        console.log('No se encontró el de app.js master script');
+    }
+    
+
+</script>
 
 <script src="{{ URL::asset('buildVelzon/js/app.js') }}"></script>
 
@@ -37,7 +49,6 @@
 <script src="{{ asset('vendor/laravel-crm/libs/bootstrap-multiselect/bootstrap-multiselect.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
 <script src="https://kit.fontawesome.com/489f6ee958.js" crossorigin="anonymous"></script>
-@stack('livewire-js')
 <script>
     $(document).ready(function () {
         // Comprobar si existe la meta 'time_format' y obtener su contenido
@@ -90,7 +101,7 @@
         });
     });
 </script>
-
+@stack('livewire-js')
 
 
 
