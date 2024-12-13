@@ -12,24 +12,24 @@ class LiveInvoiceLines extends Component
     use NotifyToast;
 
     private $settingService;
-    public $comments;
+    public $comments = [];
     public $invoice;
     public $invoiceLines;
 
     public $order_product_id;
     public $invoice_line_id;
 
-    public $product_id;
+    public $product_id = [];
 
-    public $name;
+    public $name = [];
 
     public $order_quantities;
 
-    public $price;
+    public $price = [];
 
-    public $quantity;
+    public $quantity = [];
 
-    public $amount;
+    public $amount = [];
 
     public $inputs = [];
 
@@ -44,6 +44,7 @@ class LiveInvoiceLines extends Component
     public $fromOrder;
 
     public $old;
+    public $products;
 
     protected $listeners = ['loadInvoiceLineDefault'];
 
@@ -54,7 +55,13 @@ class LiveInvoiceLines extends Component
 
     public function mount($invoice, $invoiceLines, $old = null, $fromOrder = false)
     {
+        $data = [];
 
+        foreach (Product::all() as $product) {
+            $data[$product->name] = $product->id;
+        }
+        info($data);
+        $this->products = $data;
         $this->invoice = $invoice;
         $this->invoiceLines = $invoiceLines;
         $this->old = $old;
