@@ -46,6 +46,7 @@ class SettingController extends Controller
         $dateFormat = $this->settingService->get('date_format');
         $timeFormat = $this->settingService->get('time_format');
         $showRelatedActivity = $this->settingService->get('show_related_activity');
+        $intermediationCommission = $this->settingService->get('intermediation_commission');
         $dynamicProducts = $this->settingService->get('dynamic_products');
         $taxName = $this->settingService->get('tax_name');
         $taxRate = $this->settingService->get('tax_rate');
@@ -69,6 +70,7 @@ class SettingController extends Controller
             'dateFormat' => $dateFormat,
             'timeFormat' => $timeFormat,
             'showRelatedActivity' => $showRelatedActivity,
+            'intermediationCommission' => $intermediationCommission,
             'dynamicProducts' => $dynamicProducts,
             'taxName' => $taxName,
             'taxRate' => $taxRate,
@@ -152,6 +154,7 @@ class SettingController extends Controller
 
         $this->settingService->set('dynamic_products', (($request->dynamic_products == 'on') ? 1 : 0));
         $this->settingService->set('show_related_activity', (($request->show_related_activity == 'on') ? 1 : 0));
+        $this->settingService->set('intermediation_commission', $request->intermediation_commission);
 
         $related = $this->settingService->get('team');
         $this->updateRelatedPhones($related, $request->phones);

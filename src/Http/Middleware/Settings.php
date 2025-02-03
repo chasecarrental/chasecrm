@@ -150,6 +150,12 @@ class Settings
                 'value' => '0',
             ]);
 
+            Setting::firstOrCreate([
+                'name' => 'intermediation_commission',
+            ], [
+                'value' => 15,
+            ]);
+
             if((int) Str::replace('.', '', config('laravel-crm.version')) >= 180) {
                 Setting::firstOrCreate([
                     'global' => 1,
