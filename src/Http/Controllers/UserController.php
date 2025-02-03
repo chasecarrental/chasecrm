@@ -141,19 +141,22 @@ class UserController extends Controller
         }
         
         if ($request->user_locations) {
-
             $locationsData = collect($request->user_locations)
-                ->mapWithKeys(function ($location, $index) {
+                ->mapWithKeys(function ($location, $index) use ($user) {
                     return [
-                        $location['id'] => ['default' => $index === 0] // El primero será true, los demás false
+                        $location => [
+                            'default' => $index === 0,  // El primero será true, los demás false
+                            'user_id' => $user->id  // Agregamos el ID del usuario
+                        ]
                     ];
                 })
                 ->toArray();
-
+        
             $user->locations()->sync($locationsData);
         } else {
             $user->locations()->sync([]);
         }
+        
         
         flash(ucfirst(trans('laravel-crm::lang.user_stored')))->success()->important();
         return response()->json(["response"=>true]);
@@ -234,19 +237,21 @@ class UserController extends Controller
         }
 
         if ($request->user_locations) {
-            
             $locationsData = collect($request->user_locations)
-                ->mapWithKeys(function ($location, $index) {
+                ->mapWithKeys(function ($location, $index) use ($user) {
                     return [
-                        $location['id'] => ['default' => $index === 0] // El primero será true, los demás false
+                        $location => [
+                            'default' => $index === 0,  // El primero será true, los demás false
+                            'user_id' => $user->id  // Agregamos el ID del usuario
+                        ]
                     ];
                 })
                 ->toArray();
-
+        
             $user->locations()->sync($locationsData);
         } else {
             $user->locations()->sync([]);
-        }
+        }        
 
         flash(ucfirst(trans('laravel-crm::lang.user_updated')))->success()->important();
         return response()->json(["response"=>true]);
