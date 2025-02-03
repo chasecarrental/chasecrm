@@ -71,6 +71,17 @@
             'value' => old('user_teams', (isset($user)) ? $user->crmTeams()->orderBy('name','ASC')->get()->pluck('id')->toArray() : null)
         ])
         @endhasteamsenabled
+
+        @hasteamsenabled
+        <h6 class="text-uppercase mt-4 section-h6-title">{{ ucfirst(__('laravel-crm::lang.offices')) }}</h6>
+        <hr>
+        @include('laravel-crm::partials.form.multiselect',[
+            'name' => 'user_locations',
+            'label' => null,
+            'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel($offices, null),
+            'value' => old('user_locations', (isset($user)) ? $user->locations()->orderBy('location_name','ASC')->get()->pluck('id')->toArray() : null)
+        ])
+        @endhasteamsenabled
     </div>
     <div class="col-sm-6">
         @livewire('phone-edit', [
