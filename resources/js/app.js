@@ -248,6 +248,14 @@ const appJquery = function() {
                 iconsPrefix: 'fa'
             });
 
+            $("select[name^='user_locations']").bootstrapDualListbox({
+                nonSelectedListLabel: 'Not on',
+                selectedListLabel: 'On',
+                moveOnSelect: false,
+                infoText: false,
+                iconsPrefix: 'fa'
+            });
+
             $("select[name^='field_models']").bootstrapDualListbox({
                 nonSelectedListLabel: 'Not Attached',
                 selectedListLabel: 'Attached To',
