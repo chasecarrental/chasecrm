@@ -73,7 +73,7 @@
         @endhasteamsenabled
 
         @hasteamsenabled
-        <h6 class="text-uppercase mt-4 section-h6-title">{{ ucfirst(__('laravel-crm::lang.offices')) }}</h6>
+        <h6 class="text-uppercase mt-4 section-h6-title">{{ ucfirst(__('laravel-crm::lang.locations')) }}</h6>
         <hr>
         @include('laravel-crm::partials.form.multiselect',[
             'name' => 'user_locations',

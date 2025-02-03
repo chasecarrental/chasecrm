@@ -9194,6 +9194,13 @@ alert("entrando")
                             infoText: !1,
                             iconsPrefix: 'fa'
                         }),
+                        $("select[name^='user_locations']").bootstrapDualListbox({
+                            nonSelectedListLabel: 'Not on',
+                            selectedListLabel: 'On',
+                            moveOnSelect: !1,
+                            infoText: !1,
+                            iconsPrefix: 'fa'
+                        }),
                         $("select[name^='field_models']").bootstrapDualListbox({
                             nonSelectedListLabel: 'Not Attached',
                             selectedListLabel: 'Attached To',
