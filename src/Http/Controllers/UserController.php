@@ -86,7 +86,7 @@ class UserController extends Controller
             'user'=>$user,
             'teams' => $teams,
             'locations' => $locations,
-            'offices' => BookingLocation::select('location_name', 'code', 'id')->orderBy('location_name', 'ASC')->get()
+            'offices' => BookingLocation::select('location_name AS name', 'code', 'id')->orderBy('location_name', 'ASC')->get()
         ]);
     }
 
@@ -192,7 +192,7 @@ class UserController extends Controller
             'phones' => $user->phones,
             'addresses' => $user->addresses,
             'locations' => $locations,
-            'offices' => BookingLocation::select('location_name', 'code', 'id')->orderBy('location_name', 'ASC')->get()
+            'offices' => BookingLocation::select('location_name AS name', 'code', 'id')->orderBy('location_name', 'ASC')->get()
         ]);
     }
 
