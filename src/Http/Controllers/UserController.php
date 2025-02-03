@@ -5,6 +5,7 @@ namespace VentureDrake\LaravelCrm\Http\Controllers;
 use Ramsey\Uuid\Uuid;
 use App\User;
 use App\Models\Location;
+use App\Models\Booking\Location as BookingLocation;
 use DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -28,7 +29,7 @@ class UserController extends Controller
     {
         if (config('laravel-crm.teams')) {
             if (auth()->user()->currentTeam) {
-                $users = auth()->user()->currentTeam->allUsers();
+                $users = auth()->user()->currentTeam->allUsers()->load('locations');
 
                 if ($users->count() > 30) {
                     $users = $users->paginate(30);
@@ -36,9 +37,9 @@ class UserController extends Controller
             }
         } else {
             if (User::all()->count() < 30) {
-                $users = User::latest()->get();
+                $users = User::with('locations')->latest()->get();
             } else {
-                $users = User::latest()->paginate(30);
+                $users = User::with('locations')->latest()->paginate(30);
             }
         }
 
@@ -84,7 +85,8 @@ class UserController extends Controller
         return view('laravel-crm::users.create', [
             'user'=>$user,
             'teams' => $teams,
-            'locations' =>$locations
+            'locations' => $locations,
+            'offices' => Location::select('location_name', 'code', 'id')->orderBy('location_name', 'ASC')->get()
         ]);
     }
 
@@ -137,7 +139,22 @@ class UserController extends Controller
         } else {
             $user->crmTeams()->sync([]);
         }
+        
+        if ($request->user_locations) {
 
+            $locationsData = collect($request->user_locations)
+                ->mapWithKeys(function ($location, $index) {
+                    return [
+                        $location['id'] => ['default' => $index === 0] // El primero será true, los demás false
+                    ];
+                })
+                ->toArray();
+
+            $user->locations()->sync($locationsData);
+        } else {
+            $user->locations()->sync([]);
+        }
+        
         flash(ucfirst(trans('laravel-crm::lang.user_stored')))->success()->important();
         return response()->json(["response"=>true]);
         //return redirect(route('laravel-crm.users.index'));
@@ -174,7 +191,8 @@ class UserController extends Controller
             'emails' => $user->emails,
             'phones' => $user->phones,
             'addresses' => $user->addresses,
-            'locations' =>$locations
+            'locations' => $locations,
+            'offices' => Location::select('location_name', 'code', 'id')->orderBy('location_name', 'ASC')->get()
         ]);
     }
 
@@ -213,6 +231,21 @@ class UserController extends Controller
             $user->crmTeams()->sync($request->user_teams);
         } else {
             $user->crmTeams()->sync([]);
+        }
+
+        if ($request->user_locations) {
+            
+            $locationsData = collect($request->user_locations)
+                ->mapWithKeys(function ($location, $index) {
+                    return [
+                        $location['id'] => ['default' => $index === 0] // El primero será true, los demás false
+                    ];
+                })
+                ->toArray();
+
+            $user->locations()->sync($locationsData);
+        } else {
+            $user->locations()->sync([]);
         }
 
         flash(ucfirst(trans('laravel-crm::lang.user_updated')))->success()->important();
