@@ -141,7 +141,7 @@ class UserController extends Controller
             $user->crmTeams()->sync([]);
         }
         
-        if ($request->user_locations && $request->all_locations != 'on') {
+        if ($request->user_locations) {
             $locationsData = collect($request->user_locations)
                 ->mapWithKeys(function ($location, $index) use ($user) {
                     return [
@@ -238,7 +238,7 @@ class UserController extends Controller
             $user->crmTeams()->sync([]);
         }
 
-        if ($request->user_locations && $request->all_locations != 'on') {
+        if ($request->user_locations) {
             $locationsData = collect($request->user_locations)
                 ->mapWithKeys(function ($location, $index) use ($user) {
                     return [
