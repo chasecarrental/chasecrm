@@ -72,16 +72,21 @@
         ])
         @endhasteamsenabled
 
-        @hasteamsenabled
-        <h6 class="text-uppercase mt-4 section-h6-title">Ubicaciones</h6>
-        <hr>
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h6 class="text-uppercase section-h6-title mb-0">Ubicaciones</h6>
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="all_locations" name="all_locations" 
+                       {{ (isset($user) && ($user->all_locations)) ? 'checked' : null }}>
+                <label class="form-check-label" for="all_locations">Todas</label>
+            </div>
+        </div>
+        <hr>        
         @include('laravel-crm::partials.form.multiselect',[
             'name' => 'user_locations',
             'label' => null,
             'options' => \VentureDrake\LaravelCrm\Http\Helpers\SelectOptions\optionsFromModel($offices, null),
             'value' => old('user_locations', (isset($user)) ? $user->locations()->orderBy('location_name','ASC')->get()->pluck('id')->toArray() : null)
         ])
-        @endhasteamsenabled
     </div>
     <div class="col-sm-6">
         @livewire('phone-edit', [

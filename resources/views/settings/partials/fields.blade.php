@@ -72,10 +72,14 @@
             'value' => old('tax_name', $taxName->value ?? null)
        ])
         @include('laravel-crm::partials.form.text',[
-            'name' => 'tax_rate',
-            'label' => ucfirst(trans('laravel-crm::lang.tax_rate')),
-            'value' => old('tax_rate', $taxRate->value ?? null),
-            'append' => '%'
+            'name' => 'tax_name',
+            'label' => ucfirst(trans('laravel-crm::lang.tax_name')),
+            'value' => old('tax_name', $taxName->value ?? null)
+       ])
+        @include('laravel-crm::partials.form.text',[
+            'name' => 'intermediation_commission',
+            'label' => 'Intermediation Commission',
+            'value' => old('intermediation_commission', $intermediationCommission->value ?? null)
        ])
         @hasquotesenabled
         @include('laravel-crm::partials.form.text',[

@@ -103,6 +103,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'location' => $request->location,
+            'all_locations' => (($request->all_locations == 'on') ? 1 : 0),
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ]);
 
@@ -140,7 +141,7 @@ class UserController extends Controller
             $user->crmTeams()->sync([]);
         }
         
-        if ($request->user_locations) {
+        if ($request->user_locations && $request->all_locations != 'on') {
             $locationsData = collect($request->user_locations)
                 ->mapWithKeys(function ($location, $index) use ($user) {
                     return [
@@ -213,6 +214,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'location' => $request->location,
+            'all_locations' => (($request->all_locations == 'on') ? 1 : 0),
             'crm_access' => (($request->crm_access == 'on') ? 1 : 0),
         ])->save();
 
@@ -236,7 +238,7 @@ class UserController extends Controller
             $user->crmTeams()->sync([]);
         }
 
-        if ($request->user_locations) {
+        if ($request->user_locations && $request->all_locations != 'on') {
             $locationsData = collect($request->user_locations)
                 ->mapWithKeys(function ($location, $index) use ($user) {
                     return [
